@@ -7,9 +7,9 @@ public class DriveConstants {
     public static int OPERATOR_CONTROLLER = 1; 
 
     public static int RIGHT_MASTER = 1; 
-    public static int LEFT_MASTER = 2; 
+    public static int LEFT_MASTER = 4;
     public static int RIGHT_FOLLOWER = 3; 
-    public static int LEFT_FOLLOWER = 4; 
+    public static int LEFT_FOLLOWER = 2;
 
     public static double CONTROLLER_DEADZONE = 0.15; 
     public static double FWD_REV_DAMPENING = 0.75; 
