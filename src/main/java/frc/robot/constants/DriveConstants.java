@@ -3,8 +3,8 @@ package frc.robot.constants;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class DriveConstants {
-    public static int DRIVER_CONTROLLER = 0; 
-    public static int OPERATOR_CONTROLLER = 1; 
+    public static int DRIVER_CONTROLLER = 0;
+    public static int OPERATOR_CONTROLLER = 1;
 
     public static int RIGHT_MASTER = 1; 
     public static int LEFT_MASTER = 4;
