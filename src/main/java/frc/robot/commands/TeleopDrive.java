@@ -13,6 +13,10 @@ public class TeleopDrive extends CommandBase {
     private final int X_AXIS; 
     private final int Y_AXIS; 
 
+    private static boolean precisionDrive = true; 
+
+    private static double precisionFactor = 0.5; 
+
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis) {
         this.drivetrain = drivetrain; 
         this.controller = driverController; 
@@ -42,11 +46,31 @@ public class TeleopDrive extends CommandBase {
                 DriveConstants.CONTROLLER_DEADZONE);
 
         // Increase control by squaring input values. Negative values will, however, stay negative. 
-        y = Math.copySign(y * y, y) * DriveConstants.FWD_REV_DAMPENING / 10;
+        y = Math.copySign(y * y, y) * DriveConstants.FWD_REV_DAMPENING;
 
         double x = applyDeadband(controller.getRawAxis(X_AXIS), DriveConstants.CONTROLLER_DEADZONE);
-        x = Math.copySign(x * x * x, x) * DriveConstants.LEFT_RIGHT_DAMPENING / 10;
+        x = Math.copySign(x * x * x, x) * DriveConstants.LEFT_RIGHT_DAMPENING;
 
-        drivetrain.arcadeDrive(y, x, 1.0);
+        drivetrain.arcadeDrive(-y, x, precisionDrive ? precisionFactor : 1.0);
+    }
+
+    public static boolean isPrecisionDrive() {
+        return precisionDrive; 
+    }
+
+    public static void setPrecisionDrive(boolean precisionDrive) {
+        TeleopDrive.precisionDrive = precisionDrive; 
+    }
+
+    public static void togglePrecisionDrive() {
+        precisionDrive = !precisionDrive; 
+    }
+
+    public static void setPrecisionFactor(double factor) {
+        precisionFactor = factor; 
+    }
+
+    public static double getPrecisionFactor() {
+        return precisionFactor; 
     }
 }
