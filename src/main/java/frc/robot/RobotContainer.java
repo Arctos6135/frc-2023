@@ -18,6 +18,7 @@ import frc.robot.subsystems.Drivetrain;
 public class RobotContainer {
   private final Drivetrain drivetrain; 
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER); 
+  private final XboxController operatorController = new XboxController(DriveConstants.OPERATOR_CONTROLLER);
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER, 
