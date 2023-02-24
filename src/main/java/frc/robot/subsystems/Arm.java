@@ -27,8 +27,21 @@ public class Arm extends SubsystemBase{
 
     }
 
-    // This stops the motor :D
+    //Sets arm to neutral mode (Brakes?)
+    public void setArmNeutralMode(NeutralMode neutralMode) {
+        this.armMotor.setNeutralMode(neutralMode);
+    }
 
+    // Sets speed of motor
+    public void setArmSpeed(double armSpeed) {
+        if (this.enabled()) {
+            this.armMotor.set(ControlMode.PercentOutput, armSpeed);
+        } else {
+            this.stopMotor();
+        }
+    }
+
+    // This stops the motor :D
     public void stopMotor() {
         this.armMotor.set(ControlMode.PercentOutput, 0);
     }
