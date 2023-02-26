@@ -12,6 +12,7 @@ public class Claw {
     public Claw(int deviceNumber) {
         // need motor id (and name of motor would be helpful)
         this.clawMotor = new WPI_VictorSPX(deviceNumber);
+        this.clawMotor.setNeutralMode(NeutralMode.Coast);
         isOpen = false;
     }
 
