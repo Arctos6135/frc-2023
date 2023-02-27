@@ -19,11 +19,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.ClawConstants;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 
 public class RobotContainer {
   // Robot Subsystems 
-  private final Drivetrain drivetrain; 
+  private final Drivetrain drivetrain;
+  private final Claw claw;
   
   // Controllers
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
@@ -43,6 +46,7 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
+    this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
     prematchTab = Shuffleboard.getTab("Prematch"); 
 
