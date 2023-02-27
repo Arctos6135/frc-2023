@@ -5,44 +5,45 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-public class Claw {
+import frc.robot.constants.ClawConstants;
+
+public class Claw extends SubsystemBase {
+    private final WPI_VictorSPX clawMotor;
     private boolean isOpen;
-    private WPI_VictorSPX clawMotor;
 
     public Claw(int deviceNumber) {
         // need motor id (and name of motor would be helpful)
         this.clawMotor = new WPI_VictorSPX(deviceNumber);
-        this.clawMotor.setNeutralMode(NeutralMode.Coast);
-        isOpen = false;
+        this.clawMotor.setNeutralMode(NeutralMode.Break);
+        isOpen = false; // Claw has to start closed, need to run code to close motor when initialized.
     }
 
     public boolean getIsOpen() {
         return isOpen;
     }
 
-    public WPI_VictorSPX getClawMotor() {
-        return clawMotor;
-    }
-
-    public void close() {
+    public void startClosing() {
         if (isOpen) {
-            clawMotor.disable(); // Not sure what this does but it probably cuts voltage to motor.
-            // Other options are clawMotor.set(0.0) or clawMotor.set(ControlMode.PercentOutput, 0.0)
-            // The documentation is pretty unclear as to what each of these do, so testing should be done.
-
+            clawMotor.set(ControlMode.Percentoutput, ClawConstants.CLOSE_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
             isOpen = false;
         }
     }
 
+    public void stopClosing() {
+        clawMotor.stopMotor(); // When do we stop the claw? We need to test
+    }
+
     public void startOpening() {
         if (!isOpen) {
-            clawMotor.set(ControlMode.PercentOutput, 0.5); // 0.5 is test value. Will (most likley) change after testing
+            clawMotor.set(ControlMode.PercentOutput, ClawConstants.OPEN_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
             isOpen = true;
         }
     }
 
     public void stopOpening() {
         // Needs more code once able. Will interact with motor limiter part.(unfinished)
-        clawMotor.stopMotor();
+        clawMotor.stopMotor(); // Not sure what this does but it probably cuts voltage to motor.
+        // Other options are clawMotor.set(0.0) or clawMotor.set(ControlMode.PercentOutput, 0.0)
+        // The documentation is pretty unclear as to what each of these do, so testing should be done.
     }
 }
