@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 
 public class Elevator extends SubsystemBase {
     public final TalonSRX elevatorMotor;
