@@ -14,7 +14,7 @@ public class Claw extends SubsystemBase {
     public Claw(int deviceNumber) {
         // need motor id (and name of motor would be helpful)
         this.clawMotor = new WPI_VictorSPX(deviceNumber);
-        this.clawMotor.setNeutralMode(NeutralMode.Break);
+        this.clawMotor.setNeutralMode(NeutralMode.Brake);
         isOpen = false; // Claw has to start closed, need to run code to close motor when initialized.
     }
 
@@ -24,7 +24,7 @@ public class Claw extends SubsystemBase {
 
     public void startClosing() {
         if (isOpen) {
-            clawMotor.set(ControlMode.Percentoutput, ClawConstants.CLOSE_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
+            clawMotor.set(ControlMode.PercentOutput, ClawConstants.CLOSE_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
             isOpen = false;
         }
     }
