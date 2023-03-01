@@ -17,7 +17,7 @@ public class DriveForward extends CommandBase {
     public DriveForward(double speed, double distance, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
-        this.time = distance / speed * DriveConstants.WHEEL_RADIUS; // make wheel rd a consant
+        this.time = distance / speed * DriveConstants.WHEEL_DIAMETER; // make wheel rd a consant
         maxTime = this.time + Timer.getFPGATimestamp();
     }
 
