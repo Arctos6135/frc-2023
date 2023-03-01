@@ -19,4 +19,9 @@ public class DriveConstants {
     public static int DRIVE_LEFT_RIGHT = XboxController.Axis.kRightX.value; 
     public static int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value; 
     public static int BOOST_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value; 
+
+    // Drivetrain Constants (Inches)
+    public static double WHEEL_DIAMETER = 6.0; 
+    public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
+
 }
