@@ -24,7 +24,7 @@ public class Claw extends SubsystemBase {
 
     public void startClosing() {
         if (isOpen) {
-            clawMotor.set(ControlMode.PercentOutput, ClawConstants.CLOSE_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
+            clawMotor.set(ControlMode.PercentOutput, ClawConstants.CLOSE_PERCENT_OUTPUT);
             isOpen = false;
         }
     }
@@ -35,7 +35,7 @@ public class Claw extends SubsystemBase {
 
     public void startOpening() {
         if (!isOpen) {
-            clawMotor.set(ControlMode.PercentOutput, ClawConstants.OPEN_PERCENT_OUTPUT); // 0.5 is test value. Will (most likely) change after testing
+            clawMotor.set(ControlMode.PercentOutput, ClawConstants.OPEN_PERCENT_OUTPUT);
             isOpen = true;
         }
     }

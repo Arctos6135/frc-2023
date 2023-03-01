@@ -24,41 +24,42 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 
 public class RobotContainer {
-  // Robot Subsystems 
+  // Robot Subsystems
   private final Drivetrain drivetrain;
   private final Claw claw;
-  
+
   // Controllers
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
-  
+
   // Controller Rumbling
 
   // Shuffleboard Tabs
-  public final ShuffleboardTab prematchTab; 
-  
-  // Network Tables 
+  public final ShuffleboardTab prematchTab;
 
-  private Autonomous autonomous; 
+  // Network Tables
+
+  private Autonomous autonomous;
 
   public RobotContainer() {
-    this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER, 
-      DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER); 
+    this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
+      DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER);
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
+
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
-    prematchTab = Shuffleboard.getTab("Prematch"); 
+    prematchTab = Shuffleboard.getTab("Prematch");
 
     configureDashboard();
 
-    autonomous = new Autonomous(); 
+    autonomous = new Autonomous();
 
     configureBindings();
   }
 
   private void configureDashboard() {
-    prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
+    prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
   }
 
   private void configureBindings() {
@@ -69,14 +70,14 @@ public class RobotContainer {
 
     precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
-      TeleopDrive.togglePrecisionDrive(); 
+      TeleopDrive.togglePrecisionDrive();
     }, () -> {
     }, (interrupted) -> {
-      TeleopDrive.togglePrecisionDrive(); 
-    }, () -> false)); 
+      TeleopDrive.togglePrecisionDrive();
+    }, () -> false));
   }
 
   public Command getAutonomousCommand() {
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain); 
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain);
   }
 }
