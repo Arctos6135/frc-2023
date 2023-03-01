@@ -4,17 +4,13 @@
 
 package frc.robot;
 
-import java.util.Set;
-
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopDrive;
@@ -46,9 +42,9 @@ public class RobotContainer {
 
     prematchTab = Shuffleboard.getTab("Prematch"); 
 
-    configureDashboard();
-
     autonomous = new Autonomous(); 
+
+    configureDashboard();
 
     configureBindings();
   }
@@ -61,7 +57,11 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
+    precisionDriveButton.onTrue(new FunctionalCommand(() -> {
+      TeleopDrive.togglePrecisionDrive();
+    }, () -> {  
+    }, (interrupted) -> {
+    }, () -> false)); 
 
     precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
@@ -73,6 +73,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain); 
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain);
   }
 }

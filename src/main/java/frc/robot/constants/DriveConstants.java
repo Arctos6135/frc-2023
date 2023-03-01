@@ -15,11 +15,13 @@ public class DriveConstants {
     public static double FWD_REV_DAMPENING = 0.75;
     public static double LEFT_RIGHT_DAMPENING = 0.75;
 
-    public static int DRIVE_FWD_REV = XboxController.Axis.kLeftY.value;
-    public static int DRIVE_LEFT_RIGHT = XboxController.Axis.kRightX.value;
-    public static int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
-    public static int BOOST_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
+    public static int DRIVE_FWD_REV = XboxController.Axis.kLeftY.value; 
+    public static int DRIVE_LEFT_RIGHT = XboxController.Axis.kRightX.value; 
+    public static int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value; 
+    public static int BOOST_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value; 
 
-    // It's not actually five bro measure it
-    public static double WHEEL_RADIUS = 5;
+    // Drivetrain Constants (Inches)
+    public static double WHEEL_DIAMETER = 6.0; 
+    public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
+
 }
