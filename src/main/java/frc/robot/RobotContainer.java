@@ -57,7 +57,11 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
+    precisionDriveButton.onTrue(new FunctionalCommand(() -> {
+      TeleopDrive.togglePrecisionDrive();
+    }, () -> {  
+    }, (interrupted) -> {
+    }, () -> false)); 
 
     precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
