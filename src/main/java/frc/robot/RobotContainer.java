@@ -50,7 +50,7 @@ public class RobotContainer {
     );
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
-    this.claw.setDefaultCommand(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CONE_TIME));
+    this.claw.setDefaultCommand(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
 
     prematchTab = Shuffleboard.getTab("Prematch");
 
@@ -69,10 +69,8 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    JoystickButton closeClawOnCubeButton = new JoystickButton(driverController, ClawConstants.CLOSE_ON_CUBE_BUTTON);
-    JoystickButton closeClawOnConeButton = new JoystickButton(driverController, ClawConstants.CLOSE_ON_CONE_BUTTON);
-    JoystickButton openClawFromCubeButton = new JoystickButton(driverController, ClawConstants.OPEN_FROM_CUBE_BUTTON);
-    JoystickButton openClawFromConeButton = new JoystickButton(driverController, ClawConstants.OPEN_FROM_CONE_BUTTON);
+    JoystickButton closeButton = new JoystickButton(driverController, ClawConstants.CLOSE_BUTTON);
+    JoystickButton openButton = new JoystickButton(driverController, ClawConstants.OPEN_BUTTON);
 
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
@@ -84,10 +82,8 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    closeClawOnCubeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_ON_CUBE_TIME));
-    closeClawOnConeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_ON_CONE_TIME));
-    openClawFromCubeButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CUBE_TIME));
-    openClawFromConeButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CONE_TIME));
+    closeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_TIME));
+    openButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
   }
 
   public Command getAutonomousCommand() {

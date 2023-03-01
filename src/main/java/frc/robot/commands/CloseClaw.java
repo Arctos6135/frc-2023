@@ -15,7 +15,7 @@ public class CloseClaw extends CommandBase {
         this.time = time;
         addRequirements(this.claw);
 
-        // In the subsystem, we assume the claw is closed. When initializing the claw, we should make sure it is closed.
+        // In the subsystem, we assume the claw is open. When initializing the claw, we should make sure it is closed.
     }
 
     @Override
