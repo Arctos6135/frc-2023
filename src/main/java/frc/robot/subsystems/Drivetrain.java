@@ -20,6 +20,7 @@ public class Drivetrain extends SubsystemBase {
     public static double kP = 0;
     public static double kI = 0; 
     public static double kD = 0; 
+    public static double kFF = 0; 
 
     private RelativeEncoder rightEncoder; 
     private RelativeEncoder leftEncoder; 
@@ -41,11 +42,13 @@ public class Drivetrain extends SubsystemBase {
         this.rightController.setP(kP); 
         this.rightController.setI(kI); 
         this.rightController.setD(kD); 
+        this.rightController.setFF(kFF);
         this.rightController.setOutputRange(-1.0, 1.0);
 
         this.leftController.setP(kP); 
         this.leftController.setI(kI); 
-        this.leftController.setD(kD); 
+        this.leftController.setD(kD);
+        this.leftController.setFF(kFF); 
         this.leftController.setOutputRange(-1.0, 1.0);
 
         this.rightEncoder = this.rightMaster.getEncoder(); 
@@ -64,7 +67,7 @@ public class Drivetrain extends SubsystemBase {
         this.rightMaster.set(right);
     }
 
-    /*
+    /**
      * Drives a specified distance with PID Control, based on rotations 
      * from the encoder. 
      * @param distance the required distance in inches.
