@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.CloseClaw;
+import frc.robot.commands.OpenClaw;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ClawConstants;
@@ -48,6 +50,7 @@ public class RobotContainer {
     );
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    this.claw.setDefaultCommand(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CONE_TIME));
 
     prematchTab = Shuffleboard.getTab("Prematch");
 
@@ -66,6 +69,11 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
+    JoystickButton closeClawOnCubeButton = new JoystickButton(driverController, ClawConstants.CLOSE_ON_CUBE_BUTTON);
+    JoystickButton closeClawOnConeButton = new JoystickButton(driverController, ClawConstants.CLOSE_ON_CONE_BUTTON);
+    JoystickButton openClawFromCubeButton = new JoystickButton(driverController, ClawConstants.OPEN_FROM_CUBE_BUTTON);
+    JoystickButton openClawFromConeButton = new JoystickButton(driverController, ClawConstants.OPEN_FROM_CONE_BUTTON);
+
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
     precisionDriveTrigger.setMinTimeRequired(0.05);
@@ -75,6 +83,11 @@ public class RobotContainer {
     }, (interrupted) -> {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
+
+    closeClawOnCubeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_ON_CUBE_TIME));
+    closeClawOnConeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_ON_CONE_TIME));
+    openClawFromCubeButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CUBE_TIME));
+    openClawFromConeButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_FROM_CONE_TIME));
   }
 
   public Command getAutonomousCommand() {
