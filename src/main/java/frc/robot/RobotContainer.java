@@ -69,8 +69,8 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    JoystickButton closeButton = new JoystickButton(driverController, ClawConstants.CLOSE_BUTTON);
-    JoystickButton openButton = new JoystickButton(driverController, ClawConstants.OPEN_BUTTON);
+    JoystickButton closeClawButton = new JoystickButton(driverController, ClawConstants.CLOSE_BUTTON);
+    JoystickButton openClawButton = new JoystickButton(driverController, ClawConstants.OPEN_BUTTON);
 
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
@@ -82,8 +82,8 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    closeButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_TIME));
-    openButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
+    closeClawButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_TIME));
+    openClawButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
   }
 
   public Command getAutonomousCommand() {
