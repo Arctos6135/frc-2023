@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.Claw;
+import frc.robot.constants.ClawConstants;
 
 public class OpenClaw extends CommandBase {
     private final Claw claw;
@@ -13,6 +14,12 @@ public class OpenClaw extends CommandBase {
     public OpenClaw(Claw claw, double time) {
         this.claw = claw;
         this.time = time;
+        addRequirements(this.claw);
+    }
+
+    public OpenClaw(Claw claw) {
+        this.claw = claw;
+        this.time = ClawConstants.OPEN_TIME;
         addRequirements(this.claw);
     }
 

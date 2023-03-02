@@ -50,7 +50,7 @@ public class RobotContainer {
     );
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
-    this.claw.setDefaultCommand(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
+    this.claw.setDefaultCommand(new OpenClaw(this.claw));
 
     prematchTab = Shuffleboard.getTab("Prematch");
 
@@ -69,8 +69,7 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    JoystickButton closeClawButton = new JoystickButton(driverController, ClawConstants.CLOSE_BUTTON);
-    JoystickButton openClawButton = new JoystickButton(driverController, ClawConstants.OPEN_BUTTON);
+    JoystickButton clawButton = new JoystickButton(driverController, ClawConstants.CLAW_BUTTON);
 
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
@@ -82,8 +81,11 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    closeClawButton.onTrue(new CloseClaw(this.claw, ClawConstants.CLOSE_TIME));
-    openClawButton.onTrue(new OpenClaw(this.claw, ClawConstants.OPEN_TIME));
+    if (this.claw.getIsOpen()) {
+      clawButton.onTrue(new CloseClaw(this.claw));
+    } else {
+      clawButton.onTrue(new OpenClaw(this.claw));
+    }
   }
 
   public Command getAutonomousCommand() {

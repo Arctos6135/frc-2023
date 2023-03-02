@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.Claw;
+import frc.robot.constants.ClawConstants;
 
 public class CloseClaw extends CommandBase {
     private final Claw claw;
@@ -13,6 +14,14 @@ public class CloseClaw extends CommandBase {
     public CloseClaw(Claw claw, double time) {
         this.claw = claw;
         this.time = time;
+        addRequirements(this.claw);
+
+        // In the subsystem, we assume the claw is open. When initializing the claw, we should make sure it is closed.
+    }
+
+    public CloseClaw(Claw claw) {
+        this.claw = claw;
+        this.time = ClawConstants.CLOSE_TIME;
         addRequirements(this.claw);
 
         // In the subsystem, we assume the claw is open. When initializing the claw, we should make sure it is closed.
