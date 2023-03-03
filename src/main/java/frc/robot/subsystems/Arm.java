@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase{
     }
 
     // Sets speed of motor
-    public void setSpeed(double armSpeed) {
+    public void setMotor(double armSpeed) {
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
 
