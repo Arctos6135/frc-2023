@@ -26,7 +26,7 @@ public class Claw extends SubsystemBase {
     }
 
     public void startClosing() {
-        if (isOpen) {
+        if (isOpen && !limitSwitchClose.get()) {
             clawMotor.set(ControlMode.PercentOutput, ClawConstants.CLOSE_PERCENT_OUTPUT);
             isOpen = false;
         }
