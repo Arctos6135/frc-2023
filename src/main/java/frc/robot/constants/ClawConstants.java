@@ -6,6 +6,9 @@ public class ClawConstants {
     public static final int CLAW_MOTOR = 0;
     public static final int CLAW_BUTTON = Button.kB.value;
 
+    public static final int LIMIT_SWITCH_OPEN = 8; 
+    public static final int LIMIT_SWITCH_CLOSE = 9; 
+
     // Values need to be tested
     public static final double OPEN_TIME = 0.0;
     public static final double CLOSE_TIME = 0.0;

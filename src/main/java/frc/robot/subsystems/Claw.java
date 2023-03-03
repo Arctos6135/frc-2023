@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -9,6 +10,8 @@ import frc.robot.constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
     private final WPI_VictorSPX clawMotor;
+    private final DigitalInput limitSwitchOpen = new DigitalInput(ClawConstants.LIMIT_SWITCH_OPEN);
+    private final DigitalInput limitSwitchClose = new DigitalInput(ClawConstants.LIMIT_SWITCH_CLOSE);
     private boolean isOpen;
 
     public Claw(int deviceNumber) {
@@ -30,11 +33,14 @@ public class Claw extends SubsystemBase {
     }
 
     public void stopClosing() {
-        clawMotor.stopMotor(); // When do we stop the claw? We need to test
+        if (limitSwitchClose.get()) {
+            clawMotor.stopMotor();
+        }
     }
 
     public void startOpening() {
-        if (!isOpen) {
+        // Limit switch protected
+        if (!isOpen && !limitSwitchOpen.get()) {
             clawMotor.set(ControlMode.PercentOutput, ClawConstants.OPEN_PERCENT_OUTPUT);
             isOpen = true;
         }
