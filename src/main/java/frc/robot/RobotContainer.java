@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.CloseClaw;
 import frc.robot.commands.OpenClaw;
-import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.Rotate;
 import frc.robot.constants.DriveConstants;
