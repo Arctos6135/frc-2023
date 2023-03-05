@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //code for rotating arm controlled by redline motor, chain, and sprockets
 
 
-public class Arm extends SubsystemBase{
+public class Arm extends SubsystemBase {
     
     //This is our motor
     private final TalonSRX armMotor;
 
-    /*
+    /**
      * This is our constructor
      * @param armMotor can ID of the motor for flipping the arm
      */
