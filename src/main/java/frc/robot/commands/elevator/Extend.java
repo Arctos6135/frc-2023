@@ -2,21 +2,24 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.TeleopDrive;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.util.Dampener;
 
 public class Extend extends CommandBase {
     private final Elevator elevator; 
 
     public final XboxController controller;
     
-    private final int EXTENSION_AXIS; 
+    private final int EXTENSION_AXIS;
+
+    private final Dampener dampener;
 
     public Extend(Elevator elevator, XboxController operatorController, int extendAxis) {
         this.elevator = elevator;
         this.controller = operatorController;
         this.EXTENSION_AXIS = extendAxis;
+        this.dampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
 
         addRequirements(elevator);
     }
@@ -28,11 +31,8 @@ public class Extend extends CommandBase {
     
     @Override 
     public void execute() {
-        double extension = TeleopDrive.applyDeadband(controller.getRawAxis(EXTENSION_AXIS),
-                DriveConstants.CONTROLLER_DEADZONE);
+        double extension = dampener.dampen(controller.getRawAxis(EXTENSION_AXIS));
 
-        extension = Math.copySign(Math.pow(extension, 2), extension);
-
-        this.elevator.setElevatorMotor(extension);
+        this.elevator.setMotor(extension);
     }
 }

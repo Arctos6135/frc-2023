@@ -10,20 +10,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
     
-    //This is our motor
     private final TalonSRX armMotor;
 
-    /**
-     * This is our constructor
-     * @param armMotor can ID of the motor for flipping the arm
-     */
-    public Arm(int armMotor) {
-        this.armMotor = new TalonSRX(armMotor);
+    public Arm(int armMotorId) {
+        this.armMotor = new TalonSRX(armMotorId);
         this.armMotor.setNeutralMode(NeutralMode.Brake);
         this.stopMotor();
     }
 
-    // Sets speed of motor
+    /**
+     * @param armSpeed the power of the motor, in the range [-1, 1]
+     */
     public void setMotor(double armSpeed) {
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
