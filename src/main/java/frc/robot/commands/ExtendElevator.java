@@ -16,6 +16,6 @@ public class ExtendElevator extends CommandBase {
 
     @Override
     public void execute() {
-        this.elevator.setMotor(this.operatorController.getRawAxis(ElevatorConstants.ELEVATOR_CONTROL));
+        this.elevator.setElevatorMotor(this.operatorController.getRawAxis(ElevatorConstants.ELEVATOR_CONTROL));
     }
 }

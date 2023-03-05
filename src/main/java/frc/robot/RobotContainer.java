@@ -14,16 +14,24 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.elevator.Extend;
+import frc.robot.commands.elevator.Rotate;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.ElevatorConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
   // Robot Subsystems 
-  private final Drivetrain drivetrain; 
+  private final Drivetrain drivetrain;
+  private final Arm arm; 
+  private final Elevator elevator; 
   
   // Controllers
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
-  
+  private final XboxController operatorController = new XboxController(DriveConstants.OPERATOR_CONTROLLER); 
+
   // Controller Rumbling
 
   // Shuffleboard Tabs
@@ -39,6 +47,12 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
+
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL); 
+    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL));
+
+    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
+    this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
 
     prematchTab = Shuffleboard.getTab("Prematch"); 
 

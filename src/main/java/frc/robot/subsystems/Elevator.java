@@ -7,14 +7,14 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Elevator extends SubsystemBase {
-    public final TalonSRX elevatorMotor;
+    private final TalonSRX elevatorMotor;
 
     public Elevator(int elevatorMotorId) {
         this.elevatorMotor = new TalonSRX(elevatorMotorId);
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void setMotor(double controllerSpeed) {
+    public void setElevatorMotor(double controllerSpeed) {
         this.elevatorMotor.set(ControlMode.PercentOutput, controllerSpeed * ElevatorConstants.SPEED_FACTOR);
     }
 
