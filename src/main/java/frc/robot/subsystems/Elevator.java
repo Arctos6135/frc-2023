@@ -14,8 +14,11 @@ public class Elevator extends SubsystemBase {
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void setElevatorMotor(double controllerSpeed) {
-        this.elevatorMotor.set(ControlMode.PercentOutput, controllerSpeed * ElevatorConstants.SPEED_FACTOR);
+    /**
+     * @param armSpeed the power of the motor, in the range [-1, 1]
+     */
+    public void setMotor(double elevatorSpeed) {
+        this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed * ElevatorConstants.SPEED_FACTOR);
     }
 
     public void stopMotor() {

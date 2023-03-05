@@ -1,7 +1,5 @@
-package frc.robot.commands;
+package frc.robot.commands.driving;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -10,14 +8,18 @@ import edu.wpi.first.wpilibj.Timer;
 public class DriveForward extends CommandBase {
     private final Drivetrain drivetrain;
 
-    private double speed;
-    private double time;
+    private final double speed;
+    private final double time;
     private double maxTime;
 
     public DriveForward(double speed, double distance, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
-        this.time = distance / speed * DriveConstants.WHEEL_DIAMETER; // make wheel rd a consant
+        this.time = distance / speed * DriveConstants.WHEEL_DIAMETER;
+    }
+
+    @Override
+    public void initialize() {
         maxTime = this.time + Timer.getFPGATimestamp();
     }
 
