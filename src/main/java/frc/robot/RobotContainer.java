@@ -53,7 +53,7 @@ public class RobotContainer {
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
 
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL); 
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT); 
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL));
     
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
