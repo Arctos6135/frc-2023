@@ -32,7 +32,7 @@ public class RobotContainer {
 
   // Controllers
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
-
+  private final XboxController operatorController = new XboxController(DriveConstants.OPERATOR_CONTROLLER); 
   // Controller Rumbling
 
   // Shuffleboard Tabs
@@ -50,7 +50,6 @@ public class RobotContainer {
     );
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
-    this.claw.setDefaultCommand(new OpenClaw(this.claw));
 
     prematchTab = Shuffleboard.getTab("Prematch");
 
@@ -69,7 +68,8 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    JoystickButton clawButton = new JoystickButton(driverController, ClawConstants.CLAW_BUTTON);
+    Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
+    Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON); 
 
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
@@ -81,11 +81,8 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    if (this.claw.getIsOpen()) {
-      clawButton.onTrue(new CloseClaw(this.claw));
-    } else {
-      clawButton.onTrue(new OpenClaw(this.claw));
-    }
+    openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
+    closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
   }
 
   public Command getAutonomousCommand() {
