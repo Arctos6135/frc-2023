@@ -11,6 +11,9 @@ public class OpenClaw extends CommandBase {
     private final double time;
     private double initialTime;
 
+    /**
+     * @param time the time the claw should open for in seconds
+     */
     public OpenClaw(Claw claw, double time) {
         this.claw = claw;
         this.time = time;
@@ -37,7 +40,6 @@ public class OpenClaw extends CommandBase {
     @Override
     public void end(boolean interrupted){
         claw.stopOpening();
-        initialTime = -1.0;
     }
 
     @Override

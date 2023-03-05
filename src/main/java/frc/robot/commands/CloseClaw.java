@@ -11,6 +11,9 @@ public class CloseClaw extends CommandBase {
     private final double time;
     private double initialTime;
 
+    /**
+     * @param time the time the claw should close for in seconds
+     */
     public CloseClaw(Claw claw, double time) {
         this.claw = claw;
         this.time = time;
@@ -41,7 +44,6 @@ public class CloseClaw extends CommandBase {
     @Override
     public void end(boolean interrupted){
         claw.stopClosing();
-        initialTime = -1.0;
     }
 
     @Override
