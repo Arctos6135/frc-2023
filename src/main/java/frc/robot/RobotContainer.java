@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.AutoAlign;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
+import frc.robot.commands.driving.DriveForward;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
@@ -53,18 +54,22 @@ public class RobotContainer {
   public RobotContainer() {
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER);
+    //this.drivetrain.setDefaultCommand(new DriveForward(0.1, 1, drivetrain));
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
+    
+    this.claw = null;
+    this.elevator = null;
 
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT); 
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL));
-    
+    /*
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
-
+*/
     this.visionSystem = new VisionSystem();
     
     prematchTab = Shuffleboard.getTab("Prematch"); 
@@ -73,7 +78,7 @@ public class RobotContainer {
 
     configureDashboard();
 
-    configureBindings();
+    //configureBindings();
   }
 
   private void configureDashboard() {

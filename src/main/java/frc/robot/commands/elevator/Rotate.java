@@ -33,6 +33,6 @@ public class Rotate extends CommandBase {
     public void execute() {
         double rotation = dampener.dampen(controller.getRawAxis(ROTATION_AXIS));
 
-        this.arm.setMotor(rotation);
+        this.arm.setMotor(rotation * 0.1);
     }
 }

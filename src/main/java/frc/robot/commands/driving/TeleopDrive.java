@@ -41,10 +41,12 @@ public class TeleopDrive extends CommandBase {
 
     @Override 
     public void execute() {
-        double y = yDampener.dampen(controller.getRawAxis(Y_AXIS));
-        double x = xDampener.dampen(controller.getRawAxis(X_AXIS));
+        double y = controller.getRawAxis(Y_AXIS);
+        double y1 = yDampener.dampen(y);
+        double x = controller.getRawAxis(X_AXIS);
+        double x1 = xDampener.dampen(x);
 
-        drivetrain.arcadeDrive(-y, x, precisionDrive ? precisionFactor : 1.0);
+        drivetrain.arcadeDrive(-y1 * 0.1, x1 * 0.1, precisionDrive ? precisionFactor : 1.0);
     }
 
     public static boolean isPrecisionDrive() {

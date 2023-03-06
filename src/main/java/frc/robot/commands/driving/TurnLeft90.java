@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 /*
  * Timer based command to rotate the robot n degrees to the left
  */
-public class TurnLeft extends CommandBase {
+public class TurnLeft90 extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final double speed = 0.75;
@@ -16,7 +16,7 @@ public class TurnLeft extends CommandBase {
     private final double time;
     private double timeLimit;
 
-    public TurnLeft(Drivetrain drivetrain, double leftDegrees) {
+    public TurnLeft90(Drivetrain drivetrain, double leftDegrees) {
         this.drivetrain = drivetrain;
         this.leftDegrees = leftDegrees;
         //Math is probably wrong

@@ -28,5 +28,6 @@ public class DriveConstants {
     public static double GEARBOX_RATIO = 1 / 8.45; 
     public static double POSITION_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO; 
     public static double DRIVE_TOLERANCE = 1.0; 
+    public static double CHASSIS_WIDTH = 28;
 
 }

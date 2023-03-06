@@ -12,22 +12,32 @@ public class DriveForward extends CommandBase {
     private final double time;
     private double maxTime;
 
+    /** 
+     * @param speed the speed of the robot in percent [-1, 1]
+     * @param distance the distance the robot should drive in m
+    */
     public DriveForward(double speed, double distance, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
-        this.time = distance / speed * DriveConstants.WHEEL_DIAMETER;
+        // s = m / (m / s);
+        this.time = distance / (speed * DriveConstants.WHEEL_DIAMETER);
+
+        addRequirements(drivetrain);
     }
 
     @Override
     public void initialize() {
-        maxTime = this.time + Timer.getFPGATimestamp();
+        System.out.printf("speed %f, time: %f\n", this.speed, this.time);
+
+        //maxTime = this.time + Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
-        drivetrain.arcadeDrive(speed, 0, 1);
+        System.out.printf("speed %f, time: %f\n", this.speed, this.time); 
+        //drivetrain.arcadeDrive(speed, 0, 1);
     }
-
+/* 
     @Override
     public boolean isFinished() {
         if (Timer.getFPGATimestamp() >= maxTime)
@@ -40,4 +50,5 @@ public class DriveForward extends CommandBase {
     public void end(boolean interrupted) {
         drivetrain.arcadeDrive(0, 0, 0);
     }
+    */
 }
