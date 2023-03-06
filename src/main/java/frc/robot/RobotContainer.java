@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.CloseClaw;
-import frc.robot.commands.OpenClaw;
+import frc.robot.commands.autonomous.AutoAlign;
+import frc.robot.commands.claw.CloseClaw;
+import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.Rotate;
 import frc.robot.constants.DriveConstants;
@@ -25,6 +27,7 @@ import frc.robot.constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.VisionSystem;
 
 public class RobotContainer {
   // Robot Subsystems 
@@ -32,6 +35,7 @@ public class RobotContainer {
   private final Claw claw;
   private final Arm arm; 
   private final Elevator elevator; 
+  private final VisionSystem visionSystem; 
   
   // Controllers
   private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
@@ -61,6 +65,8 @@ public class RobotContainer {
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
 
+    this.visionSystem = new VisionSystem();
+    
     prematchTab = Shuffleboard.getTab("Prematch"); 
 
     autonomous = new Autonomous();
@@ -77,8 +83,15 @@ public class RobotContainer {
   private void configureBindings() {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
+
+    Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
+    Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
+
     Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
     Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON);
+
+    Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
+    Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
@@ -94,8 +107,18 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
+    tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, true)); 
+
+    aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
+
     openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
     closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
+
+    autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
+      .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE)); 
+
+    autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
+      .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE)); 
   }
 
   public Command getAutonomousCommand() {

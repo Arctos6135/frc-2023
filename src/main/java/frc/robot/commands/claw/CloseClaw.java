@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;

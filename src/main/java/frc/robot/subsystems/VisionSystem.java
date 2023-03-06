@@ -9,10 +9,10 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.constants.VisionConstants;
 
 public class VisionSystem {
-    // Front Vision (Arm, Placing Game Pieces)
+    // Front Vision (Retroreflective Tape)
     private PhotonCamera limelight; 
 
-    // Back Vision (Tracking Game Pieces)
+    // Back Vision (April Tag)
     private PhotonCamera backCamera; 
 
     public VisionSystem() {
@@ -44,12 +44,12 @@ public class VisionSystem {
         return getLimelightResult().getBestTarget(); 
     }
 
-    public double calculateRange(PhotonCamera camera) {
+    public double calculateLimelightRange(boolean tape) {
         return PhotonUtils.calculateDistanceToTargetMeters(
-            VisionConstants.CAMERA_HEIGHT, 
-            VisionConstants.TARGET_HEIGHT, 
+            VisionConstants.CAMERA_HEIGHT_METERS, 
+            tape ? VisionConstants.TAPE_HEIGHT_METERS : VisionConstants.APRIL_TAG_HEIGHT_METERS, 
             VisionConstants.CAMERA_PITCH_RADIANS, 
-            Units.degreesToRadians(camera.getLatestResult().getBestTarget().getPitch())
+            Units.degreesToRadians(getLimelightResult().getBestTarget().getPitch())
         ); 
     }
 }

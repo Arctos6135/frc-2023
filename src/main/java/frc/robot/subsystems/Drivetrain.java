@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DriveConstants;
 
@@ -17,10 +18,19 @@ public class Drivetrain extends SubsystemBase {
     private SparkMaxPIDController rightController; 
     private SparkMaxPIDController leftController; 
 
+    private PIDController translationalController; 
+    private PIDController rotationController; 
+
+    // Translational 
     public static double kP = 0.00025;
     public static double kI = 0.000001; 
     public static double kD = 0.0150; 
     public static double kFF = 0; 
+
+    // Rotational 
+    public static double rotP = 0.00001; 
+    public static double rotI = 0.0; 
+    public static double rotD = 0.0; 
 
     private RelativeEncoder rightEncoder; 
     private RelativeEncoder leftEncoder; 
@@ -38,6 +48,9 @@ public class Drivetrain extends SubsystemBase {
 
         this.rightController = this.rightMaster.getPIDController(); 
         this.leftController = this.leftMaster.getPIDController(); 
+
+        this.translationalController = new PIDController(kP, kI, kD); 
+        this.rotationController = new PIDController(rotP, rotI, rotD);
 
         this.rightController.setP(kP); 
         this.rightController.setI(kI); 
@@ -65,6 +78,13 @@ public class Drivetrain extends SubsystemBase {
         setMotors(left, right);
     }
 
+    public void arcadeDrive(double translation, double rotation) {
+        double left = (translation + rotation);
+        double right = (translation - rotation);
+
+        setMotors(left, right);
+    }
+
     private void setMotors(double left, double right) {
         this.leftMaster.set(left);
         this.rightMaster.set(right);
@@ -87,5 +107,13 @@ public class Drivetrain extends SubsystemBase {
     public void resetEncoders() {
         this.rightEncoder.setPosition(0); 
         this.leftEncoder.setPosition(0); 
+    }
+
+    public PIDController getTranslationalController() {
+        return this.translationalController;
+    }
+    
+    public PIDController getRotationController() {
+        return this.rotationController; 
     }
 }
