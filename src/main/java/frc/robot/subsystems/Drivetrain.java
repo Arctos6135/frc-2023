@@ -17,9 +17,9 @@ public class Drivetrain extends SubsystemBase {
     private SparkMaxPIDController rightController; 
     private SparkMaxPIDController leftController; 
 
-    public static double kP = 0;
-    public static double kI = 0; 
-    public static double kD = 0; 
+    public static double kP = 0.00025;
+    public static double kI = 0.000001; 
+    public static double kD = 0.0150; 
     public static double kFF = 0; 
 
     private RelativeEncoder rightEncoder; 
@@ -53,6 +53,9 @@ public class Drivetrain extends SubsystemBase {
 
         this.rightEncoder = this.rightMaster.getEncoder(); 
         this.leftEncoder = this.leftMaster.getEncoder(); 
+
+        this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR); 
+        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR); 
     }
 
     public void arcadeDrive(double translation, double rotation, double scalingFactor) {
@@ -73,9 +76,16 @@ public class Drivetrain extends SubsystemBase {
      * @param distance the required distance in inches.
      */
     public void driveDistance(double distance) {
-        double rotations = distance / DriveConstants.WHEEL_CIRCUMFERENCE;
+        this.rightController.setReference(distance, CANSparkMax.ControlType.kPosition);
+        this.leftController.setReference(distance, CANSparkMax.ControlType.kPosition); 
+    }
 
-        this.rightController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-        this.leftController.setReference(rotations, CANSparkMax.ControlType.kPosition); 
+    public double getPosition() {
+        return (this.leftEncoder.getPosition() + this.rightEncoder.getPosition()) / 2; 
+    }
+
+    public void resetEncoders() {
+        this.rightEncoder.setPosition(0); 
+        this.leftEncoder.setPosition(0); 
     }
 }

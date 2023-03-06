@@ -86,8 +86,6 @@ public class RobotContainer {
     }, (interrupted) -> {
     }, () -> false)); 
 
-    precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
-
     precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
