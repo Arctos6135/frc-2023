@@ -20,7 +20,9 @@ public class TurnLeft90 extends CommandBase {
         this.drivetrain = drivetrain;
         this.leftDegrees = leftDegrees;
         //Math is probably wrong
-        this.time = (leftDegrees / 360 ) * (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE)) / speed;
+        this.time = (leftDegrees / 360 ) // 1 for a full circle, 0.25 for 90 degrees, etc
+            * (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE) / 2) // the number of wheel rotations for both wheels to complete a circle
+            / speed; // the speed
 
         addRequirements(drivetrain);
     }

@@ -20,7 +20,7 @@ public class DriveForward extends CommandBase {
         this.speed = speed;
         this.drivetrain = drivetrain;
         // s = m / (m / s);
-        this.time = distance / (speed * DriveConstants.WHEEL_DIAMETER);
+        this.time = distance / (speed * DriveConstants.WHEEL_DIAMETER * DriveConstants.ROTATIONS_PER_SECOND);
 
         addRequirements(drivetrain);
     }
