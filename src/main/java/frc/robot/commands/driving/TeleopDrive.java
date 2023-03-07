@@ -1,6 +1,7 @@
 package frc.robot.commands.driving;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.DriveConstants;
@@ -15,18 +16,24 @@ public class TeleopDrive extends CommandBase {
     private final int X_AXIS; 
     private final int Y_AXIS; 
 
-    private final Dampener xDampener;
-    private final Dampener yDampener;
+    public SimpleWidget trans;
+    public SimpleWidget rot;
+
+    private Dampener xDampener;
+    private Dampener yDampener;
 
     private static boolean precisionDrive = true; 
     private static double precisionFactor = 0.5; 
 
-    public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis) {
+    public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis, SimpleWidget trans, SimpleWidget rot) {
         this.drivetrain = drivetrain; 
         this.controller = driverController; 
 
         this.X_AXIS = leftRightAxis; 
         this.Y_AXIS = fwdRevAxis;
+
+        this.trans = trans;
+        this.rot = rot;
 
         this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
         this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
@@ -42,11 +49,11 @@ public class TeleopDrive extends CommandBase {
     @Override 
     public void execute() {
         double y = controller.getRawAxis(Y_AXIS);
-        double y1 = yDampener.dampen(y);
+        double y1 = -yDampener.dampen(y) * trans.getEntry().getDouble(0.1);
         double x = controller.getRawAxis(X_AXIS);
-        double x1 = xDampener.dampen(x);
+        double x1 = xDampener.dampen(x) * rot.getEntry().getDouble(0.1);
 
-        drivetrain.arcadeDrive(-y1 * 0.1, x1 * 0.1, precisionDrive ? precisionFactor : 1.0);
+        drivetrain.arcadeDrive(y1, x1);
     }
 
     public static boolean isPrecisionDrive() {

@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -18,6 +22,7 @@ import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.DriveForward;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.driving.Turn;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.Rotate;
@@ -45,26 +50,39 @@ public class RobotContainer {
   // Controller Rumbling
 
   // Shuffleboard Tabs
-  public final ShuffleboardTab prematchTab;
+  public ShuffleboardTab prematchTab;
+  public ShuffleboardTab driveTab;
+
+  public SimpleWidget transWidget;
+  public SimpleWidget rotWidget;
+
 
   // Network Tables
 
   private Autonomous autonomous;
 
   public RobotContainer() {
+    autonomous = new Autonomous();
+
+    configureDashboard();
+
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
-      DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER);
-    //this.drivetrain.setDefaultCommand(new DriveForward(0.1, 1, drivetrain));
+      DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
+    this.drivetrain.setDefaultCommand(new DriveForward(0.1, 1, drivetrain));
+    //this.drivetrain.setDefaultCommand(new Turn(drivetrain, 90));
+    /*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
-      drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
+      drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, transWidget, rotWidget)
     );
+    */
     
     this.claw = null;
     this.elevator = null;
-
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT); 
-    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL));
+    this.arm = null;
     /*
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, kPWidget, kIWidget, kDWidget);
+    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
+
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
@@ -72,17 +90,21 @@ public class RobotContainer {
 */
     this.visionSystem = new VisionSystem();
     
-    prematchTab = Shuffleboard.getTab("Prematch"); 
 
-    autonomous = new Autonomous();
-
-    configureDashboard();
 
     //configureBindings();
   }
 
   private void configureDashboard() {
+    prematchTab = Shuffleboard.getTab("Prematch"); 
+    driveTab = Shuffleboard.getTab("Drive"); 
+
     prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
+
+    transWidget = driveTab.add("translation speed", 1).withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0.0, "max", 1.0));
+    rotWidget = driveTab.add("rotation speed", 1).withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0.0, "max", 1.0));
   }
 
   private void configureBindings() {

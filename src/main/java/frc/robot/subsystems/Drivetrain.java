@@ -1,11 +1,16 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DriveConstants;
 
@@ -18,6 +23,23 @@ public class Drivetrain extends SubsystemBase {
     private SparkMaxPIDController rightController; 
     private SparkMaxPIDController leftController; 
 
+    public SimpleWidget kPW;
+    public SimpleWidget kIW;
+    public SimpleWidget kDW;
+    public SimpleWidget kFFW;
+    public SimpleWidget rawLeft;
+    public SimpleWidget rawRight;
+
+    public SimpleWidget gainWidget;
+    public SimpleWidget transTarget;
+    public SimpleWidget rotTarget;
+    public SimpleWidget transCurrentW;
+    public SimpleWidget rotCurrentW;
+
+    public double transCurrent = 0;
+    public double rotCurrent = 0;
+
+    // for now ignoring these and delegating to the sparkmax pid controllers
     private PIDController translationalController; 
     private PIDController rotationController; 
 
@@ -35,7 +57,7 @@ public class Drivetrain extends SubsystemBase {
     private RelativeEncoder rightEncoder; 
     private RelativeEncoder leftEncoder; 
 
-    public Drivetrain(int rightMaster, int leftMaster, int rightFollower, int leftFollower) {
+    public Drivetrain(int rightMaster, int leftMaster, int rightFollower, int leftFollower, ShuffleboardTab driveTab) {
         this.rightMaster = new CANSparkMax(rightMaster, MotorType.kBrushless);
         this.leftMaster = new CANSparkMax(leftMaster, MotorType.kBrushless);
         this.rightFollower = new CANSparkMax(rightFollower, MotorType.kBrushless);
@@ -68,24 +90,77 @@ public class Drivetrain extends SubsystemBase {
         this.leftEncoder = this.leftMaster.getEncoder(); 
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR); 
-        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR); 
+        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+
+        kPW = driveTab.add("kP", 0.001).withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0.0, "max", 1.0));
+        kIW = driveTab.add("kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0.0, "max", 0.01));
+        kDW = driveTab.add("kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0.0, "max", 0.01));
+        kFFW = driveTab.add("kFF", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0.0, "max", 0.01));
+
+        rawLeft = driveTab.add("raw left motor speed", 0);
+        rawRight = driveTab.add("raw right motor speed", 0);
+
+        gainWidget = driveTab.add("acceleration gain", 0.01).withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 0.1));
+
+        transTarget = driveTab.add("target transation", 0.0);
+        rotTarget = driveTab.add("target rotation", 0.0);
+        transCurrentW = driveTab.add("current transation", 0.0);
+        rotCurrentW = driveTab.add("current rotation", 0.0);
+    }
+
+    @Override
+    public void periodic() {
+        leftController.setP(kPW.getEntry().getDouble(0));
+        leftController.setI(kIW.getEntry().getDouble(0));
+        leftController.setD(kDW.getEntry().getDouble(0));
+        leftController.setFF(kFFW.getEntry().getDouble(0));
+
+        rightController.setP(kPW.getEntry().getDouble(0));
+        rightController.setI(kIW.getEntry().getDouble(0));
+        rightController.setD(kDW.getEntry().getDouble(0));
+        rightController.setFF(kFFW.getEntry().getDouble(0));
     }
 
     public void arcadeDrive(double translation, double rotation, double scalingFactor) {
-        double left = (translation + rotation) * scalingFactor;
-        double right = (translation - rotation) * scalingFactor;
+        this.transTarget.getEntry().setDouble(translation);
+        this.rotTarget.getEntry().setDouble(rotation);
+
+        double gain = gainWidget.getEntry().getDouble(0.01);
+
+        if (translation > transCurrent) {
+            transCurrent +=  Math.min(translation - transCurrent, gain);
+        } else {
+            transCurrent -= Math.min(transCurrent - translation, gain);
+        }
+
+        if (rotation > rotCurrent) {
+            rotCurrent += Math.min(rotation - rotCurrent, gain);
+        } else {
+            rotCurrent -= Math.min(rotCurrent - rotation, gain);
+        }
+    
+        this.transTarget.getEntry().setDouble(transCurrent);
+        this.rotTarget.getEntry().setDouble(rotCurrent);
+
+        double left = (transCurrent + rotCurrent) * scalingFactor;
+        double right = (transCurrent - rotCurrent) * scalingFactor;
 
         setMotors(left, right);
     }
 
     public void arcadeDrive(double translation, double rotation) {
-        double left = (translation + rotation);
-        double right = (translation - rotation);
-
-        setMotors(left, right);
+        arcadeDrive(translation, rotation, 1.0);
     }
 
     private void setMotors(double left, double right) {
+        this.rawLeft.getEntry().setDouble(left);
+        this.rawRight.getEntry().setDouble(right);
+        
         this.leftMaster.set(left);
         this.rightMaster.set(right);
     }

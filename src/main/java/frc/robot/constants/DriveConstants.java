@@ -31,4 +31,6 @@ public class DriveConstants {
     public static double CHASSIS_WIDTH = 28;
     public static double ROTATIONS_PER_SECOND = 100;
 
+    public static double TURNING_SPEED = 0.05;
+
 }
