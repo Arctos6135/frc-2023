@@ -6,23 +6,19 @@ import frc.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
 /*
- * Timer based command to rotate the robot n degrees to the left
+ * Timer based command to rotate the robot 90 degrees to the left
  */
 public class TurnLeft90 extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final double speed = 0.75;
-    private final double leftDegrees;
     private final double time;
     private double timeLimit;
 
-    public TurnLeft90(Drivetrain drivetrain, double leftDegrees) {
+    public TurnLeft90(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
-        this.leftDegrees = leftDegrees;
         //Math is probably wrong
-        this.time = (leftDegrees / 360 ) // 1 for a full circle, 0.25 for 90 degrees, etc
-            * (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE) / 2) // the number of wheel rotations for both wheels to complete a circle
-            / speed; // the speed
+        this.time = (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE)) / speed;
 
         addRequirements(drivetrain);
     }

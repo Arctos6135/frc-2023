@@ -12,13 +12,13 @@ public class MobilityDockWide {
     public static Command getCommand(Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
         Command sequence = new DriveForward(-0.2, 0.5, drivetrain)
             .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new TurnLeft90(drivetrain, 45))
+            .andThen(new TurnLeft90(drivetrain))
             .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new TurnLeft90(drivetrain, -45))
+            .andThen(new TurnLeft90(drivetrain))
             .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new TurnLeft90(drivetrain, -45))
+            .andThen(new TurnLeft90(drivetrain))
             .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new TurnLeft90(drivetrain, 45));
+            .andThen(new TurnLeft90(drivetrain));
 
         return sequence;
     }
