@@ -16,11 +16,12 @@ public class DriveForward extends CommandBase {
      * @param speed the speed of the robot in percent [-1, 1]
      * @param distance the distance the robot should drive in m
     */
-    public DriveForward(double speed, double distance, Drivetrain drivetrain) {
+    public DriveForward(double speed, double time, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
         // s = m / (m / s);
-        this.time = distance / (speed * DriveConstants.WHEEL_DIAMETER * DriveConstants.ROTATIONS_PER_SECOND);
+        this.time = time;
+
 
         addRequirements(drivetrain);
     }
@@ -29,20 +30,23 @@ public class DriveForward extends CommandBase {
     public void initialize() {
         System.out.printf("speed %f, time: %f\n", this.speed, this.time);
 
-        //maxTime = this.time + Timer.getFPGATimestamp();
+        maxTime = this.time + Timer.getFPGATimestamp();
+
+        System.out.printf("INITIALIZING 1234567890 %f %f %f %f\n", speed, time, maxTime, Timer.getFPGATimestamp());
     }
 
     @Override
     public void execute() {
-        System.out.printf("speed %f, time: %f\n", this.speed, this.time); 
-        //drivetrain.arcadeDrive(speed, 0, 1);
+        System.out.printf("max time %f, current time %f\n", this.maxTime, Timer.getFPGATimestamp()); 
+        drivetrain.arcadeDrive(speed, 0, 1);
     }
-/* 
+
     @Override
     public boolean isFinished() {
-        if (Timer.getFPGATimestamp() >= maxTime)
+        if (Timer.getFPGATimestamp() >= maxTime) {
+            System.out.println("finished\n");
             return true;
-        else
+        } else
             return false;
     }
 
@@ -50,5 +54,4 @@ public class DriveForward extends CommandBase {
     public void end(boolean interrupted) {
         drivetrain.arcadeDrive(0, 0, 0);
     }
-    */
 }

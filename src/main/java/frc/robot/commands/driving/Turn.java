@@ -25,17 +25,18 @@ public class Turn extends CommandBase {
         } else {
             this.speed = -DriveConstants.TURNING_SPEED;
         }
-        this.time =
+        this.time = 10;
+        /*
             (360 / Math.abs(degrees)) // amount of a full circle we want to turn
             * (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE)) // the number of rotations for each wheel to complete full turn
             / (speed * DriveConstants.ROTATIONS_PER_SECOND); // rotations per second
-
+*/
         addRequirements(drivetrain);
     }
 
     @Override
     public void initialize() {
-        timeLimit = this.time + Timer.getFPGATimestamp();
+System.out.println("INIT\n");        timeLimit = this.time + Timer.getFPGATimestamp();
     }
 
     @Override
@@ -50,6 +51,6 @@ public class Turn extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.arcadeDrive(0, 0, 0);
+        System.out.println("END\n");         drivetrain.arcadeDrive(0, 0, 0);
     }
 }

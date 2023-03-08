@@ -68,8 +68,8 @@ public class RobotContainer {
 
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
-    this.drivetrain.setDefaultCommand(new DriveForward(0.1, 1, drivetrain));
-    //this.drivetrain.setDefaultCommand(new Turn(drivetrain, 90));
+    //this.drivetrain.setDefaultCommand(new DriveForward(0.5, 1, drivetrain));
+    this.drivetrain.setDefaultCommand(new Turn(drivetrain, 90));
     /*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, transWidget, rotWidget)
