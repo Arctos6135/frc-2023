@@ -16,31 +16,26 @@ public class Turn extends CommandBase {
     private double timeLimit;
 
     /**
-     * @param degrees the number of degrees to turn the robot by. Turns left if positive, right if negative
+     * @param time number of seconds to make the bot turn for
+     * @param speed power from [-1, 1] to turn at, positive is left
      */
-    public Turn(Drivetrain drivetrain, double degrees) {
+    public Turn(Drivetrain drivetrain, double time, double speed) {
         this.drivetrain = drivetrain;
-        if (degrees > 0) {
-            this.speed = DriveConstants.TURNING_SPEED;
-        } else {
-            this.speed = -DriveConstants.TURNING_SPEED;
-        }
-        this.time = 10;
-        /*
-            (360 / Math.abs(degrees)) // amount of a full circle we want to turn
-            * (((DriveConstants.CHASSIS_WIDTH * Math.PI) / DriveConstants.WHEEL_CIRCUMFERENCE)) // the number of rotations for each wheel to complete full turn
-            / (speed * DriveConstants.ROTATIONS_PER_SECOND); // rotations per second
-*/
+        this.time = time;
+        this.speed = speed;
+
         addRequirements(drivetrain);
     }
 
     @Override
     public void initialize() {
-System.out.println("INIT\n");        timeLimit = this.time + Timer.getFPGATimestamp();
+        System.out.printf("Initializing turn\n");
+        timeLimit = this.time + Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
+        System.out.printf("Turning at %f with end time %f and curret time %f\n", speed, timeLimit, Timer.getFPGATimestamp());
         drivetrain.arcadeDrive(0, speed, 1);
     }
 
@@ -51,6 +46,7 @@ System.out.println("INIT\n");        timeLimit = this.time + Timer.getFPGATimest
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("END\n");         drivetrain.arcadeDrive(0, 0, 0);
+        System.out.printf("Terminating turn\n");
+        drivetrain.arcadeDrive(0, 0, 0);
     }
 }

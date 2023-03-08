@@ -23,21 +23,29 @@ public class Drivetrain extends SubsystemBase {
     private SparkMaxPIDController rightController; 
     private SparkMaxPIDController leftController; 
 
-    public SimpleWidget kPW;
-    public SimpleWidget kIW;
-    public SimpleWidget kDW;
-    public SimpleWidget kFFW;
-    public SimpleWidget rawLeft;
-    public SimpleWidget rawRight;
+    private SimpleWidget kPW;
+    private SimpleWidget kIW;
+    private SimpleWidget kDW;
+    private SimpleWidget kFFW;
+    private SimpleWidget rawLeft;
+    private SimpleWidget rawRight;
 
-    public SimpleWidget gainWidget;
-    public SimpleWidget transTarget;
-    public SimpleWidget rotTarget;
-    public SimpleWidget transCurrentW;
-    public SimpleWidget rotCurrentW;
+    private SimpleWidget gainWidget;
+    private SimpleWidget transTargetW;
+    private SimpleWidget rotTargetW;
+    private SimpleWidget transCurrentW;
+    private SimpleWidget rotCurrentW;
+    private SimpleWidget rotLagW;
+    private SimpleWidget transLagW;
+
+    private SimpleWidget rightEncoderReading;
+    private SimpleWidget leftEncoderReading;
 
     public double transCurrent = 0;
     public double rotCurrent = 0;
+
+    public double transTarget = 0;
+    public double rotTarget = 0;
 
     // for now ignoring these and delegating to the sparkmax pid controllers
     private PIDController translationalController; 
@@ -107,10 +115,15 @@ public class Drivetrain extends SubsystemBase {
         gainWidget = driveTab.add("acceleration gain", 0.01).withWidget(BuiltInWidgets.kNumberSlider)
         .withProperties(Map.of("min", 0, "max", 0.1));
 
-        transTarget = driveTab.add("target transation", 0.0);
-        rotTarget = driveTab.add("target rotation", 0.0);
+        transTargetW = driveTab.add("target transation", 0.0);
+        rotTargetW = driveTab.add("target rotation", 0.0);
         transCurrentW = driveTab.add("current transation", 0.0);
         rotCurrentW = driveTab.add("current rotation", 0.0);
+        transLagW = driveTab.add("translation lag", 0);
+        rotLagW = driveTab.add("rotation lag", 0);
+
+        leftEncoderReading = driveTab.add("left encoder (yards)", 0.0);
+        rightEncoderReading = driveTab.add("right encoder (yards)", 0.0);
     }
 
     @Override
@@ -124,29 +137,39 @@ public class Drivetrain extends SubsystemBase {
         rightController.setI(kIW.getEntry().getDouble(0));
         rightController.setD(kDW.getEntry().getDouble(0));
         rightController.setFF(kFFW.getEntry().getDouble(0));
-    }
 
-    public void arcadeDrive(double translation, double rotation, double scalingFactor) {
-        this.transTarget.getEntry().setDouble(translation);
-        this.rotTarget.getEntry().setDouble(rotation);
+        leftEncoderReading.getEntry().setDouble(leftEncoder.getPosition() / 36);
+        rightEncoderReading.getEntry().setDouble(rightEncoder.getPosition() / 36);
+
+        transLagW.getEntry().setDouble(transTarget - transCurrent);
+        rotLagW.getEntry().setDouble(rotTarget - rotCurrent);
+
+
+        this.transTargetW.getEntry().setDouble(transTarget);
+        this.rotTargetW.getEntry().setDouble(rotTarget);
+
+        this.transCurrentW.getEntry().setDouble(transCurrent);
+        this.rotCurrentW.getEntry().setDouble(rotCurrent);
 
         double gain = gainWidget.getEntry().getDouble(0.01);
 
-        if (translation > transCurrent) {
-            transCurrent +=  Math.min(translation - transCurrent, gain);
+        if (transTarget > transCurrent) {
+            transCurrent +=  Math.min(transTarget - transCurrent, gain);
         } else {
-            transCurrent -= Math.min(transCurrent - translation, gain);
+            transCurrent -= Math.min(transCurrent - transTarget, gain);
         }
 
-        if (rotation > rotCurrent) {
-            rotCurrent += Math.min(rotation - rotCurrent, gain);
+        if (rotTarget > rotCurrent) {
+            rotCurrent += Math.min(rotTarget - rotCurrent, gain);
         } else {
-            rotCurrent -= Math.min(rotCurrent - rotation, gain);
+            rotCurrent -= Math.min(rotCurrent - rotTarget, gain);
         }
+    }
+
+    public void arcadeDrive(double translation, double rotation, double scalingFactor) {
+        transTarget = translation;
+        rotTarget = rotation;
     
-        this.transTarget.getEntry().setDouble(transCurrent);
-        this.rotTarget.getEntry().setDouble(rotCurrent);
-
         double left = (transCurrent + rotCurrent) * scalingFactor;
         double right = (transCurrent - rotCurrent) * scalingFactor;
 

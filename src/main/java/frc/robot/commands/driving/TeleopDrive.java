@@ -1,6 +1,10 @@
 package frc.robot.commands.driving;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,15 +29,17 @@ public class TeleopDrive extends CommandBase {
     private static boolean precisionDrive = true; 
     private static double precisionFactor = 0.5; 
 
-    public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis, SimpleWidget trans, SimpleWidget rot) {
+    public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis, ShuffleboardTab driveTab) {
         this.drivetrain = drivetrain; 
         this.controller = driverController; 
 
         this.X_AXIS = leftRightAxis; 
         this.Y_AXIS = fwdRevAxis;
 
-        this.trans = trans;
-        this.rot = rot;
+        this.trans = driveTab.add("translation speed modifier", 1).withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", 0, "max", 1));
+        this.rot = driveTab.add("rotation speed modifier", 1).withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", 0, "max", 1));
 
         this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
         this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
@@ -49,9 +55,9 @@ public class TeleopDrive extends CommandBase {
     @Override 
     public void execute() {
         double y = controller.getRawAxis(Y_AXIS);
-        double y1 = -yDampener.dampen(y) * trans.getEntry().getDouble(0.1);
+        double y1 = -yDampener.dampen(y) * trans.getEntry().getDouble(0.5);
         double x = controller.getRawAxis(X_AXIS);
-        double x1 = xDampener.dampen(x) * rot.getEntry().getDouble(0.1);
+        double x1 = xDampener.dampen(x) * rot.getEntry().getDouble(0.5);
 
         drivetrain.arcadeDrive(y1, x1);
     }

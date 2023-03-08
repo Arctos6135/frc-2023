@@ -10,15 +10,10 @@ import frc.robot.subsystems.Elevator;
 
 public class MobilityDockWide {
     public static Command getCommand(Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
-        Command sequence = new DriveForward(-0.2, 0.5, drivetrain)
-            .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new Turn(drivetrain, 45))
-            .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new Turn(drivetrain, -45))
-            .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new Turn(drivetrain, -45))
-            .andThen(new DriveForward(0.2, 1, drivetrain))
-            .andThen(new Turn(drivetrain, 45));
+        Command sequence = new DriveForward(-0.2, 1, drivetrain)
+            .andThen(new DriveForward(0.2, 2, drivetrain))
+            .andThen(new Turn(drivetrain, 1, -0.2))
+            .andThen(new DriveForward(0.2, 4, drivetrain));
 
         return sequence;
     }

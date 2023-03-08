@@ -2,31 +2,28 @@ package frc.robot.commands.driving;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.Timer;
 
-public class DriveForward extends CommandBase {
+public class DriveForwardEncoded extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final double speed;
-    private final double time;
-    private double maxTime;
+    private final double distance;
 
     /** 
      * @param speed the speed of the robot in percent [-1, 1]
-     * @param distance the distance the robot should drive in m
+     * @param distance the distance the robot should drive in inches. Setting distance negative does nothing, if you want to bot to reverse, make speed negative
     */
-    public DriveForward(double speed, double time, Drivetrain drivetrain) {
+    public DriveForwardEncoded(double speed, double distance, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
-        // s = m / (m / s);
-        this.time = time;
+        this.distance = distance;
 
         addRequirements(drivetrain);
     }
 
     @Override
     public void initialize() {
-        maxTime = this.time + Timer.getFPGATimestamp();
+        drivetrain.resetEncoders();
     }
 
     @Override
@@ -36,10 +33,12 @@ public class DriveForward extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (Timer.getFPGATimestamp() >= maxTime) {
+        if (Math.abs(drivetrain.getPosition()) > Math.abs(this.distance)) {
+            System.out.printf("finished driving %f meters\n", this.distance);
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override

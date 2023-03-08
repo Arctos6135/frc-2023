@@ -3,14 +3,19 @@ package frc.robot;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.autonomous.MobilityDockWide;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 
 public class Autonomous {
     
     private SendableChooser<AutoMode> chooser; 
 
     public enum AutoMode {
-        NONE("None");
+        NONE("None"),
+        MOBILITY_DOCK_WIDE("Mobility Dock Wide");
 
         String autoName; 
 
@@ -23,10 +28,12 @@ public class Autonomous {
         return this.chooser; 
     }
 
-    public Command getAuto(AutoMode mode, Drivetrain drivetrain) {
+    public Command getAuto(AutoMode mode, Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
         switch(mode) {
             case NONE: 
                 return null; 
+            case MOBILITY_DOCK_WIDE:
+                return MobilityDockWide.getCommand(drivetrain, elevator, arm, claw);
             default: 
                 return null; 
         }

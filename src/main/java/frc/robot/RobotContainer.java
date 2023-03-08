@@ -63,18 +63,18 @@ public class RobotContainer {
 
   public RobotContainer() {
     autonomous = new Autonomous();
+    prematchTab = Shuffleboard.getTab("Prematch"); 
+    driveTab = Shuffleboard.getTab("Drive"); 
 
     configureDashboard();
 
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
-    //this.drivetrain.setDefaultCommand(new DriveForward(0.5, 1, drivetrain));
-    this.drivetrain.setDefaultCommand(new Turn(drivetrain, 90));
-    /*
+    
     this.drivetrain.setDefaultCommand(new TeleopDrive(
-      drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, transWidget, rotWidget)
+      drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
     );
-    */
+
     
     this.claw = null;
     this.elevator = null;
@@ -96,15 +96,7 @@ public class RobotContainer {
   }
 
   private void configureDashboard() {
-    prematchTab = Shuffleboard.getTab("Prematch"); 
-    driveTab = Shuffleboard.getTab("Drive"); 
-
     prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
-
-    transWidget = driveTab.add("translation speed", 1).withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", 0.0, "max", 1.0));
-    rotWidget = driveTab.add("rotation speed", 1).withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", 0.0, "max", 1.0));
   }
 
   private void configureBindings() {
@@ -149,6 +141,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain);
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }
