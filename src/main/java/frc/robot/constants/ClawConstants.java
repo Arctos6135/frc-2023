@@ -7,8 +7,8 @@ public class ClawConstants {
     public static final int OPEN_CLAW_BUTTON = Button.kRightBumper.value;
     public static final int CLOSE_CLAW_BUTTON = Button.kLeftBumper.value; 
 
-    public static final int LIMIT_SWITCH_OPEN = 8; 
-    public static final int LIMIT_SWITCH_CLOSE = 9; 
+    public static final int LIMIT_SWITCH_OPEN = 0; 
+    public static final int LIMIT_SWITCH_CLOSE = 7; 
 
     // Values need to be tested
     public static final double OPEN_TIME = 0.0;

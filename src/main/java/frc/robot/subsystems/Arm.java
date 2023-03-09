@@ -20,9 +20,9 @@ public class Arm extends SubsystemBase {
     private final TalonSRX armMotor;
     private final DutyCycleEncoder hexEncoder;
 
-    private SimpleWidget kPW;
-    private SimpleWidget kIW;
-    private SimpleWidget kDW;
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0; 
 
     private PIDController rotationController;
     
@@ -30,21 +30,19 @@ public class Arm extends SubsystemBase {
      * This is our constructor
      * @param armMotor can ID of the motor for flipping the arm
      */
-    public Arm(int armMotor, int hexEncoderPort, SimpleWidget kPW, SimpleWidget kIW, SimpleWidget kDW) {
+    public Arm(int armMotor, int hexEncoderPort) {
         this.armMotor = new TalonSRX(armMotor);
         this.armMotor.setNeutralMode(NeutralMode.Brake);
         this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
-        this.kPW = kPW;
-        this.kIW = kIW;
-        this.kDW = kDW;
-        this.rotationController = new PIDController(kPW.getEntry().getDouble(0), kIW.getEntry().getDouble(0), kDW.getEntry().getDouble(0)); 
+        
+        this.rotationController = new PIDController(kP, kI, kD); 
         
         this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
     }
  
     @Override
     public void periodic() {
-        double p = kPW.getEntry().getDouble(0);
+        /* double p = kPW.getEntry().getDouble(0);
         double i = kIW.getEntry().getDouble(0);
         double d = kDW.getEntry().getDouble(0);
         rotationController.setP(p);
@@ -56,6 +54,7 @@ public class Arm extends SubsystemBase {
         setMotor(speed * 0.1);
 
         System.out.printf("p: %f, i: %f, d: %f\n", p, i, d);
+        System.out.printf("p: %f, i: %f, d: %f\n", p, i, d); */ 
     }
 
     // Sets speed of motor
@@ -73,5 +72,9 @@ public class Arm extends SubsystemBase {
 
     public boolean atSetpoint() {
         return rotationController.atSetpoint();
+    }
+
+    public PIDController getPIDController() {
+        return rotationController; 
     }
 }

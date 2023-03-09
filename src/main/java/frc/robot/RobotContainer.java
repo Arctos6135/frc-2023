@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -53,20 +55,28 @@ public class RobotContainer {
   public ShuffleboardTab prematchTab;
   public ShuffleboardTab driveTab;
 
+  public ShuffleboardTab drivetrainTab;
+  public ShuffleboardTab armTab;
+  public ShuffleboardTab pidControlTab; 
+
   public SimpleWidget transWidget;
   public SimpleWidget rotWidget;
 
-
+  public GenericEntry kPWidgetArm;
+  public GenericEntry kIWidgetArm;
+  public GenericEntry kDWidgetArm;
   // Network Tables
 
   private Autonomous autonomous;
 
   public RobotContainer() {
+    prematchTab = Shuffleboard.getTab("Prematch");
+    driveTab = Shuffleboard.getTab("Drive");
+    drivetrainTab = Shuffleboard.getTab("Drivetrain");
+    armTab = Shuffleboard.getTab("Arm");
+    pidControlTab = Shuffleboard.getTab("PID Control Tab");
+    
     autonomous = new Autonomous();
-    prematchTab = Shuffleboard.getTab("Prematch"); 
-    driveTab = Shuffleboard.getTab("Drive"); 
-
-    configureDashboard();
 
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
@@ -75,28 +85,47 @@ public class RobotContainer {
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
     );
 
-    
-    this.claw = null;
-    this.elevator = null;
-    this.arm = null;
-    /*
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, kPWidget, kIWidget, kDWidget);
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
-*/
+
     this.visionSystem = new VisionSystem();
+
+    configureDashboard();
     
-
-
-    //configureBindings();
+    configureBindings();
   }
 
   private void configureDashboard() {
     prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
+
+    drivetrainTab.add("PID Translation", drivetrain.getTranslationalController()).withWidget(BuiltInWidgets.kPIDController)
+        .withPosition(0, 0).withSize(4, 4);
+
+    drivetrainTab.add("PID Rotation", drivetrain.getRotationController()).withWidget(BuiltInWidgets.kPIDController)
+        .withPosition(4, 0).withSize(4, 4);
+        
+    armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
+        .withPosition(0, 0).withSize(4, 4);
+    
+    kPWidgetArm = pidControlTab.add("Arm kP", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withPosition(0, 0).withSize(2, 2).getEntry();
+        
+    kIWidgetArm = pidControlTab.add("Arm kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withPosition(2, 0).withSize(2, 2).getEntry();
+    
+    kDWidgetArm = pidControlTab.add("Arm kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        .withPosition(4, 0).withSize(2, 2).getEntry();
+  }
+
+  public void updateDashboard() {
+    arm.getPIDController().setP(kPWidgetArm.getDouble(0));
+    arm.getPIDController().setI(kIWidgetArm.getDouble(0));
+    arm.getPIDController().setD(kDWidgetArm.getDouble(0)); 
   }
 
   private void configureBindings() {
