@@ -21,6 +21,9 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm/PID Controller": "PIDController",
+      "/Shuffleboard/Drivetrain/PID Rotation": "PIDController",
+      "/Shuffleboard/Drivetrain/PID Translation": "PIDController",
       "/Shuffleboard/Prematch/Autonomous Mode": "String Chooser"
     }
   }
