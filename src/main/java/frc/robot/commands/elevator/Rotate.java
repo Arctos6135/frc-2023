@@ -1,7 +1,6 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Arm;
@@ -34,6 +33,9 @@ public class Rotate extends CommandBase {
     public void execute() {
         double rotation = dampener.dampen(controller.getRawAxis(ROTATION_AXIS));
 
-        this.arm.setMotor(rotation * 0.1);
+        // this probably wont work!
+        // this.arm.setAngle(rotation * 90 + 90);
+
+        this.arm.setAngle(10);
     }
 }

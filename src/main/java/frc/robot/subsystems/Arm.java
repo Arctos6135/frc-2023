@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -21,7 +22,7 @@ public class Arm extends SubsystemBase {
 
     private SimpleWidget kPW;
     private SimpleWidget kIW;
-    private SimpleWidget kDW; 
+    private SimpleWidget kDW;
 
     private PIDController rotationController;
     
@@ -40,7 +41,7 @@ public class Arm extends SubsystemBase {
         
         this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
     }
-
+ 
     @Override
     public void periodic() {
         double p = kPW.getEntry().getDouble(0);
@@ -50,24 +51,27 @@ public class Arm extends SubsystemBase {
         rotationController.setI(i);
         rotationController.setD(d);
 
+        double speed = MathUtil.clamp(rotationController.calculate(hexEncoder.getDistance()), -1, 1);
+
+        setMotor(speed * 0.1);
+
         System.out.printf("p: %f, i: %f, d: %f\n", p, i, d);
     }
 
     // Sets speed of motor
-    public void setMotor(double armSpeed) {
+    private void setMotor(double armSpeed) {
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
 
-    // This stops the motor :D
-    public void stopMotor() {
-        this.armMotor.set(ControlMode.PercentOutput, 0);
+    public void setAngle(double angle) {
+        rotationController.setSetpoint(angle);
     }
 
-    public PIDController getPIDController() {
-        return this.rotationController; 
+    public void resetEncoder() {
+        hexEncoder.reset();
     }
 
-    public DutyCycleEncoder getEncoder() {
-        return this.hexEncoder; 
+    public boolean atSetpoint() {
+        return rotationController.atSetpoint();
     }
 }
