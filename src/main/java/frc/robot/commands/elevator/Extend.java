@@ -31,7 +31,7 @@ public class Extend extends CommandBase {
     
     @Override 
     public void execute() {
-        double extension = -dampener.dampen(controller.getRawAxis(EXTENSION_AXIS));
+        double extension = dampener.dampen(controller.getRawAxis(EXTENSION_AXIS));
 
         this.elevator.setMotor(extension);
     }

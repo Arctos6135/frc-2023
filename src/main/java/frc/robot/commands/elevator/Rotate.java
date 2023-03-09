@@ -36,6 +36,7 @@ public class Rotate extends CommandBase {
         // this probably wont work!
         // this.arm.setAngle(rotation * 90 + 90);
 
-        this.arm.setAngle(10);
+        // this.arm.setAngle(10);
+        this.arm.setMotor(rotation);
     }
 }

@@ -40,7 +40,7 @@ import frc.robot.subsystems.VisionSystem;
 public class RobotContainer {
   // Robot Subsystems 
   private final Drivetrain drivetrain;
-  private final Claw claw;
+  private Claw claw;
   private final Arm arm; 
   private final Elevator elevator; 
   private final VisionSystem visionSystem; 
@@ -88,7 +88,7 @@ public class RobotContainer {
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
 
-    this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    // this.claw = new Claw(ClawConstants.CLAW_MOTOR);
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
@@ -135,8 +135,8 @@ public class RobotContainer {
     Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
-    Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
-    Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON);
+    /* Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
+    Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON); */
 
     Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
     Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
@@ -159,8 +159,8 @@ public class RobotContainer {
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
 
-    openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
-    closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
+    //openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
+    //closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
 
     autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
       .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE)); 
