@@ -31,12 +31,17 @@ public class Rotate extends CommandBase {
 
     @Override 
     public void execute() {
-        double rotation = dampener.dampen(controller.getRawAxis(ROTATION_AXIS));
-
-        // this probably wont work!
-        // this.arm.setAngle(rotation * 90 + 90);
-
-        // this.arm.setAngle(10);
+        double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
         this.arm.setMotor(rotation);
+    }
+
+    @Override 
+    public boolean isFinished() {
+        return false; 
+    }
+
+    @Override 
+    public void end(boolean interrupted) {
+        arm.setMotor(0); 
     }
 }

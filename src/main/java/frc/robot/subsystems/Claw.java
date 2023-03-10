@@ -36,6 +36,10 @@ public class Claw extends SubsystemBase {
         this.clawMotor.setNeutralMode(NeutralMode.Brake);
     }
 
+    public void setSpeed(double speed) {
+        this.clawMotor.set(ControlMode.PercentOutput, speed);
+    } 
+
     @Override
     public void periodic() {
         if (limitSwitchOpen.get()) {

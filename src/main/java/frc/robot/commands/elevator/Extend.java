@@ -31,8 +31,18 @@ public class Extend extends CommandBase {
     
     @Override 
     public void execute() {
-        double extension = dampener.dampen(controller.getRawAxis(EXTENSION_AXIS));
+        double extension = dampener.smoothDampen(controller.getRawAxis(EXTENSION_AXIS));
 
         this.elevator.setMotor(extension);
+    }
+
+    @Override 
+    public boolean isFinished() {
+        return false; 
+    }
+
+    @Override 
+    public void end(boolean interrupted) {
+        this.elevator.stopMotor();
     }
 }

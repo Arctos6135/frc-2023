@@ -24,4 +24,12 @@ public class Dampener {
 
         return signed;
     }
+
+    public double smoothDampen(double value) {
+        double dampened = (2 * Math.pow(Math.E, value)) / (Math.pow(Math.E, value) + 1) - 1;
+        double deadbanded = Dampener.applyDeadband(dampened, deadband); 
+        double signed = Math.copySign(deadbanded, value); 
+
+        return signed;
+    }
 }

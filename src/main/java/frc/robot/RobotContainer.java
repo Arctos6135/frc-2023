@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.AutoAlign;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
+import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.DriveForward;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.driving.Turn;
@@ -40,7 +42,7 @@ import frc.robot.subsystems.VisionSystem;
 public class RobotContainer {
   // Robot Subsystems 
   private final Drivetrain drivetrain;
-  private Claw claw;
+  private final Claw claw;
   private final Arm arm; 
   private final Elevator elevator; 
   private final VisionSystem visionSystem; 
@@ -59,12 +61,15 @@ public class RobotContainer {
   public ShuffleboardTab armTab;
   public ShuffleboardTab pidControlTab; 
 
+  public ShuffleboardTab visionTab; 
+
   public SimpleWidget transWidget;
   public SimpleWidget rotWidget;
 
   public GenericEntry kPWidgetArm;
   public GenericEntry kIWidgetArm;
   public GenericEntry kDWidgetArm;
+  
   // Network Tables
 
   private Autonomous autonomous;
@@ -75,6 +80,7 @@ public class RobotContainer {
     drivetrainTab = Shuffleboard.getTab("Drivetrain");
     armTab = Shuffleboard.getTab("Arm");
     pidControlTab = Shuffleboard.getTab("PID Control Tab");
+    visionTab = Shuffleboard.getTab("Vision Tab"); 
     
     autonomous = new Autonomous();
 
@@ -88,7 +94,8 @@ public class RobotContainer {
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
 
-    // this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
@@ -135,9 +142,6 @@ public class RobotContainer {
     Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
-    /* Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
-    Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON); */
-
     Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
     Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
 
@@ -158,9 +162,6 @@ public class RobotContainer {
     tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, true)); 
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
-
-    //openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
-    //closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
 
     autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
       .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE)); 
