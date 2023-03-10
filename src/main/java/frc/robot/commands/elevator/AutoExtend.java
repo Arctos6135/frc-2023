@@ -2,6 +2,7 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 
 public class AutoExtend extends CommandBase {
@@ -9,12 +10,12 @@ public class AutoExtend extends CommandBase {
 
     public double initialTime; 
     public double extensionTime; 
+    public boolean extend; 
 
-    public static double extensionSpeed = 0.5; 
-
-    public AutoExtend(Elevator elevator, double extensionTime) {
+    public AutoExtend(Elevator elevator, double extensionTime, boolean extend) {
         this.elevator = elevator; 
         this.extensionTime = extensionTime; 
+        this.extend = extend; 
 
         addRequirements(elevator);
     }
@@ -22,7 +23,7 @@ public class AutoExtend extends CommandBase {
     @Override 
     public void initialize() {
         this.initialTime = Timer.getFPGATimestamp(); 
-        this.elevator.setMotor(extensionSpeed);
+        this.elevator.setMotor(extend ? ElevatorConstants.ELEVATOR_EXTENSION_SPEED : -ElevatorConstants.ELEVATOR_EXTENSION_SPEED);
     }
 
     @Override 

@@ -16,4 +16,8 @@ public class ClawConstants {
 
     public static final double CLOSE_PERCENT_OUTPUT = 0.0;
     public static final double OPEN_PERCENT_OUTPUT = 0.0;
+
+    public static final double OPEN_CLAW_TIME = 2.5; 
+
+    public static final double CLAW_SPEED = 0.8; 
 }

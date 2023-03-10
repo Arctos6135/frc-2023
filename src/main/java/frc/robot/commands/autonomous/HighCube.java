@@ -8,6 +8,7 @@ import frc.robot.commands.driving.AutoDrive;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.HoldRotate;
+import frc.robot.constants.ClawConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -20,8 +21,8 @@ public class HighCube extends SequentialCommandGroup {
     private final Claw claw; 
     private final Elevator elevator; 
 
-    public static final double openClawTime = 2.5;
-    public static final double closeClawTime = 2.5;
+    public static final double openClawTime = ClawConstants.OPEN_CLAW_TIME;
+    public static final double closeClawTime = ClawConstants.OPEN_CLAW_TIME;
 
     public static final double armAngle = Math.PI; 
     public static final double extensionTime = 2.0; 
@@ -46,10 +47,11 @@ public class HighCube extends SequentialCommandGroup {
             new AutoDrive(this.drivetrain, -FieldConstants.AUTO_GAME_PIECE), 
             new AutoRotate(this.arm, armAngle),
             new ParallelCommandGroup(
-                new HoldRotate(this.arm, extensionTime),
-                new AutoExtend(this.elevator, extensionTime)
+                new HoldRotate(this.arm, extensionTime, true),
+                new AutoExtend(this.elevator, extensionTime, true)
             ),
-            new OpenClaw(this.claw, openClawTime)
+            new OpenClaw(this.claw, openClawTime), 
+            new AutoExtend(this.elevator, extensionTime, false)
         );
     }
 }

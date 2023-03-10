@@ -2,6 +2,7 @@ package frc.robot.commands.claw;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 public class TeleopClaw extends CommandBase {
@@ -27,11 +28,11 @@ public class TeleopClaw extends CommandBase {
         }
         
         else if (operatorController.getRawButton(buttonOpen)) {
-            claw.setSpeed(0.8);
+            claw.setSpeed(ClawConstants.CLAW_SPEED);
         }
 
         else if (operatorController.getRawButton(buttonClose)) {
-            claw.setSpeed(-0.8); 
+            claw.setSpeed(-ClawConstants.CLAW_SPEED); 
         } 
 
         else {

@@ -7,13 +7,15 @@ import frc.robot.subsystems.Arm;
 public class HoldRotate extends CommandBase {
     private final Arm arm; 
     private double holdTime; 
-    private double initialTime; 
+    private double initialTime;
+    private boolean armFlipped;  
 
     public static final double HOLD_SPEED = 0.5;
 
-    public HoldRotate(Arm arm, double holdTime) {
+    public HoldRotate(Arm arm, double holdTime, boolean armFlipped) {
         this.arm = arm; 
         this.holdTime = holdTime; 
+        this.armFlipped = armFlipped; 
 
         addRequirements(arm);
     }
@@ -21,7 +23,7 @@ public class HoldRotate extends CommandBase {
     @Override 
     public void initialize() {
         this.initialTime = Timer.getFPGATimestamp(); 
-        this.arm.setMotor(HOLD_SPEED);
+        this.arm.setMotor(armFlipped ? -HOLD_SPEED : HOLD_SPEED);
     }
 
     @Override 

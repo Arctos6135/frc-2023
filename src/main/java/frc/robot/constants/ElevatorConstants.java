@@ -30,7 +30,11 @@ public class ElevatorConstants {
     // These values were calculated with an arm length of 3 feet. 
     public static final double ROTATION_LOW_LEVEL = 0; 
     public static final double ROTATION_MIDDLE_LEVEL_CONE = 0.84; 
-    public static final double ROTATION_HIGH_LEVEL_CONE = 0; 
+    public static final double ROTATION_HIGH_LEVEL_CONE = 3.65; 
     public static final double ROTATION_MIDDLE_LEVEL_CUBE = 0.70; 
-    public static final double ROTATION_HIGH_LEVEL_CUBE = 0;
+    public static final double ROTATION_HIGH_LEVEL_CUBE = 4.27;
+
+    public static final double ARM_HOLD_TIME = 2.5;
+    public static final double ELEVATOR_EXTENSION_TIME = 2.0; 
+    public static final double ELEVATOR_EXTENSION_SPEED = 0.5; 
 }

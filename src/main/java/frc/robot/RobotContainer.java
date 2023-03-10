@@ -29,6 +29,7 @@ import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.driving.Turn;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
+import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.Rotate;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
@@ -142,7 +143,7 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
+    // Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
     Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
@@ -162,15 +163,15 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, true)); 
+    // tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, true)); 
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
 
     autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
-      .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE)); 
+      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false));
 
     autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
-      .onFalse(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE)); 
+      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); 
   }
 
   public Command getAutonomousCommand() {
