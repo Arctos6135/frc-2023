@@ -62,6 +62,11 @@ public class Arm extends SubsystemBase {
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
 
+    /**
+     * Sets the arm at an angle using PID Controller.
+     * 
+     * @param angle in radians, where positive values represent the arm moving up.
+     */
     public void setAngle(double angle) {
         rotationController.setSetpoint(angle);
     }

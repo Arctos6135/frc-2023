@@ -11,13 +11,14 @@ import frc.robot.constants.VisionConstants;
 public class VisionSystem {
     // Front Vision (Retroreflective Tape)
     private PhotonCamera limelight; 
+    public static final String LIMELIGHT_URL = "http://photonvision.local:5800/"; 
 
     // Back Vision (April Tag)
-    private PhotonCamera backCamera; 
+    private PhotonCamera clawCamera; 
 
     public VisionSystem() {
         this.limelight = new PhotonCamera("Limelight"); 
-        this.backCamera = new PhotonCamera("Back Camera"); 
+        this.clawCamera = new PhotonCamera("Claw Camera"); 
     }
 
     public PhotonPipelineResult getLimelightResult() {
@@ -25,7 +26,7 @@ public class VisionSystem {
     }
 
     public PhotonPipelineResult getBackCameraResult() {
-        return this.backCamera.getLatestResult();
+        return this.clawCamera.getLatestResult();
     }
 
     public boolean limelightTargets() {

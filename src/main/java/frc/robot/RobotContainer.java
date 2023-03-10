@@ -69,7 +69,7 @@ public class RobotContainer {
   public GenericEntry kPWidgetArm;
   public GenericEntry kIWidgetArm;
   public GenericEntry kDWidgetArm;
-  
+
   // Network Tables
 
   private Autonomous autonomous;
@@ -92,7 +92,7 @@ public class RobotContainer {
     );
 
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
-    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
+    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
     this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
@@ -127,6 +127,9 @@ public class RobotContainer {
     
     kDWidgetArm = pidControlTab.add("Arm kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
         .withPosition(4, 0).withSize(2, 2).getEntry();
+
+    visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
+        .withPosition(0, 0).withSize(6, 8);
   }
 
   public void updateDashboard() {

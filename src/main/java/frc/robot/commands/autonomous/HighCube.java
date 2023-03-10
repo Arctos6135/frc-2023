@@ -1,0 +1,55 @@
+package frc.robot.commands.autonomous;
+
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.claw.CloseClaw;
+import frc.robot.commands.claw.OpenClaw;
+import frc.robot.commands.driving.AutoDrive;
+import frc.robot.commands.elevator.AutoExtend;
+import frc.robot.commands.elevator.AutoRotate;
+import frc.robot.commands.elevator.HoldRotate;
+import frc.robot.constants.FieldConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
+
+public class HighCube extends SequentialCommandGroup {
+    private final Drivetrain drivetrain; 
+    private final Arm arm; 
+    private final Claw claw; 
+    private final Elevator elevator; 
+
+    public static final double openClawTime = 2.5;
+    public static final double closeClawTime = 2.5;
+
+    public static final double armAngle = Math.PI; 
+    public static final double extensionTime = 2.0; 
+
+    /**
+     * Starts in community, drives forward to cube to intake, drives backwards to score. 
+     * 
+     * @param drivetrain
+     * @param arm
+     * @param claw
+     * @param elevator
+     */
+    public HighCube(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
+        this.drivetrain = drivetrain; 
+        this.arm = arm; 
+        this.claw = claw; 
+        this.elevator = elevator; 
+
+        addCommands(
+            new AutoDrive(this.drivetrain, FieldConstants.AUTO_GAME_PIECE), 
+            new CloseClaw(this.claw, closeClawTime), 
+            new AutoDrive(this.drivetrain, -FieldConstants.AUTO_GAME_PIECE), 
+            new AutoRotate(this.arm, armAngle),
+            new ParallelCommandGroup(
+                new HoldRotate(this.arm, extensionTime),
+                new AutoExtend(this.elevator, extensionTime)
+            ),
+            new OpenClaw(this.claw, openClawTime)
+        );
+    }
+}
