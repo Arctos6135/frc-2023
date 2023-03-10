@@ -41,6 +41,9 @@ public class Drivetrain extends SubsystemBase {
     private SimpleWidget rightEncoderReading;
     private SimpleWidget leftEncoderReading;
 
+    private SimpleWidget rotationEstimate;
+    private SimpleWidget translationEstimate;
+
     public double transCurrent = 0;
     public double rotCurrent = 0;
 
@@ -124,6 +127,9 @@ public class Drivetrain extends SubsystemBase {
 
         leftEncoderReading = driveTab.add("left encoder (yards)", 0.0);
         rightEncoderReading = driveTab.add("right encoder (yards)", 0.0);
+
+        rotationEstimate = driveTab.add("estimate of rotation (inches)", 0);
+        translationEstimate = driveTab.add("estimate of translation (inches)", 0);
     }
 
     @Override
@@ -140,6 +146,9 @@ public class Drivetrain extends SubsystemBase {
 
         leftEncoderReading.getEntry().setDouble(leftEncoder.getPosition() / 36);
         rightEncoderReading.getEntry().setDouble(rightEncoder.getPosition() / 36);
+
+        rotationEstimate.getEntry().setDouble(getRotation());
+        translationEstimate.getEntry().setDouble(getPosition());
 
         transLagW.getEntry().setDouble(transTarget - transCurrent);
         rotLagW.getEntry().setDouble(rotTarget - rotCurrent);
@@ -200,6 +209,10 @@ public class Drivetrain extends SubsystemBase {
 
     public double getPosition() {
         return (this.leftEncoder.getPosition() + this.rightEncoder.getPosition()) / 2; 
+    }
+
+    public double getRotation() {
+        return (this.leftEncoder.getPosition() - this.rightEncoder.getPosition()) / 2;
     }
 
     public void resetEncoders() {
