@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -78,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
         this.leftFollower.follow(this.leftMaster);
 
         this.rightMaster.setInverted(true);
+
+        this.leftMaster.setIdleMode(IdleMode.kBrake);
+        this.rightMaster.setIdleMode(IdleMode.kBrake);
 
         this.rightController = this.rightMaster.getPIDController(); 
         this.leftController = this.leftMaster.getPIDController(); 
@@ -195,6 +200,11 @@ public class Drivetrain extends SubsystemBase {
         
         this.leftMaster.set(left);
         this.rightMaster.set(right);
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        this.rightMaster.setIdleMode(idleMode);
+        this.leftMaster.setIdleMode(idleMode);
     }
 
     /**

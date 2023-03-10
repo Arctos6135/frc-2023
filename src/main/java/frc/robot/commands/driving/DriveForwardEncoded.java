@@ -1,5 +1,7 @@
 package frc.robot.commands.driving;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -16,7 +18,7 @@ public class DriveForwardEncoded extends CommandBase {
     public DriveForwardEncoded(double speed, double distance, Drivetrain drivetrain) {
         this.speed = speed;
         this.drivetrain = drivetrain;
-        this.distance = distance;
+        this.distance = distance - 14;
 
         addRequirements(drivetrain);
     }
@@ -24,6 +26,7 @@ public class DriveForwardEncoded extends CommandBase {
     @Override
     public void initialize() {
         drivetrain.resetEncoders();
+        drivetrain.setIdleMode(IdleMode.kBrake);
     }
 
     @Override
@@ -43,6 +46,8 @@ public class DriveForwardEncoded extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("terminating command");
         drivetrain.arcadeDrive(0, 0, 0);
+        //drivetrain.setIdleMode(IdleMode.kCoast);
     }
 }

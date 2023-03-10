@@ -20,7 +20,7 @@ public class TurnEncoded extends CommandBase {
     public TurnEncoded(Drivetrain drivetrain, double angle, double speed) {
         this.drivetrain = drivetrain;
         this.speed = speed;
-        this.encoderDistance = (360 / Math.abs(angle)) * Math.PI * DriveConstants.CHASSIS_WIDTH * 2;
+        this.encoderDistance = (360 / Math.abs(angle)) * Math.PI * DriveConstants.CHASSIS_WIDTH;
 
         addRequirements(drivetrain);
     }
@@ -38,7 +38,7 @@ public class TurnEncoded extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.drivetrain.getRotation() >= this.encoderDistance;
+        return Math.abs(this.drivetrain.getRotation()) >= Math.abs(this.encoderDistance);
     }
 
     @Override

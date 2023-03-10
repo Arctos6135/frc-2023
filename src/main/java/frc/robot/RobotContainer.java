@@ -25,8 +25,10 @@ import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.DriveForward;
+import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.driving.Turn;
+import frc.robot.commands.driving.TurnEncoded;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.HoldRotate;
@@ -87,13 +89,13 @@ public class RobotContainer {
 
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
-   /*
+   
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
     );
-*/
+
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
-    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
+    //this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
     //this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
@@ -175,6 +177,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
+    //return new DriveForwardEncoded(-0.5, -6 * 3 * 12, drivetrain);
+    return new TurnEncoded(drivetrain, 90, 0.25);
+    //return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }
