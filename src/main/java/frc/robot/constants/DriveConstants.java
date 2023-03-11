@@ -1,8 +1,10 @@
 package frc.robot.constants;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class DriveConstants {
+    public static double DEFAULT_ACCELERATION_GAIN = 3.6 / 60; // 3.6 power per second (as in goes from 0 to 1 in ~1/3 of a second)
     public static int DRIVER_CONTROLLER = 0;
     public static int OPERATOR_CONTROLLER = 1;
 

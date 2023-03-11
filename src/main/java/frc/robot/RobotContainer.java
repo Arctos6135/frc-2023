@@ -177,8 +177,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //return new DriveForwardEncoded(-0.5, -6 * 3 * 12, drivetrain);
-    return new TurnEncoded(drivetrain, 90, 0.25);
+    //return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
+    return new TurnEncoded(drivetrain, Math.PI, 0.25);
     //return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }

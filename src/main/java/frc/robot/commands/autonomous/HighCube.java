@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.AutoDrive;
+import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.HoldRotate;
@@ -42,9 +43,9 @@ public class HighCube extends SequentialCommandGroup {
         this.elevator = elevator; 
 
         addCommands(
-            new AutoDrive(this.drivetrain, FieldConstants.AUTO_GAME_PIECE), 
+            new DriveForwardEncoded(this.drivetrain, 0.5, FieldConstants.AUTO_GAME_PIECE), 
             new CloseClaw(this.claw, closeClawTime), 
-            new AutoDrive(this.drivetrain, -FieldConstants.AUTO_GAME_PIECE), 
+            new DriveForwardEncoded(this.drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE), 
             new AutoRotate(this.arm, armAngle),
             new ParallelCommandGroup(
                 new HoldRotate(this.arm, extensionTime, true),
