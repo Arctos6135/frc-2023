@@ -95,13 +95,13 @@ public class RobotContainer {
     );
 
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
-    //this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
+    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
-    //this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
+    this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
-    //this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
+    this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
 
     this.visionSystem = new VisionSystem();
 

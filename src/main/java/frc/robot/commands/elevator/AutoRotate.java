@@ -1,12 +1,16 @@
 package frc.robot.commands.elevator;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 
 public class AutoRotate extends CommandBase {
     private final Arm arm;
     
     private double setpointAngle;
+
+    private boolean setpointReached;
 
     /**
      * Autonomously rotates the arm to a set position for scoring. 
@@ -17,6 +21,7 @@ public class AutoRotate extends CommandBase {
     public AutoRotate(Arm arm, double setpointAngle) {
         this.arm = arm; 
         this.setpointAngle = setpointAngle;
+        this.setpointReached = false; 
         
         addRequirements(arm); 
     }
@@ -24,12 +29,26 @@ public class AutoRotate extends CommandBase {
     @Override 
     public void initialize() {
         this.arm.resetEncoder();
-        this.arm.setAngle(setpointAngle);
+    }
+
+    @Override 
+    public void execute() {
+        if (!setpointReached) {
+            this.arm.setMotor(arm.getPIDController().calculate(
+                this.arm.getEncoder().getDistance(), setpointAngle
+            ));
+
+            if (Math.abs(this.arm.getEncoder().getDistance() - setpointAngle) < ArmConstants.ARM_TOLERANCE) {
+                this.setpointReached = true; 
+            }
+        }
+
+        SmartDashboard.putNumber("Hex Encoder", this.arm.getEncoder().getDistance()); 
     }
 
     @Override 
     public boolean isFinished() {
-        return this.arm.atSetpoint();
+        return this.setpointReached;
     }
 
     @Override

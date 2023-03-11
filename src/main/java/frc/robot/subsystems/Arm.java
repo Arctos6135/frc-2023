@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
@@ -20,7 +21,7 @@ public class Arm extends SubsystemBase {
     private final TalonSRX armMotor;
     private final DutyCycleEncoder hexEncoder;
 
-    public static double kP = 0;
+    public static double kP = 0.01;
     public static double kI = 0;
     public static double kD = 0; 
 
@@ -68,11 +69,15 @@ public class Arm extends SubsystemBase {
      * @param angle in radians, where positive values represent the arm moving up.
      */
     public void setAngle(double angle) {
-        rotationController.setSetpoint(angle);
+       
     }
 
     public void resetEncoder() {
         hexEncoder.reset();
+    }
+
+    public DutyCycleEncoder getEncoder() {
+        return this.hexEncoder;
     }
 
     public boolean atSetpoint() {
