@@ -4,18 +4,12 @@
 
 package frc.robot;
 
-import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
-
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -37,6 +31,7 @@ import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.Rotate;
 import frc.robot.commands.elevator.TimedRotate;
+import frc.robot.commands.scoring.MiddleRow;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -158,8 +153,8 @@ public class RobotContainer {
     // Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
-    Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
-    // Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
+    Trigger scoreMiddleCone = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CONE);
+    Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE); 
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
@@ -179,11 +174,9 @@ public class RobotContainer {
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
 
-    autoRotateMiddleCone.whileTrue(new OpenClaw(claw, 1.0)); 
-    /* autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
-      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); */ 
-    /* autoRotateMiddleCone.whileTrue(new TimedRotate(arm, 1.5, true))
-        .onFalse(new HoldRotate(arm, 2.0, false)); */ 
+    scoreMiddleCone.whileTrue(new MiddleRow(elevator, arm, claw, false)); 
+
+    scoreMiddleCube.whileTrue(new MiddleRow(elevator, arm, claw, true));
 
     /* autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
       .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); */ 

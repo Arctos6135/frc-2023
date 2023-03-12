@@ -16,11 +16,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
 public class SimpleMiddle extends SequentialCommandGroup {
-    private final Drivetrain drivetrain; 
-    private final Arm arm; 
-    private final Claw claw; 
-    private final Elevator elevator; 
-
     /**
      * Holds game piece at start.
      * Rotates arm up and drops the game piece on to middle row. 
@@ -32,11 +27,6 @@ public class SimpleMiddle extends SequentialCommandGroup {
      * @param elevator
      */
     public SimpleMiddle(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
-        this.drivetrain = drivetrain; 
-        this.arm = arm; 
-        this.claw = claw; 
-        this.elevator = elevator; 
-
         addCommands(
             new CloseClaw(claw, 2.0), 
             new TimedRotate(arm, 1.25, -0.4, true), 

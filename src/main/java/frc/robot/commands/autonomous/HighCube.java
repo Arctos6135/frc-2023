@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
-import frc.robot.commands.driving.AutoDrive;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
