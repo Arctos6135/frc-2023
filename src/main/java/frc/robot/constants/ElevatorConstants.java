@@ -10,12 +10,14 @@ public class ElevatorConstants {
 
     public static final double SPEED_FACTOR = 0.5;
     public static final double ROTATE_FACTOR = 0.5;
-    public static final double HOLD_FACTOR = 0.25;
+    public static final double HOLD_FACTOR = -0.2;
+    public static final double SCORE_SPEED = -0.4; 
     
     public static final int HEX_ENCODER_PORT = 8; 
 
     public static final int ROTATE_CONTROL = XboxController.Axis.kRightY.value;
-    public static final int HOLD_ROTATION = XboxController.Button.kRightStick.value; 
+    public static final int HOLD_ROTATION = XboxController.Button.kB.value; 
+    public static final int SCORE_CONTROL = XboxController.Button.kA.value; 
     public static final int ELEVATOR_CONTROL = XboxController.Axis.kLeftY.value;
     public static final int AUTO_ROTATE_MIDDLE_CUBE = XboxController.Button.kB.value; 
     public static final int AUTO_ROTATE_MIDDLE_CONE = XboxController.Button.kA.value; 
@@ -23,7 +25,7 @@ public class ElevatorConstants {
     public static final double VERSAPLANETARY_GEARBOX_RATIO = 1.0 / 50.0; 
     public static final int CHAIN_LINKS = 132; // CHECK VALUE
     public static final int HEX_ROTATION = 12; 
-    public static final double DISTANCE_PER_ROTATION_RADIANS = (HEX_ROTATION / CHAIN_LINKS) * 2 * Math.PI; 
+    public static final double DISTANCE_PER_ROTATION_RADIANS = 0.5712;
     public static final double ROTATION_TOLERANCE = DISTANCE_PER_ROTATION_RADIANS / 4; 
 
     // Arm's "Home Setpoint" should be low level for intake. These values are in radians and need testing. 

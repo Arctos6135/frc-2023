@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
     private final TalonSRX armMotor;
     private final DutyCycleEncoder hexEncoder;
 
-    public static double kP = 0.01;
+    public static double kP = 0.00001;
     public static double kI = 0;
     public static double kD = 0; 
 

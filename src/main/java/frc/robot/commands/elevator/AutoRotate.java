@@ -1,5 +1,6 @@
 package frc.robot.commands.elevator;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ArmConstants;
@@ -34,16 +35,15 @@ public class AutoRotate extends CommandBase {
     @Override 
     public void execute() {
         if (!setpointReached) {
-            this.arm.setMotor(arm.getPIDController().calculate(
-                this.arm.getEncoder().getDistance(), setpointAngle
-            ));
+            double pid = arm.getPIDController().calculate(
+                this.arm.getEncoder().getDistance(), setpointAngle);
+            this.arm.setMotor(pid);
+            DriverStation.reportWarning(Double.toString(pid), false);
 
             if (Math.abs(this.arm.getEncoder().getDistance() - setpointAngle) < ArmConstants.ARM_TOLERANCE) {
                 this.setpointReached = true; 
             }
         }
-
-        SmartDashboard.putNumber("Hex Encoder", this.arm.getEncoder().getDistance()); 
     }
 
     @Override 

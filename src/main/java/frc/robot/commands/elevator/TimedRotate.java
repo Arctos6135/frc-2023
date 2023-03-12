@@ -4,31 +4,32 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
-public class HoldRotate extends CommandBase {
+public class TimedRotate extends CommandBase {
     private final Arm arm; 
-    private double holdTime; 
-    private double initialTime;
-    private boolean armFlipped;  
+    private double time; 
+    private boolean up; 
 
-    public static final double HOLD_SPEED = -0.2;
+    public double initialTime; 
 
-    public HoldRotate(Arm arm, double holdTime, boolean armFlipped) {
+    public static double speed = -0.4; 
+
+    public TimedRotate(Arm arm, double time, boolean up) {
         this.arm = arm; 
-        this.holdTime = holdTime; 
-        this.armFlipped = armFlipped; 
+        this.time = time; 
+        this.up = up; 
 
         addRequirements(arm);
     }
 
     @Override 
     public void initialize() {
+        this.arm.setMotor(up ? speed : -speed);
         this.initialTime = Timer.getFPGATimestamp(); 
-        this.arm.setMotor(armFlipped ? -HOLD_SPEED : HOLD_SPEED);
     }
 
     @Override 
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - this.initialTime >= this.holdTime; 
+        return Math.abs(Timer.getFPGATimestamp() - this.initialTime) > this.time; 
     }
 
     @Override 

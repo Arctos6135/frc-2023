@@ -5,14 +5,17 @@
 package frc.robot;
 
 import java.util.Map;
+import java.util.AbstractMap.SimpleEntry;
 
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -33,6 +36,7 @@ import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
 import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.Rotate;
+import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -74,6 +78,7 @@ public class RobotContainer {
   public GenericEntry kDWidgetArm;
 
   // Network Tables
+  public GenericEntry hexEncoderEntry;
 
   private Autonomous autonomous;
 
@@ -133,12 +138,17 @@ public class RobotContainer {
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
+
+    hexEncoderEntry = armTab.add("Hex Encoder Distance", arm.getEncoder().getDistance()).withWidget(BuiltInWidgets.kTextView)
+        .withPosition(4, 0).withSize(4, 4).getEntry();
   }
 
   public void updateDashboard() {
     arm.getPIDController().setP(kPWidgetArm.getDouble(0));
     arm.getPIDController().setI(kIWidgetArm.getDouble(0));
     arm.getPIDController().setD(kDWidgetArm.getDouble(0)); 
+
+    hexEncoderEntry.setDouble(arm.getEncoder().getDistance());
   }
 
   private void configureBindings() {
@@ -148,8 +158,8 @@ public class RobotContainer {
     // Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
-    Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
-    Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
+    // Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
+    // Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
@@ -169,11 +179,16 @@ public class RobotContainer {
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
 
-    autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
-      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false));
+    /* autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
+      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); */ 
+    /* autoRotateMiddleCone.whileTrue(new TimedRotate(arm, 1.5, true))
+        .onFalse(new HoldRotate(arm, 2.0, false)); */ 
 
-    autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm, ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
-      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); 
+    /* autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
+      .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); */ 
+
+    /* autoRotateMiddleCube.whileTrue(new TimedRotate(arm, 1.0, true))
+        .onFalse(new HoldRotate(arm, 2.0, false)); */ 
   }
 
   public Command getAutonomousCommand() {
