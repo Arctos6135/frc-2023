@@ -11,11 +11,12 @@ public class TimedRotate extends CommandBase {
 
     public double initialTime; 
 
-    public static double speed = -0.4; 
+    public double speed; // -0.4 
 
-    public TimedRotate(Arm arm, double time, boolean up) {
+    public TimedRotate(Arm arm, double time, double speed, boolean up) {
         this.arm = arm; 
         this.time = time; 
+        this.speed = speed; 
         this.up = up; 
 
         addRequirements(arm);

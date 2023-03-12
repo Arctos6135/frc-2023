@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.HighCube;
+import frc.robot.commands.autonomous.MiddleCube;
 import frc.robot.commands.autonomous.MobilityDockWide;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -15,7 +16,8 @@ public class Autonomous {
 
     public enum AutoMode {
         NONE("None"),
-        MOBILITY_DOCK_WIDE("Mobility Dock Wide"), 
+        MOBILITY_DOCK_WIDE("Mobility Dock Wide"),
+        MIDDLE_CUBE("Middle Cube"), 
         HIGH_CUBE("High Cube"); 
 
         String autoName; 
@@ -35,6 +37,8 @@ public class Autonomous {
                 return null; 
             case MOBILITY_DOCK_WIDE:
                 return MobilityDockWide.getCommand(drivetrain, elevator, arm, claw);
+            case MIDDLE_CUBE: 
+                return new MiddleCube(drivetrain, arm, claw, elevator);
             case HIGH_CUBE: 
                 return new HighCube(drivetrain, arm, claw, elevator); 
             default: 
@@ -49,6 +53,6 @@ public class Autonomous {
             chooser.addOption(mode.autoName, mode); 
         }
 
-        chooser.setDefaultOption(AutoMode.NONE.autoName, AutoMode.NONE); 
+        chooser.setDefaultOption(AutoMode.MIDDLE_CUBE.autoName, AutoMode.MIDDLE_CUBE); 
     }
 }

@@ -11,6 +11,8 @@ public class CloseClaw extends CommandBase {
     private final double time;
     private double initialTime;
 
+    public static final double CLAW_SPEED = -0.8; 
+
     /**
      * @param time the time the claw should close for in seconds
      */
@@ -39,6 +41,9 @@ public class CloseClaw extends CommandBase {
 
     @Override
     public void execute() {
+        if (!(Math.abs(Timer.getFPGATimestamp() - initialTime) >= time)) {
+            claw.setSpeed(CLAW_SPEED);
+        }
     }
 
     @Override

@@ -23,17 +23,19 @@ public class AutoExtend extends CommandBase {
     @Override 
     public void initialize() {
         this.initialTime = Timer.getFPGATimestamp(); 
-        this.elevator.setMotor(extend ? ElevatorConstants.ELEVATOR_EXTENSION_SPEED : -ElevatorConstants.ELEVATOR_EXTENSION_SPEED);
+        this.elevator.setMotor(extend ? -ElevatorConstants.ELEVATOR_EXTENSION_SPEED : ElevatorConstants.ELEVATOR_EXTENSION_SPEED);
     }
 
     @Override 
     public void execute() {
-
+        if (!(Math.abs(Timer.getFPGATimestamp() - this.initialTime) >= this.extensionTime)) {
+            this.elevator.setMotor(extend ? -ElevatorConstants.ELEVATOR_EXTENSION_SPEED : ElevatorConstants.ELEVATOR_EXTENSION_SPEED);
+        }
     }
 
     @Override 
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - this.initialTime >= this.extensionTime; 
+        return Math.abs(Timer.getFPGATimestamp() - this.initialTime) >= this.extensionTime; 
     }
 
     @Override 

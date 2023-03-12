@@ -158,7 +158,7 @@ public class RobotContainer {
     // Trigger tapeAutoAlign = new JoystickButton(driverController, DriveConstants.TAPE_AUTO_ALIGN); 
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN); 
 
-    // Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
+    Trigger autoRotateMiddleCone = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CONE);
     // Trigger autoRotateMiddleCube = new JoystickButton(operatorController, ElevatorConstants.AUTO_ROTATE_MIDDLE_CUBE); 
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
@@ -179,6 +179,7 @@ public class RobotContainer {
 
     aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false)); 
 
+    autoRotateMiddleCone.whileTrue(new OpenClaw(claw, 1.0)); 
     /* autoRotateMiddleCone.whileTrue(new AutoRotate(this.arm, -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CONE))
       .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false)); */ 
     /* autoRotateMiddleCone.whileTrue(new TimedRotate(arm, 1.5, true))
@@ -193,7 +194,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     //return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
-    return new TurnEncoded(drivetrain, Math.PI, 0.25);
-    //return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
+    // return new TurnEncoded(drivetrain, Math.PI, 0.25);
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }
