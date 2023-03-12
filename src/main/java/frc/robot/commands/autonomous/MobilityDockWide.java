@@ -1,5 +1,6 @@
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.driving.DriveForward;
 import frc.robot.commands.driving.DriveForwardEncoded;
@@ -20,10 +21,10 @@ public class MobilityDockWide {
         return sequence;
     }*/
     public static Command getCommand(Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
-        Command sequence = new DriveForwardEncoded(-0.2, 0.5, drivetrain)
-            .andThen(new DriveForwardEncoded(0.2, 1, drivetrain))
-            .andThen(new TurnEncoded(drivetrain, 20, -0.2))
-            .andThen(new DriveForwardEncoded(0.2, 4, drivetrain));
+        Command sequence = new DriveForwardEncoded(drivetrain, -0.5, 36)
+            .andThen(new DriveForwardEncoded(drivetrain, 0.5, 36))
+            .andThen(new TurnEncoded(drivetrain, 0.3, -0.2))
+            .andThen(new DriveForwardEncoded(drivetrain, 0.5, 4 * 36));
 
         return sequence;
     }

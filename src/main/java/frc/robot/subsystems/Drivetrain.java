@@ -120,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
         rawLeft = driveTab.add("raw left motor speed", 0);
         rawRight = driveTab.add("raw right motor speed", 0);
 
-        gainWidget = driveTab.add("acceleration gain", 0.01).withWidget(BuiltInWidgets.kNumberSlider)
+        gainWidget = driveTab.add("acceleration gain", DriveConstants.DEFAULT_ACCELERATION_GAIN).withWidget(BuiltInWidgets.kNumberSlider)
         .withProperties(Map.of("min", 0, "max", 0.1));
 
         transTargetW = driveTab.add("target transation", 0.0);

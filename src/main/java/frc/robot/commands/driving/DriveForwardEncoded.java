@@ -12,13 +12,13 @@ public class DriveForwardEncoded extends CommandBase {
     private final double distance;
 
     /** 
-     * @param speed the speed of the robot in percent [-1, 1]
-     * @param distance the distance the robot should drive in inches. Setting distance negative does nothing, if you want to bot to reverse, make speed negative
+     * @param speed the speed of the robot in percent [0, 1]
+     * @param distance the distance the robot should drive in inches. Setting the distance negative makes the bot go backwards
     */
-    public DriveForwardEncoded(double speed, double distance, Drivetrain drivetrain) {
-        this.speed = speed;
+    public DriveForwardEncoded(Drivetrain drivetrain, double speed, double distance) {
+        this.speed = Math.copySign(Math.abs(speed), distance);
         this.drivetrain = drivetrain;
-        this.distance = distance - 14;
+        this.distance = Math.max(0, Math.abs(distance) - 14); // as long as the robot reaches full speed, it fairly consistently overshoots by ~14 inches
 
         addRequirements(drivetrain);
     }
@@ -36,7 +36,7 @@ public class DriveForwardEncoded extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(drivetrain.getPosition()) > Math.abs(this.distance)) {
+        if (Math.abs(drivetrain.getPosition()) > this.distance) {
             System.out.printf("finished driving %f meters\n", this.distance);
             return true;
         } else {

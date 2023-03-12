@@ -14,13 +14,13 @@ public class TurnEncoded extends CommandBase {
     private final double encoderDistance;
 
     /**
-     * @param angle the (positive) number of degrees we want to turn
-     * @param speed power from [-1, 1] to turn at, positive is left
+     * @param angle the number of radians we want to turn, positive is left
+     * @param speed power from [0, 1] we want to turn at
      */
     public TurnEncoded(Drivetrain drivetrain, double angle, double speed) {
         this.drivetrain = drivetrain;
-        this.speed = speed;
-        this.encoderDistance = (360 / Math.abs(angle)) * Math.PI * DriveConstants.CHASSIS_WIDTH;
+        this.speed = Math.copySign(speed, angle);
+        this.encoderDistance = Math.abs(angle) * DriveConstants.CHASSIS_WIDTH / 2;
 
         addRequirements(drivetrain);
     }
