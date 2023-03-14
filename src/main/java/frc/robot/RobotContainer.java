@@ -28,9 +28,7 @@ import frc.robot.commands.driving.Turn;
 import frc.robot.commands.driving.TurnEncoded;
 import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.commands.elevator.Extend;
-import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.Rotate;
-import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.commands.scoring.MiddleRow;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
@@ -94,8 +92,8 @@ public class RobotContainer {
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
     );
 
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
-    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, armTab);
+    this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL)); // has to happen after so the widgets are defined
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR);
     this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
@@ -119,23 +117,8 @@ public class RobotContainer {
     drivetrainTab.add("PID Rotation", drivetrain.getRotationController()).withWidget(BuiltInWidgets.kPIDController)
         .withPosition(4, 0).withSize(4, 4);
         
-    armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(4, 4);
-    
-    kPWidgetArm = pidControlTab.add("Arm kP", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(0, 0).withSize(2, 2).getEntry();
-        
-    kIWidgetArm = pidControlTab.add("Arm kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(2, 0).withSize(2, 2).getEntry();
-    
-    kDWidgetArm = pidControlTab.add("Arm kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(4, 0).withSize(2, 2).getEntry();
-
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
-
-    hexEncoderEntry = armTab.add("Hex Encoder Distance", arm.getEncoder().getDistance()).withWidget(BuiltInWidgets.kTextView)
-        .withPosition(4, 0).withSize(4, 4).getEntry();
   }
 
   public void updateDashboard() {
@@ -186,8 +169,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
-    // return new TurnEncoded(drivetrain, Math.PI, 0.25);
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
+    return new AutoRotate(arm, Math.PI / 2);
+    //return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }

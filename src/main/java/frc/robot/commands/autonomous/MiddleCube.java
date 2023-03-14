@@ -7,8 +7,7 @@ import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.elevator.AutoExtend;
-import frc.robot.commands.elevator.HoldRotate;
-import frc.robot.commands.elevator.TimedRotate;
+import frc.robot.commands.elevator.AutoRotate;
 import frc.robot.constants.ClawConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Arm;
@@ -31,17 +30,14 @@ public class MiddleCube extends SequentialCommandGroup {
      * @param elevator
      */
     public MiddleCube(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
+        // I don't know what this is supposed to do, we can fix if pid arm works :)
+        /*
         addCommands(
-            new TimedRotate(arm, 0.25, -0.4, true),
-            new ParallelDeadlineGroup(
-                new SequentialCommandGroup(
-                    new AutoExtend(elevator, 1.5, true),
-                    new DriveForwardEncoded(drivetrain, 0.5, FieldConstants.AUTO_GAME_PIECE),
-                    new CloseClaw(claw, 2.0),
-                    new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE)
-                ),
-                new HoldRotate(arm, 10.0, false)
-            ),
+            new AutoRotate(arm, Math.PI / 2),
+            new AutoExtend(elevator, 1.5, true),
+            new DriveForwardEncoded(drivetrain, 0.5, FieldConstants.AUTO_GAME_PIECE),
+            new CloseClaw(claw, 2.0),
+            new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE),
             new TimedRotate(arm, 0.85, -0.4, true),
             new ParallelCommandGroup(
                 new HoldRotate(arm, 2.5, false), 
@@ -50,5 +46,6 @@ public class MiddleCube extends SequentialCommandGroup {
             new TimedRotate(arm, 1.0, 0.10, false)
            
         );
+        */
     }
 }

@@ -7,7 +7,6 @@ import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
-import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.constants.ClawConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Arm;
@@ -46,10 +45,7 @@ public class HighCube extends SequentialCommandGroup {
             new CloseClaw(this.claw, closeClawTime), 
             new DriveForwardEncoded(this.drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE), 
             new AutoRotate(this.arm, armAngle),
-            new ParallelCommandGroup(
-                new HoldRotate(this.arm, extensionTime, true),
-                new AutoExtend(this.elevator, extensionTime, true)
-            ),
+            new AutoExtend(this.elevator, extensionTime, true),
             new OpenClaw(this.claw, openClawTime), 
             new AutoExtend(this.elevator, extensionTime, false)
         );

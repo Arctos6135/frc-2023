@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
-import frc.robot.commands.elevator.HoldRotate;
-import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.constants.ClawConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -28,14 +26,10 @@ public class MiddleRow extends SequentialCommandGroup {
      */
     public MiddleRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
         addCommands(
-            new TimedRotate(arm, cube ? 1.25 : 1.40, -0.4, false), 
-            new ParallelDeadlineGroup(
-                new SequentialCommandGroup(
-                    new AutoExtend(elevator, cube ? 1.5 : 1.75, true), 
-                    new OpenClaw(claw, 2.0),
-                    new AutoExtend(elevator, cube ? 1.5 : 1.75, false)
-                ), 
-                new HoldRotate(arm, 6.0, false))
+            new AutoRotate(arm, Math.PI / 2),
+            new AutoExtend(elevator, cube ? 1.5 : 1.75, true), 
+            new OpenClaw(claw, 2.0),
+            new AutoExtend(elevator, cube ? 1.5 : 1.75, false)
         );
     }
 }

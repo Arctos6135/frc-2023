@@ -7,8 +7,6 @@ import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.elevator.AutoExtend;
-import frc.robot.commands.elevator.HoldRotate;
-import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -27,19 +25,17 @@ public class SimpleMiddle extends SequentialCommandGroup {
      * @param elevator
      */
     public SimpleMiddle(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
+        // standard caveat about not understanding what this auto does :)
+        /*
         addCommands(
             new CloseClaw(claw, 2.0), 
             new TimedRotate(arm, 1.25, -0.4, true), 
-            new ParallelDeadlineGroup(
-                new SequentialCommandGroup(
-                    new AutoExtend(elevator, 1.5, true), 
-                    new OpenClaw(claw, 2.0), 
-                    new AutoExtend(elevator, 1.5, false)
-                ), 
-                new HoldRotate(arm, 10.0, false)
-            ), 
+            new AutoExtend(elevator, 1.5, true), 
+            new OpenClaw(claw, 2.0), 
+            new AutoExtend(elevator, 1.5, false),
             new TimedRotate(arm, 1.0, 0.10, false), 
             new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE)
         );
+        */
     }
 }

@@ -1,11 +1,9 @@
 package frc.robot.commands.scoring;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.elevator.AutoExtend;
 import frc.robot.commands.elevator.AutoRotate;
-import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.constants.ClawConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -29,10 +27,7 @@ public class HighRow extends SequentialCommandGroup {
             new AutoRotate(this.arm, this.cube ? 
                 ElevatorConstants.ROTATION_HIGH_LEVEL_CUBE : ElevatorConstants.ROTATION_HIGH_LEVEL_CONE), 
             new AutoExtend(elevator, ElevatorConstants.ELEVATOR_EXTENSION_TIME, true),
-            new ParallelCommandGroup(
-                new OpenClaw(this.claw, ClawConstants.OPEN_CLAW_TIME), 
-                new HoldRotate(arm, ElevatorConstants.ARM_HOLD_TIME, true)
-            ), 
+            new OpenClaw(this.claw, ClawConstants.OPEN_CLAW_TIME), 
             new AutoExtend(this.elevator, ElevatorConstants.ELEVATOR_EXTENSION_TIME, false),
             new AutoRotate(this.arm, this.cube ? 
                 -ElevatorConstants.ROTATION_HIGH_LEVEL_CUBE : -ElevatorConstants.ROTATION_HIGH_LEVEL_CONE)

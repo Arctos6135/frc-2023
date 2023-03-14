@@ -21,38 +21,23 @@ public class AutoRotate extends CommandBase {
     public AutoRotate(Arm arm, double setpointAngle) {
         this.arm = arm; 
         this.setpointAngle = setpointAngle;
-        this.setpointReached = false; 
         
         addRequirements(arm); 
     }
 
     @Override 
     public void initialize() {
+        this.arm.setAngle(setpointAngle);
         this.arm.resetEncoder();
     }
 
     @Override 
-    public void execute() {
-        if (!setpointReached) {
-            double pid = arm.getPIDController().calculate(
-                this.arm.getEncoder().getDistance(), setpointAngle);
-            this.arm.setMotor(pid);
-            DriverStation.reportWarning(Double.toString(pid), false);
-
-            if (Math.abs(this.arm.getEncoder().getDistance() - setpointAngle) < ArmConstants.ARM_TOLERANCE) {
-                this.setpointReached = true; 
-            }
-        }
-    }
-
-    @Override 
     public boolean isFinished() {
-        return this.setpointReached;
+        return this.arm.getPIDController().atSetpoint();
     }
 
     @Override
     public void end(boolean interrupted) {
         this.arm.resetEncoder(); 
     }
-
 }
