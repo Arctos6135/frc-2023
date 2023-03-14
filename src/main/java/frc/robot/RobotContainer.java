@@ -60,18 +60,7 @@ public class RobotContainer {
   public ShuffleboardTab drivetrainTab;
   public ShuffleboardTab armTab;
   public ShuffleboardTab pidControlTab; 
-
   public ShuffleboardTab visionTab; 
-
-  public SimpleWidget transWidget;
-  public SimpleWidget rotWidget;
-
-  public GenericEntry kPWidgetArm;
-  public GenericEntry kIWidgetArm;
-  public GenericEntry kDWidgetArm;
-
-  // Network Tables
-  public GenericEntry hexEncoderEntry;
 
   private Autonomous autonomous;
 
@@ -121,13 +110,7 @@ public class RobotContainer {
         .withPosition(0, 0).withSize(6, 8);
   }
 
-  public void updateDashboard() {
-    arm.getPIDController().setP(kPWidgetArm.getDouble(0));
-    arm.getPIDController().setI(kIWidgetArm.getDouble(0));
-    arm.getPIDController().setD(kDWidgetArm.getDouble(0)); 
-
-    hexEncoderEntry.setDouble(arm.getEncoder().getDistance());
-  }
+  public void updateDashboard() {}
 
   private void configureBindings() {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
