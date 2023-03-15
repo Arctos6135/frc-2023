@@ -29,7 +29,14 @@ public class Rotate extends CommandBase {
     public void execute() {
         double input = operatorController.getRawAxis(rotationAxis);
         double dampened = this.dampener.smoothDampen(input);
-        double speed = rateLimiter.calculate(dampened) * ElevatorConstants.ARM_SPEED_FACTOR;
+        double controller = rateLimiter.calculate(dampened) * ElevatorConstants.ARM_SPEED_FACTOR;
+
+        double angle = this.arm.getAngle();
+        double percentHold = Math.sin(angle);
+        double feedforward = percentHold * ElevatorConstants.HOLD_FACTOR;
+
+        double speed = controller + feedforward;
+
         this.arm.setMotor(speed);
     }
 }
