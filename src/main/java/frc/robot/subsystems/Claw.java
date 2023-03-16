@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DriverStation;
-
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
@@ -14,6 +16,7 @@ public class Claw extends SubsystemBase {
     private final DigitalInput limitSwitchOpen = new DigitalInput(ClawConstants.LIMIT_SWITCH_OPEN);
     private final DigitalInput limitSwitchClose = new DigitalInput(ClawConstants.LIMIT_SWITCH_CLOSE);
     private ClawState state = ClawState.Open; // if the claw is not open at the start of the match BAD THINGS HAPPEN
+    private GenericEntry clawMotorOutput;
 
     public enum ClawState {
         Open("open"),
@@ -31,14 +34,17 @@ public class Claw extends SubsystemBase {
     /**
      * The claw MUST be open at the start of the match. If it isn't, things will break and I will be mad at you.
      */
-    public Claw(int clawMotorId) {
+    public Claw(int clawMotorId, ShuffleboardTab armTab) {
         this.clawMotor = new WPI_VictorSPX(clawMotorId);
         this.clawMotor.setNeutralMode(NeutralMode.Brake);
+        clawMotorOutput = armTab.add("Claw speed", 0).withWidget(BuiltInWidgets.kNumberBar)
+        .withPosition(6, 4).withSize(1, 1).getEntry();
     }
 
     public void setSpeed(double speed) {
+        clawMotorOutput.setDouble(speed);
         this.clawMotor.set(ControlMode.PercentOutput, speed);
-    } 
+    }
 
     @Override
     public void periodic() {

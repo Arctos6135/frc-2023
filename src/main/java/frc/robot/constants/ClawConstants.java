@@ -19,5 +19,5 @@ public class ClawConstants {
 
     public static final double OPEN_CLAW_TIME = 1.0; 
 
-    public static final double CLAW_SPEED = 0.8; 
+    public static final double CLAW_SPEED = 1; 
 }

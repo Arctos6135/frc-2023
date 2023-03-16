@@ -35,7 +35,7 @@ public class AutoRotate extends CommandBase {
     public void execute() {
         if (!setpointReached) {
             double pid = arm.getPIDController().calculate(
-                this.arm.getEncoder().getDistance(), setpointAngle);
+                this.arm.getAngle(), setpointAngle);
             this.arm.setMotor(pid);
             DriverStation.reportWarning(Double.toString(pid), false);
 

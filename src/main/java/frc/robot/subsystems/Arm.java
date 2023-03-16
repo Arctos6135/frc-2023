@@ -5,7 +5,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
@@ -23,12 +28,19 @@ public class Arm extends SubsystemBase {
     public static double kD = 0; 
 
     private PIDController rotationController;
-    
+
+    private final GenericEntry encoderOutputWidget;
+    private final GenericEntry targetArmAngle;
+    private final double initialAngle;
+
+    private double targetAngle = 0;
+    private double targetSpeed = 0;
+
     /**
      * This is our constructor
      * @param armMotor can ID of the motor for flipping the arm
      */
-    public Arm(int armMotor, int hexEncoderPort) {
+    public Arm(int armMotor, int hexEncoderPort, ShuffleboardTab armTab) {
         this.armMotor = new TalonSRX(armMotor);
         this.armMotor.setNeutralMode(NeutralMode.Brake);
         this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
@@ -36,23 +48,31 @@ public class Arm extends SubsystemBase {
         this.rotationController = new PIDController(kP, kI, kD); 
         
         this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
+
+        encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(3, 1).withSize(1, 1).getEntry();
+
+        targetArmAngle = armTab.add("Target arm angle", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(4, 1).withSize(1, 1).getEntry();
+
+        initialAngle = 0;
     }
- 
+
     @Override
     public void periodic() {
-        /* double p = kPW.getEntry().getDouble(0);
-        double i = kIW.getEntry().getDouble(0);
-        double d = kDW.getEntry().getDouble(0);
-        rotationController.setP(p);
-        rotationController.setI(i);
-        rotationController.setD(d);
+        //double pid = getPIDController().calculate(getAngle(), targetAngle);
+        //setMotor(pid);
 
-        double speed = MathUtil.clamp(rotationController.calculate(hexEncoder.getDistance()), -1, 1);
+        encoderOutputWidget.setDouble(getAngle());
+        targetArmAngle.setDouble(targetAngle);
+    }
 
-        setMotor(speed * 0.1);
+    public void setAngle(double angle) {
+        targetAngle = angle;
+    }
 
-        System.out.printf("p: %f, i: %f, d: %f\n", p, i, d);
-        System.out.printf("p: %f, i: %f, d: %f\n", p, i, d); */ 
+    public void setAngleSpeed(double speed) {
+        targetSpeed = speed;
     }
 
     // Sets speed of motor
@@ -60,13 +80,8 @@ public class Arm extends SubsystemBase {
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
 
-    /**
-     * Sets the arm at an angle using PID Controller.
-     * 
-     * @param angle in radians, where positive values represent the arm moving up.
-     */
-    public void setAngle(double angle) {
-       
+    public double getAngle() {
+        return initialAngle + hexEncoder.getDistance();
     }
 
     public void resetEncoder() {

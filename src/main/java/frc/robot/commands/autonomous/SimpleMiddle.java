@@ -35,9 +35,9 @@ public class SimpleMiddle extends SequentialCommandGroup {
                     new AutoExtend(elevator, 1.5, true), 
                     new OpenClaw(claw, 2.0), 
                     new AutoExtend(elevator, 1.5, false)
-                ), 
+                ),
                 new HoldRotate(arm, 10.0, false)
-            ), 
+            ),
             new TimedRotate(arm, 1.0, 0.10, false), 
             new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE)
         );

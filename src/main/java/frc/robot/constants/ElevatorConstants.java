@@ -8,7 +8,7 @@ public class ElevatorConstants {
     public static final int ROTATE_MOTOR = 5; 
     public static final int ELEVATOR_MOTOR = 6;
 
-    public static final double SPEED_FACTOR = 0.5;
+    public static final double SPEED_FACTOR = 0.7;
     public static final double ROTATE_FACTOR = 0.5;
     public static final double HOLD_FACTOR = -0.2;
     public static final double SCORE_SPEED = -0.4; 
@@ -39,5 +39,5 @@ public class ElevatorConstants {
     public static final double ELEVATOR_EXTENSION_TIME = 2.0; 
     public static final double ELEVATOR_EXTENSION_SPEED = 0.75;
 
-    public static final int ELEVATOR_LIMIT_SWITCH_PORT = 0; 
+    public static final int ELEVATOR_LIMIT_SWITCH_PORT = 9; 
 }

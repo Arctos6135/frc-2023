@@ -89,18 +89,19 @@ public class RobotContainer {
 
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
-   
+
+   /*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
-    );
+    );*/
 
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT);
+    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
 
-    this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    this.claw = new Claw(ClawConstants.CLAW_MOTOR, armTab);
     this.claw.setDefaultCommand(new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
-    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR);
+    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, armTab);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL)); 
 
     this.visionSystem = new VisionSystem();
@@ -135,7 +136,7 @@ public class RobotContainer {
         .withPosition(0, 0).withSize(6, 8);
 
     hexEncoderEntry = armTab.add("Hex Encoder Distance", arm.getEncoder().getDistance()).withWidget(BuiltInWidgets.kTextView)
-        .withPosition(4, 0).withSize(4, 4).getEntry();
+        .withPosition(4, 0).withSize(1, 1).getEntry();
   }
 
   public void updateDashboard() {
@@ -188,6 +189,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
     // return new TurnEncoded(drivetrain, Math.PI, 0.25);
+    //return new AutoRotate(arm, 0);
     return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }
