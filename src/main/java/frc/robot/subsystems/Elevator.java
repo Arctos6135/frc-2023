@@ -21,21 +21,25 @@ public class Elevator extends SubsystemBase {
         this.elevatorMotor = new TalonSRX(elevatorMotorId);
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
         limitSwitchOutput = armTab.add("Limit switch rendered via generic entry", false)
-            .withWidget(BuiltInWidgets.kBooleanBox).withPosition(1, 1).getEntry();
+            .withWidget(BuiltInWidgets.kBooleanBox).withPosition(5, 5).getEntry();
     }
 
     @Override
     public void periodic() {
-        limitSwitchOutput.setBoolean(limitSwitch.get());
+        //limitSwitchOutput.setBoolean(limitSwitch.get());
 
-        //System.out.printf("%b\n", limitSwitch.get());
+        System.out.printf("limit switch %b\n", limitSwitch.get());
     }
 
     /**
      * @param armSpeed the power of the motor, in the range [-1, 1]
      */
     public void setMotor(double elevatorSpeed) {
-        this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed);
+        if (limitSwitch.get()) {
+            this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed);
+        } else {
+            this.elevatorMotor.set(ControlMode.PercentOutput, 0);
+        }
     }
 
     public void stopMotor() {
