@@ -21,7 +21,7 @@ public class TeleopClaw extends CommandBase {
         addRequirements(claw);
     }
 
-    @Override 
+    @Override
     public void execute() {
         if (operatorController.getRawButton(buttonOpen) && operatorController.getRawButton(buttonClose)) {
             claw.setSpeed(0);
