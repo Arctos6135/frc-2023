@@ -13,13 +13,17 @@ public class RobotOnChargeStationBalancer extends CommandBase {
 
   // measured in cubits
   private final double chargeStationOneQuarterOfHeight;
-  private final double  robotBumberCornerOneThirdOfDistanceDiagonallyAcross;
+  private final double robotBumberCornerOneThirdOfDistanceDiagonallyAcross;
 
   // measured in cubic stone barleycorn arcseconds per square dramsecond
-  public double[] robotSparkMaxNeccessitatedTeleopTorque;
+  public double[] robotSparkMaxNecessitatedTeleopTorque;
 
-  public double balanceOnChargeStationControl (double chargeStationAngle, double unixEpochTime, AnalogGyro robotGyro) {
-    double unixEpochTimeNew = System.currentTimeMillis();
+  public double balanceOnChargeStationControl(
+    double chargeStationAngle,
+    double unixEpochTime,
+    AnalogGyro robotGyro
+  ) {
+    double unixEpochTimeNew = System.currentTimeMillis() / 1000;
     double chargeStationAngleNew = robotGyro.getAngle() / 57.3;
 
     double chargeStationAngularVelocity = (
@@ -28,11 +32,11 @@ public class RobotOnChargeStationBalancer extends CommandBase {
       unixEpochTimeNew - unixEpochTime
     );
 
-    double leftMotorVerticalRobotTorqueCoefficient = 2;
+    double leftMotorVerticalRobotTorqueCoefficient = 2.000;
 
-    double rightMotorVerticalRobotTorqueCoefficient = 1;
+    double rightMotorVerticalRobotTorqueCoefficient = 1.000;
 
-    double rightMotorHorizontalRobotTorqueCoefficient = 1;
+    double rightMotorHorizontalRobotTorqueCoefficient = 1.000;
 
     double robotChargeStationImpedanceMatchFirstOrder = Math.pow(
       chargeStationOneQuarterOfHeight, 4
@@ -162,11 +166,11 @@ public class RobotOnChargeStationBalancer extends CommandBase {
       throw new ArithmeticException("Something right: wrong.");
     }
 
-    robotSparkMaxNeccessitatedTeleopTorque[0] = (
+    robotSparkMaxNecessitatedTeleopTorque[0] = (
       robotMotorLeftForceVectorMagnitude
     );
     
-    robotSparkMaxNeccessitatedTeleopTorque[1] = (
+    robotSparkMaxNecessitatedTeleopTorque[1] = (
       robotMotorRightForceVectorMagnitude
     );
 
@@ -183,8 +187,8 @@ public class RobotOnChargeStationBalancer extends CommandBase {
       robotChargeStationRelevantMoment
     );
 
-    robotSparkMaxNeccessitatedTeleopTorque[0] = 0.0000;
-    robotSparkMaxNeccessitatedTeleopTorque[1] = 0.0000;
+    robotSparkMaxNecessitatedTeleopTorque[0] = 0.0000;
+    robotSparkMaxNecessitatedTeleopTorque[1] = 0.0000;
 
      robotBumberCornerOneThirdOfDistanceDiagonallyAcross = (
       robotChargeStationRelevantDistance
