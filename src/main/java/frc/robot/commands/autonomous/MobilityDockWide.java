@@ -21,9 +21,9 @@ public class MobilityDockWide {
         return sequence;
     }*/
     public static Command getCommand(Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
-        Command sequence = new DriveForwardEncoded(drivetrain, -0.5, 36)
+        Command sequence = new DriveForwardEncoded(drivetrain, 0.5, -36)
             .andThen(new DriveForwardEncoded(drivetrain, 0.5, 36))
-            .andThen(new TurnEncoded(drivetrain, 0.3, -0.2))
+            .andThen(new TurnEncoded(drivetrain, -0.3, 0.2))
             .andThen(new DriveForwardEncoded(drivetrain, 0.5, 4 * 36));
 
         return sequence;
