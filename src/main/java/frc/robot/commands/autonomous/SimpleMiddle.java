@@ -28,12 +28,12 @@ public class SimpleMiddle extends SequentialCommandGroup {
      */
     public SimpleMiddle(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
         addCommands(
-            new CloseClaw(claw, 2.0), 
-            new TimedRotate(arm, 1.00, -0.4, true), 
+            new CloseClaw(claw, 0.5), 
+            new TimedRotate(arm, 0.75, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
                     new AutoExtend(elevator, 1.5, true), 
-                    new OpenClaw(claw, 2.0), 
+                    new OpenClaw(claw, 0.5), 
                     new AutoExtend(elevator, 1.5, false)
                 ),
                 new HoldRotate(arm, 10.0, false)

@@ -30,11 +30,8 @@ public class Arm extends SubsystemBase {
     private PIDController rotationController;
 
     private final GenericEntry encoderOutputWidget;
-    private final GenericEntry targetArmAngle;
     private final double initialAngle;
 
-    private double targetAngle = 0;
-    private double targetSpeed = 0;
 
     /**
      * This is our constructor
@@ -52,9 +49,6 @@ public class Arm extends SubsystemBase {
         encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
             .withPosition(3, 1).withSize(1, 1).getEntry();
 
-        targetArmAngle = armTab.add("Target arm angle", 0).withWidget(BuiltInWidgets.kTextView)
-            .withPosition(4, 1).withSize(1, 1).getEntry();
-
         initialAngle = 0;
     }
 
@@ -64,19 +58,11 @@ public class Arm extends SubsystemBase {
         //setMotor(pid);
 
         encoderOutputWidget.setDouble(getAngle());
-        targetArmAngle.setDouble(targetAngle);
-    }
-
-    public void setAngle(double angle) {
-        targetAngle = angle;
-    }
-
-    public void setAngleSpeed(double speed) {
-        targetSpeed = speed;
     }
 
     // Sets speed of motor
     public void setMotor(double armSpeed) {
+        System.out.printf("Running arm at %f\n", armSpeed);
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
     }
 

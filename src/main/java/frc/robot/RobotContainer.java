@@ -90,10 +90,10 @@ public class RobotContainer {
     this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
       DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
 
-   /*
+   
     this.drivetrain.setDefaultCommand(new TeleopDrive(
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab)
-    );*/
+    );
 
     this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(new Rotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION)); // has to happen after so the widgets are defined
@@ -121,7 +121,7 @@ public class RobotContainer {
         .withPosition(4, 0).withSize(4, 4);
         
     armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(4, 4);
+        .withPosition(0, 0).withSize(1, 3);
     
     kPWidgetArm = pidControlTab.add("Arm kP", 0).withWidget(BuiltInWidgets.kNumberSlider)
         .withPosition(0, 0).withSize(2, 2).getEntry();

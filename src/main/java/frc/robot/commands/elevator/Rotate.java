@@ -42,7 +42,10 @@ public class Rotate extends CommandBase {
         
         else {
             double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
-            this.arm.setMotor(rotation);
+            if (arm.getAngle() < 0.15) {
+                rotation *= 0.5; 
+            }
+            this.arm.setMotor(rotation * 1.5);
         } 
 
         DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);

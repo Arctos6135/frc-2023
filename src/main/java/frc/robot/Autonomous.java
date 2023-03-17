@@ -42,7 +42,7 @@ public class Autonomous {
             case SIMPLE_MIDDLE:
                 return new SimpleMiddle(drivetrain, arm, claw, elevator); 
             case MIDDLE_CUBE: 
-                return new MiddleCube(drivetrain, arm, claw, elevator);
+                return new MiddleCube(drivetrain, arm, claw, elevator, true);
             case HIGH_CUBE: 
                 return new HighCube(drivetrain, arm, claw, elevator); 
             default: 

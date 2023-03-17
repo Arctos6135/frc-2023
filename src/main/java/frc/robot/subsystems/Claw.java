@@ -38,7 +38,7 @@ public class Claw extends SubsystemBase {
         this.clawMotor = new WPI_VictorSPX(clawMotorId);
         this.clawMotor.setNeutralMode(NeutralMode.Brake);
         clawMotorOutput = armTab.add("Claw speed", 0).withWidget(BuiltInWidgets.kNumberBar)
-        .withPosition(6, 4).withSize(1, 1).getEntry();
+        .withPosition(4, 2).withSize(1, 1).getEntry();
     }
 
     public void setSpeed(double speed) {

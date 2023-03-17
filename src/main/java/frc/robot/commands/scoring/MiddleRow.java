@@ -28,12 +28,12 @@ public class MiddleRow extends SequentialCommandGroup {
      */
     public MiddleRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
         addCommands(
-            new TimedRotate(arm, cube ? 1.25 : 1.40, -0.4, false), 
+            new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new AutoExtend(elevator, cube ? 1.5 : 1.75, true), 
-                    new OpenClaw(claw, 2.0),
-                    new AutoExtend(elevator, cube ? 1.5 : 1.75, false)
+                    new AutoExtend(elevator, cube ? 1.6 : 1.6, true), 
+                    new OpenClaw(claw, 1.0),
+                    new AutoExtend(elevator, cube ? 1.6 : 1.6, false)
                 ), 
                 new HoldRotate(arm, 6.0, false))
         );

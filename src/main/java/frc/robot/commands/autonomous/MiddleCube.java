@@ -16,6 +16,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
+// THIS IS THE ACTUAL AUTO, DONT RUN OTHER RUNS
 public class MiddleCube extends SequentialCommandGroup {
     public static final double openClawTime = ClawConstants.OPEN_CLAW_TIME; 
     public static final double closeClawTime = ClawConstants.OPEN_CLAW_TIME;
@@ -30,25 +31,18 @@ public class MiddleCube extends SequentialCommandGroup {
      * @param claw
      * @param elevator
      */
-    public MiddleCube(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator) {
+    public MiddleCube(Drivetrain drivetrain, Arm arm, Claw claw, Elevator elevator, boolean cube) {
         addCommands(
-            new TimedRotate(arm, 0.25, -0.4, true),
+            new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new AutoExtend(elevator, 1.5, true),
-                    new DriveForwardEncoded(drivetrain, 0.5, FieldConstants.AUTO_GAME_PIECE),
-                    new CloseClaw(claw, 2.0),
-                    new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.AUTO_GAME_PIECE)
-                ),
-                new HoldRotate(arm, 10.0, false)
+                    new AutoExtend(elevator, cube ? 1.6 : 1.6, true), 
+                    new CloseClaw(claw, 1.0),
+                    new AutoExtend(elevator, cube ? 1.6 : 1.6, false)
+                ), 
+                new HoldRotate(arm, 6.0, false)
             ),
-            new TimedRotate(arm, 0.85, -0.4, true),
-            new ParallelCommandGroup(
-                new HoldRotate(arm, 2.5, false), 
-                new OpenClaw(claw, 2.0)
-            ), 
-            new TimedRotate(arm, 1.0, 0.10, false)
-           
+            new DriveForwardEncoded(drivetrain,0.5, 18 * 12)
         );
     }
 }
