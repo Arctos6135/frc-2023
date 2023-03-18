@@ -23,7 +23,7 @@ public class ScoreHighRow extends SequentialCommandGroup {
         this.elevator = elevator; 
         this.arm = arm; 
         this.claw = claw; 
-        this.cube = cube; 
+        this.cube = cube;
 
         addCommands(
             new PidRotate(this.arm, this.cube ? 

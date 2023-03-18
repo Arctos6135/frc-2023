@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.AutoAlign;
+import frc.robot.commands.autonomous.Engage;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.claw.TeleopClaw;
@@ -163,6 +164,7 @@ public class RobotContainer {
 
     Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE); 
 
+
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
     }, () -> {
@@ -208,6 +210,7 @@ public class RobotContainer {
     // return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
     // return new TurnEncoded(drivetrain, Math.PI, 0.25);
     // return new AutoRotate(arm, 0);
+    // return new Engage(drivetrain);
     return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
   }
 }
