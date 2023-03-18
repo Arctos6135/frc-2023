@@ -76,8 +76,6 @@ public class Drivetrain extends SubsystemBase {
     private RelativeEncoder rightEncoder;
     private RelativeEncoder leftEncoder;
 
-    private ADXRS450_Gyro gyroscope;  
-
     public Drivetrain(int rightMaster, int leftMaster, int rightFollower, int leftFollower, ShuffleboardTab driveTab) {
         this.rightMaster = new CANSparkMax(rightMaster, MotorType.kBrushless);
         this.leftMaster = new CANSparkMax(leftMaster, MotorType.kBrushless);
@@ -116,8 +114,6 @@ public class Drivetrain extends SubsystemBase {
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
 
-        this.gyroscope = new ADXRS450_Gyro(); 
-
         kPW = driveTab.add("kP", 0.001).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0.0, "max", 1.0));
         kIW = driveTab.add("kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
@@ -147,8 +143,8 @@ public class Drivetrain extends SubsystemBase {
         rotationEstimate = driveTab.add("estimate of rotation (inches)", 0);
         translationEstimate = driveTab.add("estimate of translation (inches)", 0);
 
-        gyroscopeWidget = driveTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
-        gyroAngle = driveTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+        // gyroscopeWidget = driveTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
+        // gyroAngle = driveTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
     }
 
     @Override
@@ -178,7 +174,7 @@ public class Drivetrain extends SubsystemBase {
         this.transCurrentW.getEntry().setDouble(transCurrent);
         this.rotCurrentW.getEntry().setDouble(rotCurrent);
 
-        this.gyroAngle.setDouble(gyroscope.getAngle());
+        // this.gyroAngle.setDouble(gyroscope.getAngle());
 
         double gain = gainWidget.getEntry().getDouble(0.01);
 
@@ -252,9 +248,5 @@ public class Drivetrain extends SubsystemBase {
 
     public PIDController getRotationController() {
         return this.rotationController;
-    }
-
-    public ADXRS450_Gyro getGyroscope() {
-        return this.gyroscope; 
     }
 }

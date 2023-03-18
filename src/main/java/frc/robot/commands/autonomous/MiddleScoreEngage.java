@@ -29,8 +29,7 @@ public class MiddleScoreEngage extends SequentialCommandGroup {
                 ), 
                 new HoldRotate(arm, 10.0, false)
             ), 
-            new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.CENTER_OF_CHARGE_STATION),
-            new Engage(drivetrain)
+            new DriveForwardEncoded(drivetrain, 0.5, -FieldConstants.CENTER_OF_CHARGE_STATION)
         );
     }
 }
