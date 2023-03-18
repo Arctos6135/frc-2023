@@ -31,6 +31,8 @@ import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.TelopRotate;
 import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.commands.scoring.ScoreMiddleRow;
+import frc.robot.commands.scoring.SubstationExit;
+import frc.robot.commands.scoring.SubstationIntake;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -159,6 +161,8 @@ public class RobotContainer {
     Trigger scoreMiddleCone = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CONE);
     Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE);
 
+    Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE); 
+
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
     }, () -> {
@@ -181,6 +185,12 @@ public class RobotContainer {
     scoreMiddleCone.whileTrue(new ScoreMiddleRow(elevator, arm, claw, false));
 
     scoreMiddleCube.whileTrue(new ScoreMiddleRow(elevator, arm, claw, true));
+
+    substationIntakeTrigger.whileTrue(
+      new SubstationIntake(elevator, arm, claw)
+    ).onFalse(
+      new SubstationExit(elevator, arm, claw)
+    );
 
     /*
      * autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm,

@@ -11,5 +11,7 @@ public class FieldConstants {
     public static double TOP_SHELF_CONE = 46.0;
 
     public static double MIDDLE_DISTANCE = 22.75;
-    public static double HIGH_DISTANCE = 39.75; 
+    public static double HIGH_DISTANCE = 39.75;
+    
+    public static double CENTER_OF_CHARGE_STATION = 156.885; 
 }

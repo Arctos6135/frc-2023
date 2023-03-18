@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -70,6 +71,8 @@ public class Drivetrain extends SubsystemBase {
     private RelativeEncoder rightEncoder;
     private RelativeEncoder leftEncoder;
 
+    private ADXRS450_Gyro gyroscope;  
+
     public Drivetrain(int rightMaster, int leftMaster, int rightFollower, int leftFollower, ShuffleboardTab driveTab) {
         this.rightMaster = new CANSparkMax(rightMaster, MotorType.kBrushless);
         this.leftMaster = new CANSparkMax(leftMaster, MotorType.kBrushless);
@@ -107,6 +110,8 @@ public class Drivetrain extends SubsystemBase {
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+
+        this.gyroscope = new ADXRS450_Gyro(); 
 
         kPW = driveTab.add("kP", 0.001).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0.0, "max", 1.0));
@@ -239,4 +244,7 @@ public class Drivetrain extends SubsystemBase {
         return this.rotationController;
     }
 
+    public ADXRS450_Gyro getGyroscope() {
+        return this.gyroscope; 
+    }
 }
