@@ -161,7 +161,7 @@ public class RobotContainer {
     Trigger scoreMiddleCone = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CONE);
     Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE);
 
-    Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE); 
+    Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE);
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
@@ -187,10 +187,8 @@ public class RobotContainer {
     scoreMiddleCube.whileTrue(new ScoreMiddleRow(elevator, arm, claw, true));
 
     substationIntakeTrigger.whileTrue(
-      new SubstationIntake(elevator, arm, claw)
-    ).onFalse(
-      new SubstationExit(elevator, arm, claw)
-    );
+        new SubstationIntake(elevator, arm, claw)).onFalse(
+            new SubstationExit(elevator, arm, claw));
 
     /*
      * autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm,
