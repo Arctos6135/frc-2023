@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.elevator.AutoExtend;
-import frc.robot.commands.elevator.AutoRotate;
+import frc.robot.commands.elevator.PidRotate;
 import frc.robot.commands.elevator.HoldRotate;
 import frc.robot.commands.elevator.TimedRotate;
 import frc.robot.constants.ClawConstants;
@@ -16,7 +16,7 @@ import frc.robot.subsystems.Elevator;
 /**
  * Scores a game piece into the middle row. 
  */
-public class MiddleRow extends SequentialCommandGroup {
+public class ScoreMiddleRow extends SequentialCommandGroup {
 
     /**
      * Rotates arm up to middle row, extends arm, and releases game piece from claw. 
@@ -26,7 +26,7 @@ public class MiddleRow extends SequentialCommandGroup {
      * @param claw
      * @param cube
      */
-    public MiddleRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
+    public ScoreMiddleRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
         addCommands(
             new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true), 
             new ParallelDeadlineGroup(

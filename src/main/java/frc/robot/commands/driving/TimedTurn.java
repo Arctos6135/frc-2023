@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 /*
  * Timer based command to rotate the robot 90 degrees to the left
  */
-public class Turn extends CommandBase {
+public class TimedTurn extends CommandBase {
     private final Drivetrain drivetrain;
 
     private final double speed;
@@ -19,7 +19,7 @@ public class Turn extends CommandBase {
      * @param time number of seconds to make the bot turn for
      * @param speed power from [-1, 1] to turn at, positive is left
      */
-    public Turn(Drivetrain drivetrain, double time, double speed) {
+    public TimedTurn(Drivetrain drivetrain, double time, double speed) {
         this.drivetrain = drivetrain;
         this.time = time;
         this.speed = speed;

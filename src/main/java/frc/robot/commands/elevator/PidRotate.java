@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 
-public class AutoRotate extends CommandBase {
+public class PidRotate extends CommandBase {
     private final Arm arm;
     
     private double setpointAngle;
@@ -18,7 +18,7 @@ public class AutoRotate extends CommandBase {
      * @param arm
      * @param angle in radians. 
      */
-    public AutoRotate(Arm arm, double setpointAngle) {
+    public PidRotate(Arm arm, double setpointAngle) {
         this.arm = arm; 
         this.setpointAngle = setpointAngle;
         this.setpointReached = false; 

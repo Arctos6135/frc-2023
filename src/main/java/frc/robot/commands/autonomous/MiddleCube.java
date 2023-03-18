@@ -16,7 +16,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
-// THIS IS THE ACTUAL AUTO, DONT RUN OTHER RUNS
 public class MiddleCube extends SequentialCommandGroup {
     public static final double openClawTime = ClawConstants.OPEN_CLAW_TIME; 
     public static final double closeClawTime = ClawConstants.OPEN_CLAW_TIME;

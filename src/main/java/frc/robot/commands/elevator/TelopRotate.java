@@ -8,7 +8,7 @@ import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.util.Dampener;
 
-public class Rotate extends CommandBase {
+public class TelopRotate extends CommandBase {
     private final Arm arm;
     
     public final XboxController controller;
@@ -18,7 +18,7 @@ public class Rotate extends CommandBase {
 
     private final Dampener dampener;
     
-    public Rotate(Arm arm, XboxController operatorController, int rotateAxis, int holdButton) {
+    public TelopRotate(Arm arm, XboxController operatorController, int rotateAxis, int holdButton) {
         this.arm = arm;
         this.controller = operatorController;
         this.ROTATION_AXIS = rotateAxis;
