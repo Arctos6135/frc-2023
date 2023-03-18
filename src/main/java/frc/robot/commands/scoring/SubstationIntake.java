@@ -17,7 +17,7 @@ public class SubstationIntake extends SequentialCommandGroup {
             new TimedRotate(arm, 0.85, -0.4, true),
                 new ParallelCommandGroup(
                     new ParallelCommandGroup(
-                        new AutoExtend(elevator, 1.6,true), 
+                        new AutoExtend(elevator, 0.5,true), 
                         new OpenClaw(claw, 1.0)
                     ), 
                     new HoldRotate(arm, 10.0, false)
