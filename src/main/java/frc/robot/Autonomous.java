@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.HighCube;
 import frc.robot.commands.autonomous.MiddleCube;
 import frc.robot.commands.autonomous.MobilityDockWide;
+import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.autonomous.MiddleMobility;
 import frc.robot.commands.autonomous.MiddleScoreEngage;
 import frc.robot.subsystems.Arm;
@@ -38,7 +39,7 @@ public class Autonomous {
     public Command getAuto(AutoMode mode, Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
         switch(mode) {
             case NONE: 
-                return null; 
+                return new DriveForwardEncoded(drivetrain, 0.5, -16 * 12); 
             case MOBILITY_DOCK_WIDE:
                 return MobilityDockWide.getCommand(drivetrain, elevator, arm, claw);
             case MIDDLE_MOBILITY:
@@ -61,6 +62,6 @@ public class Autonomous {
             chooser.addOption(mode.autoName, mode); 
         }
 
-        chooser.setDefaultOption(AutoMode.MIDDLE_MOBILITY.autoName, AutoMode.MIDDLE_MOBILITY); 
+        chooser.setDefaultOption(AutoMode.NONE.autoName, AutoMode.NONE); 
     }
 }

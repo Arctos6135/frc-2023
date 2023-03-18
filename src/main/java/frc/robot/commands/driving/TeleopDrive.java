@@ -28,7 +28,7 @@ public class TeleopDrive extends CommandBase {
     private Dampener xDampener;
     private Dampener yDampener;
 
-    private static boolean precisionDrive = true;
+    private static boolean precisionDrive = false;
     private static double precisionFactor = 0.5;
 
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis,

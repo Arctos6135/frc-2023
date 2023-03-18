@@ -30,6 +30,6 @@ public class Dampener {
         double deadbanded = Dampener.applyDeadband(dampened, deadband); 
         double signed = Math.copySign(deadbanded, value); 
 
-        return signed;
+        return signed / smoothDampen(1);
     }
 }

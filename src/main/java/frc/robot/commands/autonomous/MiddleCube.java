@@ -34,9 +34,9 @@ public class MiddleCube extends SequentialCommandGroup {
             new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new AutoExtend(elevator, cube ? 1.4 : 1.4, true), 
+                    new AutoExtend(elevator, cube ? 0.5 : 0.5, true), 
                     new OpenClaw(claw, 1.0),
-                    new AutoExtend(elevator, cube ? 1.4 : 1.4, false)
+                    new AutoExtend(elevator, cube ? 0.5 : 0.5, false)
                 ), 
                 new HoldRotate(arm, 6.0, false)
             ),

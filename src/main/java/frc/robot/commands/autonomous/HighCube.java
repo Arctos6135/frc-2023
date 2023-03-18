@@ -25,7 +25,7 @@ public class HighCube extends SequentialCommandGroup {
     public static final double closeClawTime = ClawConstants.OPEN_CLAW_TIME;
 
     public static final double armAngle = Math.PI;
-    public static final double extensionTime = 2.0;
+    public static final double extensionTime = 0.5;
 
     /**
      * Starts in community, drives forward to cube to intake, drives backwards to
