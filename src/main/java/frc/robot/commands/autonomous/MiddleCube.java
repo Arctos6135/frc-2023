@@ -21,9 +21,8 @@ public class MiddleCube extends SequentialCommandGroup {
     public static final double closeClawTime = ClawConstants.OPEN_CLAW_TIME;
 
     /**
-     * Drops game piece into low row. 
-     * Drives to intake second game piece. 
-     * Places game piece on middle row. 
+     * Start with cube in claw inside frame, up against grid
+     * Lift arm up, release cube, drive backwards
      * 
      * @param drivetrain
      * @param arm
@@ -35,13 +34,13 @@ public class MiddleCube extends SequentialCommandGroup {
             new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new AutoExtend(elevator, cube ? 1.6 : 1.6, true), 
+                    new AutoExtend(elevator, cube ? 1.4 : 1.4, true), 
                     new OpenClaw(claw, 1.0),
-                    new AutoExtend(elevator, cube ? 1.6 : 1.6, false)
+                    new AutoExtend(elevator, cube ? 1.4 : 1.4, false)
                 ), 
                 new HoldRotate(arm, 6.0, false)
             ),
-            new DriveForwardEncoded(drivetrain,0.5, 18 * 12)
+            new DriveForwardEncoded(drivetrain,0.5, -18 * 12)
         );
     }
 }

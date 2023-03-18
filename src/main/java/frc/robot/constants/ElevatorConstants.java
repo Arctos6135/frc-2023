@@ -37,7 +37,7 @@ public class ElevatorConstants {
     public static final double ROTATION_HIGH_LEVEL_CUBE = 4.27;
 
     public static final double ARM_HOLD_TIME = 2.5;
-    public static final double ELEVATOR_EXTENSION_TIME = 2.0; 
+    public static final double ELEVATOR_EXTENSION_TIME = 0.6; 
     public static final double ELEVATOR_EXTENSION_SPEED = 0.75;
 
     public static final int ELEVATOR_LIMIT_SWITCH_PORT = 9; 

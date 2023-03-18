@@ -9,8 +9,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +48,9 @@ public class Drivetrain extends SubsystemBase {
 
     private SimpleWidget rotationEstimate;
     private SimpleWidget translationEstimate;
+
+    private ComplexWidget gyroscopeWidget;
+    private GenericEntry gyroAngle;
 
     public double transCurrent = 0;
     public double rotCurrent = 0;
@@ -141,6 +146,9 @@ public class Drivetrain extends SubsystemBase {
 
         rotationEstimate = driveTab.add("estimate of rotation (inches)", 0);
         translationEstimate = driveTab.add("estimate of translation (inches)", 0);
+
+        gyroscopeWidget = driveTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
+        gyroAngle = driveTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
     }
 
     @Override
@@ -169,6 +177,8 @@ public class Drivetrain extends SubsystemBase {
 
         this.transCurrentW.getEntry().setDouble(transCurrent);
         this.rotCurrentW.getEntry().setDouble(rotCurrent);
+
+        this.gyroAngle.setDouble(gyroscope.getAngle());
 
         double gain = gainWidget.getEntry().getDouble(0.01);
 

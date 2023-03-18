@@ -30,7 +30,10 @@ public class Arm extends SubsystemBase {
     private PIDController rotationController;
 
     private final GenericEntry encoderOutputWidget;
+    private final GenericEntry motorSpeedWidget;
     private final double initialAngle;
+
+    private double speed;
 
 
     /**
@@ -48,6 +51,8 @@ public class Arm extends SubsystemBase {
 
         encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
             .withPosition(3, 1).withSize(1, 1).getEntry();
+        motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kNumberBar)
+            .withPosition(3, 2).withSize(1, 1).getEntry();
 
         initialAngle = 0;
     }
@@ -57,13 +62,19 @@ public class Arm extends SubsystemBase {
         //double pid = getPIDController().calculate(getAngle(), targetAngle);
         //setMotor(pid);
 
+        if (getAngle() > 1 || getAngle() < 0) {
+            System.out.printf("soft limit reached on arm, reversing\n");
+            setMotor(-0.5 * speed);
+        }
+
         encoderOutputWidget.setDouble(getAngle());
     }
 
     // Sets speed of motor
     public void setMotor(double armSpeed) {
-        System.out.printf("Running arm at %f\n", armSpeed);
+        this.speed = armSpeed;
         this.armMotor.set(ControlMode.PercentOutput, armSpeed);
+        this.motorSpeedWidget.setDouble(armSpeed);
     }
 
     public double getAngle() {

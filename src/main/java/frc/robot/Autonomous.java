@@ -43,7 +43,7 @@ public class Autonomous {
                 return MobilityDockWide.getCommand(drivetrain, elevator, arm, claw);
             case MIDDLE_MOBILITY:
                 return new MiddleMobility(drivetrain, arm, claw, elevator); 
-            case MIDDLE_CUBE: 
+            case MIDDLE_CUBE: // use this auto for either side of the charge station
                 return new MiddleCube(drivetrain, arm, claw, elevator, true);
             case HIGH_CUBE: 
                 return new HighCube(drivetrain, arm, claw, elevator);

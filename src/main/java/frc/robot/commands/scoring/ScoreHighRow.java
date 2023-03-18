@@ -15,25 +15,25 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elevator;
 
 public class ScoreHighRow extends SequentialCommandGroup {
-    private final Elevator elevator;
-    private final Arm arm;
-    private final Claw claw;
+        private final Elevator elevator;
+        private final Arm arm;
+        private final Claw claw;
 
-    private boolean cube;
+        private boolean cube;
 
-    public ScoreHighRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
-        this.elevator = elevator;
-        this.arm = arm;
-        this.claw = claw;
-        this.cube = cube;
+        public ScoreHighRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
+                this.elevator = elevator;
+                this.arm = arm;
+                this.claw = claw;
+                this.cube = cube;
 
-        addCommands(
-                new TimedRotate(arm, cube ? 1 : 0.75, -0.4, true),
-                new ParallelDeadlineGroup(
-                        new SequentialCommandGroup(
-                                new AutoExtend(elevator, cube ? 1.6 : 1.6, true),
-                                new OpenClaw(claw, 1.0),
-                                new AutoExtend(elevator, cube ? 1.6 : 1.6, false)),
-                        new HoldRotate(arm, 6.0, false)));
-    }
+                addCommands(
+                                new TimedRotate(arm, cube ? 1 : 0.75, -0.4, true),
+                                new ParallelDeadlineGroup(
+                                                new SequentialCommandGroup(
+                                                                new AutoExtend(elevator, cube ? 1.6 : 1.6, true),
+                                                                new OpenClaw(claw, 1.0),
+                                                                new AutoExtend(elevator, cube ? 1.6 : 1.6, false)),
+                                                new HoldRotate(arm, 6.0, false)));
+        }
 }

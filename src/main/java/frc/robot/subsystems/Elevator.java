@@ -27,19 +27,17 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         limitSwitchOutput.setBoolean(limitSwitch.get());
-
-        System.out.printf("limit switch %b\n", limitSwitch.get());
     }
 
     /**
      * @param armSpeed the power of the motor, in the range [-1, 1]
      */
     public void setMotor(double elevatorSpeed) {
-        // true is pressed as per wiring
         if (!limitSwitch.get()) {
             this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed);
         } else {
-            this.elevatorMotor.set(ControlMode.PercentOutput, 0);
+            System.out.printf("hard stop on elevator reached\n");
+            this.elevatorMotor.set(ControlMode.PercentOutput, -0.5 * elevatorSpeed);
         }
     }
 

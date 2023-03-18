@@ -23,9 +23,9 @@ public class MiddleScoreEngage extends SequentialCommandGroup {
             new TimedRotate(arm, cube ? 0.75 : 0.85, -0.4, true), 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new AutoExtend(elevator, cube ? 1.6 : 1.6, true),
+                    new AutoExtend(elevator, cube ? 1.4 : 1.4, true),
                     new OpenClaw(claw, 0.5), 
-                    new AutoExtend(elevator, cube ? 1.6 : 1.6, false)
+                    new AutoExtend(elevator, cube ? 1.4 : 1.4, false)
                 ), 
                 new HoldRotate(arm, 10.0, false)
             ), 
