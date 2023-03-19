@@ -38,15 +38,13 @@ public class TelopRotate extends CommandBase {
     public void execute() {
         if (controller.getRawButton(HOLD_BUTTON)) {
             this.arm.setMotor(ElevatorConstants.HOLD_FACTOR);
-        } 
-        
-        else {
+        } else {
             double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
             if (arm.getAngle() < 0.15) {
                 rotation *= 0.5; 
             }
-            this.arm.setMotor(rotation * 1.5);
-        } 
+            this.arm.setMotor(rotation * 0.8);
+        }
 
         DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
         DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);

@@ -38,10 +38,11 @@ public class TeleopDrive extends CommandBase {
 
         this.X_AXIS = leftRightAxis;
         this.Y_AXIS = fwdRevAxis;
-
+// sensitive turning
+// 
         this.trans = driveTab.add("translation speed modifier", 1).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 1));
-        this.rot = driveTab.add("rotation speed modifier", 1).withWidget(BuiltInWidgets.kNumberSlider)
+        this.rot = driveTab.add("rotation speed modifier", 0.75).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 1));
 
         this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
@@ -58,11 +59,12 @@ public class TeleopDrive extends CommandBase {
     @Override
     public void execute() {
         double y = controller.getRawAxis(Y_AXIS);
+        System.out.printf("Precision drive %b\n", precisionDrive);
         double y1 = -yDampener.smoothDampen(y) * (precisionDrive ? precisionFactor : 1.0);
         double x = controller.getRawAxis(X_AXIS);
         double x1 = xDampener.smoothDampen(x) * (precisionDrive ? precisionFactor : 1.0);
 
-        drivetrain.arcadeDrive(y1, x1);
+        drivetrain.arcadeDrive(y1, x1 * 0.6);
     }
 
     public static boolean isPrecisionDrive() {

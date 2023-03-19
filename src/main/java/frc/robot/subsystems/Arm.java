@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -12,15 +13,16 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 //code for rotating arm controlled by redline motor, chain, and sprockets
 
 
 public class Arm extends SubsystemBase {
-    
     //This is our motor
-    private final TalonSRX armMotor;
+    private final TalonSRX leftMotor = new TalonSRX(8);
+    private final TalonSRX rightMotor = new TalonSRX(5);
     private final DutyCycleEncoder hexEncoder;
 
     public static double kP = 0.00001;
@@ -31,18 +33,19 @@ public class Arm extends SubsystemBase {
 
     private final GenericEntry encoderOutputWidget;
     private final GenericEntry motorSpeedWidget;
+
     private final double initialAngle;
 
     private double speed;
-
 
     /**
      * This is our constructor
      * @param armMotor can ID of the motor for flipping the arm
      */
-    public Arm(int armMotor, int hexEncoderPort, ShuffleboardTab armTab) {
-        this.armMotor = new TalonSRX(armMotor);
-        this.armMotor.setNeutralMode(NeutralMode.Brake);
+    public Arm(int hexEncoderPort, ShuffleboardTab armTab) {
+        this.leftMotor.setNeutralMode(NeutralMode.Brake);
+        this.rightMotor.setNeutralMode(NeutralMode.Brake);
+
         this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
         
         this.rotationController = new PIDController(kP, kI, kD); 
@@ -53,7 +56,6 @@ public class Arm extends SubsystemBase {
             .withPosition(3, 1).withSize(1, 1).getEntry();
         motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kNumberBar)
             .withPosition(3, 2).withSize(1, 1).getEntry();
-
         initialAngle = 0;
     }
 
@@ -73,7 +75,8 @@ public class Arm extends SubsystemBase {
     // Sets speed of motor
     public void setMotor(double armSpeed) {
         this.speed = armSpeed;
-        this.armMotor.set(ControlMode.PercentOutput, armSpeed);
+        this.leftMotor.set(ControlMode.PercentOutput, armSpeed);
+        this.rightMotor.set(ControlMode.PercentOutput, armSpeed);
         this.motorSpeedWidget.setDouble(armSpeed);
     }
 

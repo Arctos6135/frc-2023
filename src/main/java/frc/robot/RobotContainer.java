@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
@@ -94,7 +95,7 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab));
 
-    this.arm = new Arm(ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HEX_ENCODER_PORT, armTab);
+    this.arm = new Arm(ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
         new TelopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
 
@@ -152,8 +153,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
-    AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
-
+    Trigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD);
+/* 
     // Trigger tapeAutoAlign = new JoystickButton(driverController,
     // DriveConstants.TAPE_AUTO_ALIGN);
     Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN);
@@ -162,7 +163,7 @@ public class RobotContainer {
     Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE);
 
     Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE);
-
+*/
 
     precisionDriveButton.onTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
@@ -173,11 +174,15 @@ public class RobotContainer {
     precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
+      drivetrain.setIdleMode(IdleMode.kBrake);
+      System.out.printf("Toggling precisio drive\n");
     }, () -> {
     }, (interrupted) -> {
+      drivetrain.setIdleMode(IdleMode.kCoast);
+
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
-
+/* 
     // tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem,
     // true));
 
@@ -190,7 +195,7 @@ public class RobotContainer {
     substationIntakeTrigger.whileTrue(
         new SubstationIntake(elevator, arm, claw)).onFalse(
             new SubstationExit(elevator, arm, claw));
-
+*/
     /*
      * autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm,
      * -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))

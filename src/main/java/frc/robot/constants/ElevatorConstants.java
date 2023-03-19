@@ -10,7 +10,7 @@ public class ElevatorConstants {
 
     public static final double SPEED_FACTOR = 0.7;
     public static final double ROTATE_FACTOR = 0.5;
-    public static final double HOLD_FACTOR = -0.2;
+    public static final double HOLD_FACTOR = -0.15;
     public static final double SCORE_SPEED = -0.4; 
     
     public static final int HEX_ENCODER_PORT = 8; 
