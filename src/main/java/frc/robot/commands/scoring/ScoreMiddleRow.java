@@ -30,13 +30,13 @@ public class ScoreMiddleRow extends SequentialCommandGroup {
      */
     public ScoreMiddleRow(Elevator elevator, Arm arm, Claw claw, boolean cube) {
         addCommands(
-                new TimedRotate(arm, cube ? 0.75 : 0.75, -0.4, true),
+                new TimedRotate(arm, cube ? 0.6 : 0.6, -0.4, true),
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                                new AutoExtend(elevator, cube ? 0.5 : 0.5, true),
+                                new AutoExtend(elevator, cube ? 0 : 0, true),
                                 new OpenClaw(claw, 1.0),
                                 new ParallelCommandGroup(
-                                        new AutoExtend(elevator, cube ? 0.5 : 0.5, false),
+                                        new AutoExtend(elevator, cube ? 0 : 0, false),
                                         new CloseClaw(claw, 1.0))),
                         new HoldRotate(arm, 6.0, false)));
     }

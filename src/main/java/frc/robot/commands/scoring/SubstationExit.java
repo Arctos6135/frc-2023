@@ -15,8 +15,8 @@ public class SubstationExit extends SequentialCommandGroup {
         addCommands(
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new CloseClaw(claw, 1.0),
-                    new AutoExtend(elevator, 1.6, false)
+                    new CloseClaw(claw, 2),
+                    new AutoExtend(elevator, 0.0, false)
                 ), 
                 new HoldRotate(arm, 10.0, false)
             )

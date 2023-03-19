@@ -10,7 +10,7 @@ public class HoldRotate extends CommandBase {
     private double initialTime;
     private boolean armFlipped;  
 
-    public static final double HOLD_SPEED = -0.2;
+    public static final double HOLD_SPEED = -0.25;
 
     public HoldRotate(Arm arm, double holdTime, boolean armFlipped) {
         this.arm = arm; 

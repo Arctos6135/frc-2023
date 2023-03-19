@@ -14,11 +14,11 @@ public class SubstationIntake extends SequentialCommandGroup {
     
     public SubstationIntake(Elevator elevator, Arm arm, Claw claw) {
         addCommands(
-            new TimedRotate(arm, 0.85, -0.4, true),
+            new TimedRotate(arm, 0.45, -0.4, true),
                 new ParallelCommandGroup(
                     new ParallelCommandGroup(
-                        new AutoExtend(elevator, 0.5,true), 
-                        new OpenClaw(claw, 1.0)
+                        new AutoExtend(elevator, 0.0,true), 
+                        new OpenClaw(claw, 1.4)
                     ), 
                     new HoldRotate(arm, 10.0, false)
             )

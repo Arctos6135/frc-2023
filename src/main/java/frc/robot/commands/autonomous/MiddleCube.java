@@ -40,7 +40,7 @@ public class MiddleCube extends SequentialCommandGroup {
                 ), 
                 new HoldRotate(arm, 6.0, false)
             ),
-            new DriveForwardEncoded(drivetrain,0.5, -18 * 12)
+            new DriveForwardEncoded(drivetrain,0.5, -15 * 12)
         );
     }
 }
