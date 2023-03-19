@@ -153,7 +153,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
-    Trigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD);
+    Trigger precisionDriveTrigger = new JoystickButton(driverController, DriveConstants.BOOST_DRIVE_HOLD);
 /* 
     // Trigger tapeAutoAlign = new JoystickButton(driverController,
     // DriveConstants.TAPE_AUTO_ALIGN);
@@ -171,7 +171,6 @@ public class RobotContainer {
     }, (interrupted) -> {
     }, () -> false));
 
-    precisionDriveTrigger.setMinTimeRequired(0.05);
     precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
       TeleopDrive.togglePrecisionDrive();
       drivetrain.setIdleMode(IdleMode.kBrake);
