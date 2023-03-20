@@ -138,59 +138,13 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
-    Trigger precisionDriveTrigger = new JoystickButton(driverController, DriveConstants.BOOST_DRIVE_HOLD);
-/* 
-    // Trigger tapeAutoAlign = new JoystickButton(driverController,
-    // DriveConstants.TAPE_AUTO_ALIGN);
-    Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN);
+   Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
-    Trigger scoreMiddleCone = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CONE);
-    Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE);
-
-    Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE);
-*/
-
-    precisionDriveButton.onTrue(new FunctionalCommand(() -> {
-      TeleopDrive.togglePrecisionDrive();
-    }, () -> {
-    }, (interrupted) -> {
-    }, () -> false));
-
-    precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
-      TeleopDrive.togglePrecisionDrive();
-      drivetrain.setIdleMode(IdleMode.kBrake);
-      System.out.printf("Toggling precisio drive\n");
-    }, () -> {
-    }, (interrupted) -> {
-      drivetrain.setIdleMode(IdleMode.kCoast);
-
-      TeleopDrive.togglePrecisionDrive();
-    }, () -> false));
-/* 
-    // tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem,
-    // true));
-
-    aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false));
-
-    scoreMiddleCone.whileTrue(new ScoreMiddleRow(elevator, arm, claw, false));
-
-    scoreMiddleCube.whileTrue(new ScoreMiddleRow(elevator, arm, claw, true));
-
-    substationIntakeTrigger.whileTrue(
-        new SubstationIntake(elevator, arm, claw)).onFalse(
-            new SubstationExit(elevator, arm, claw));
-*/
-    /*
-     * autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm,
-     * -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
-     * .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false));
-     */
-
-    /*
-     * autoRotateMiddleCube.whileTrue(new TimedRotate(arm, 1.0, true))
-     * .onFalse(new HoldRotate(arm, 2.0, false));
-     */
+   precisionDrive.whileTrue(new FunctionalCommand(() -> {
+    TeleopDrive.setPrecisionDrive(true);
+   }, () -> {}, (interrupted) -> {
+    TeleopDrive.setPrecisionDrive(true);
+   }, () -> false));
   }
 
   public Command getAutonomousCommand() {
