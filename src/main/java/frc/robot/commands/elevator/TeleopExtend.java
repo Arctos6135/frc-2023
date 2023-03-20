@@ -6,7 +6,7 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.util.Dampener;
 
-public class Extend extends CommandBase {
+public class TeleopExtend extends CommandBase {
     private final Elevator elevator; 
 
     public final XboxController controller;
@@ -15,7 +15,7 @@ public class Extend extends CommandBase {
 
     private final Dampener dampener;
 
-    public Extend(Elevator elevator, XboxController operatorController, int extendAxis) {
+    public TeleopExtend(Elevator elevator, XboxController operatorController, int extendAxis) {
         this.elevator = elevator;
         this.controller = operatorController;
         this.EXTENSION_AXIS = extendAxis;
