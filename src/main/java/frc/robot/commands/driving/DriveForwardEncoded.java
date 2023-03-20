@@ -48,6 +48,5 @@ public class DriveForwardEncoded extends CommandBase {
     public void end(boolean interrupted) {
         System.out.println("terminating command");
         drivetrain.arcadeDrive(0, 0, 0);
-        //drivetrain.setIdleMode(IdleMode.kCoast);
     }
 }

@@ -21,8 +21,8 @@ import frc.robot.constants.ElevatorConstants;
 
 public class Arm extends SubsystemBase {
     //This is our motor
-    private final TalonSRX leftMotor = new TalonSRX(8);
-    private final TalonSRX rightMotor = new TalonSRX(5);
+    private final TalonSRX leftMotor = new TalonSRX(ArmConstants.LEFT_MOTOR_PORT);
+    private final TalonSRX rightMotor = new TalonSRX(ArmConstants.RIGHT_MOTOR_PORT);
     private final DutyCycleEncoder hexEncoder;
 
     public static double kP = 0.00001;
@@ -63,7 +63,6 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         //double pid = getPIDController().calculate(getAngle(), targetAngle);
         //setMotor(pid);
-
         if (getAngle() > 1 || getAngle() < 0) {
             System.out.printf("soft limit reached on arm, reversing\n");
             setMotor(-0.5 * speed);

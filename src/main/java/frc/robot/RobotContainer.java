@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -18,22 +16,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.autonomous.AutoAlign;
-import frc.robot.commands.claw.CloseClaw;
-import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.claw.TeleopClaw;
-import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.driving.TimedTurn;
-import frc.robot.commands.driving.TurnEncoded;
-import frc.robot.commands.elevator.PidRotate;
-import frc.robot.commands.elevator.Extend;
-import frc.robot.commands.elevator.HoldRotate;
-import frc.robot.commands.elevator.TelopRotate;
-import frc.robot.commands.elevator.TimedRotate;
-import frc.robot.commands.scoring.ScoreMiddleRow;
-import frc.robot.commands.scoring.SubstationExit;
-import frc.robot.commands.scoring.SubstationIntake;
+import frc.robot.commands.elevator.TeleopExtend;
+import frc.robot.commands.elevator.TeleopRotate;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -97,14 +83,14 @@ public class RobotContainer {
 
     this.arm = new Arm(ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
-        new TelopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
+        new TeleopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
 
     this.claw = new Claw(ClawConstants.CLAW_MOTOR, armTab);
     this.claw.setDefaultCommand(
         new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
     this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, armTab);
-    this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
+    this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
 
     this.visionSystem = new VisionSystem();
 
