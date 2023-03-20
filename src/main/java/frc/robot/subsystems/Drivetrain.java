@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DriveConstants;
 
@@ -58,9 +57,9 @@ public class Drivetrain extends SubsystemBase {
     public double transTarget = 0;
     public double rotTarget = 0;
 
-    // for now ignoring these and delegating to the sparkmax pid controllers
-    private PIDController translationalController;
-    private PIDController rotationController;
+    // using these for autonomous routines, for them to actually do anything, you need to repeatedly call calculate in the `execute` of the command you are making.
+    public final PIDController translationalController;
+    public final PIDController rotationController;
 
     // Translational
     public static double kP = 0.00025;

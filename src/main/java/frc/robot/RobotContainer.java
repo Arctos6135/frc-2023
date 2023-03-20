@@ -110,16 +110,7 @@ public class RobotContainer {
         .withPosition(4, 0).withSize(4, 4);
 
     armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 3);
-
-    kPWidgetArm = pidControlTab.add("Arm kP", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(0, 0).withSize(2, 2).getEntry();
-
-    kIWidgetArm = pidControlTab.add("Arm kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(2, 0).withSize(2, 2).getEntry();
-
-    kDWidgetArm = pidControlTab.add("Arm kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(4, 0).withSize(2, 2).getEntry();
+        .withPosition(0, 0).withSize(2, 4);
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
