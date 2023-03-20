@@ -89,7 +89,7 @@ public class RobotContainer {
     this.claw.setDefaultCommand(
         new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
-    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, armTab);
+    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, ElevatorConstants.ELEVATOR_ENCODER);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
 
     this.visionSystem = new VisionSystem();
@@ -143,7 +143,7 @@ public class RobotContainer {
    precisionDrive.whileTrue(new FunctionalCommand(() -> {
     TeleopDrive.setPrecisionDrive(true);
    }, () -> {}, (interrupted) -> {
-    TeleopDrive.setPrecisionDrive(true);
+    TeleopDrive.setPrecisionDrive(false);
    }, () -> false));
   }
 
