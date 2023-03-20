@@ -39,7 +39,7 @@ public class Autonomous {
     public Command getAuto(AutoMode mode, Drivetrain drivetrain, Elevator elevator, Arm arm, Claw claw) {
         switch(mode) {
             case NONE: 
-                return new DriveForwardEncoded(drivetrain, 0.5, -14 * 12); 
+                return new DriveForwardEncoded(drivetrain, 0.5, -1); 
             case MOBILITY_DOCK_WIDE:
                 return MobilityDockWide.getCommand(drivetrain, elevator, arm, claw);
             case MIDDLE_MOBILITY:
