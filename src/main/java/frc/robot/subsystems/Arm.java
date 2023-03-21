@@ -57,12 +57,13 @@ public class Arm extends SubsystemBase {
         motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kNumberBar)
                 .withPosition(3, 2).withSize(1, 1).getEntry();
         initialAngle = 0;
+        rotationController.setSetpoint(initialAngle);
     }
 
     @Override
     public void periodic() {
-        //double pid = getPIDController().calculate(getAngle(), targetAngle);
-        //setMotor(pid);
+        double pid = rotationController.calculate(getAngle());
+        setMotor(pid);
 
         if (getAngle() > 1 || getAngle() < 0) {
             System.out.printf("soft limit reached on arm, reversing\n");
@@ -78,6 +79,10 @@ public class Arm extends SubsystemBase {
         this.leftMotor.set(ControlMode.PercentOutput, armSpeed);
         this.rightMotor.set(ControlMode.PercentOutput, armSpeed);
         this.motorSpeedWidget.setDouble(armSpeed);
+    }
+
+    public void setAngle(double angle) {
+        rotationController.setSetpoint(angle);
     }
 
     public double getAngle() {
