@@ -5,54 +5,97 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 
-public class PidRotate extends CommandBase {
-    private final Arm arm;
+public class PIDRotate extends CommandBase {
+  private final Arm arm;
+  
+  private double setpointAngle;
+
+  /**
+   * Autonomously rotates the arm to a set position for scoring.
+   * 
+   * @param arm
+   * @param angle in radians.
+   */
+  public PIDRotate(Arm arm, double setpointAngle) {
+    this.arm = arm;
+    this.setpointAngle = setpointAngle;
     
-    private double setpointAngle;
+    addRequirements(arm);
+  }
 
-    private boolean setpointReached;
+  @Override 
+  public void initialize() {
+    this.arm.resetEncoder();
+  }
 
-    /**
-     * Autonomously rotates the arm to a set position for scoring. 
-     * 
-     * @param arm
-     * @param angle in radians. 
-     */
-    public PidRotate(Arm arm, double setpointAngle) {
-        this.arm = arm; 
-        this.setpointAngle = setpointAngle;
-        this.setpointReached = false; 
-        
-        addRequirements(arm); 
-    }
+  @Override 
+  public void execute(
+    double armAngle,
+    double unixEpochTime
+  ) {
+    double armAngleNew = this.arm.getAngle();
+    double unixEpochTimeNew = System.currentTimeMillis() / 1000;
+    double armAngularVelocity = (
+      chargeStationAngleNew - chargeStationAngle
+    ) / (
+      unixEpochTimeNew - unixEpochTime
+    );
 
-    @Override 
-    public void initialize() {
-        this.arm.resetEncoder();
-    }
+    double armDistanceFromSetpoint = this.setPointAngle - armAngleNew;
 
-    @Override 
-    public void execute() {
-        if (!setpointReached) {
-            double pid = arm.getPIDController().calculate(
-                this.arm.getAngle(), setpointAngle);
-            this.arm.setMotor(pid);
-            DriverStation.reportWarning(Double.toString(pid), false);
+    // Built in calculate() method does not support variability
+    // in torque to voltage ratio; too much effort to reengineer.
+    // bootleg solution proposed:
 
-            if (Math.abs(this.arm.getEncoder().getDistance() - setpointAngle) < ArmConstants.ARM_TOLERANCE) {
-                this.setpointReached = true; 
-            }
-        }
-    }
+    this.arm.setMotor(
+      (
+        (
+          ArmConstants.ARM_SPEED_FACTOR
+        ) - (
+          armAngularVelocity
+        )
+      ) * (
+        armDistanceFromSetpoint
+      ) + Math.cos(
+        armAngleNew
+      ) * (
+        ArmConstants.ARM_MASS_FACTOR
+      )
+    );
+    
+    DriverStation.reportWarning(Double.toString(pid), false);
+  }
 
-    @Override 
-    public boolean isFinished() {
-        return this.setpointReached;
-    }
+  public void raise(double raiseDeltaTime) {
+    this.setPointAngle += raiseDeltaTime * ArmConstants.ARM_SPEED_FACTOR;
 
-    @Override
-    public void end(boolean interrupted) {
-        this.arm.resetEncoder(); 
-    }
+    if (this.setPointAngle > ArmConstants.ARM_UPPER_BOUND)
+      this.setPointAngle = ArmConstants.ARM_UPPER_BOUND;
+  }
+
+  public void lower(double lowerDeltaTime) {
+    this.setPointAngle -= lowerDeltaTime * ArmConstants.ARM_SENSITIVITY;
+
+    if (this.setpointAngle < ArmConstants.ARM_LOWER_BOUND)
+      this.setPointAngle = ArmConstants.ARM_LOWER_BOUND;
+  }
+
+  @Override 
+  public boolean isFinished() {
+    return Math.pow(
+      (
+        this.arm.getAngle
+      ) / (
+        57
+      ) - (
+        this.setPointAngle
+      ), - 2
+    ) > ArmConstants.ARM_TOLERANCE;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    this.arm.resetEncoder(); 
+  }
 
 }
