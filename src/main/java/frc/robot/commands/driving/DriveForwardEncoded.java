@@ -31,7 +31,7 @@ public class DriveForwardEncoded extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.arcadeDrive(speed, 0, 1);
+        drivetrain.arcadeDrive(speed, 0);
     }
 
     @Override
@@ -47,7 +47,6 @@ public class DriveForwardEncoded extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         System.out.println("terminating command");
-        drivetrain.arcadeDrive(0, 0, 0);
-        //drivetrain.setIdleMode(IdleMode.kCoast);
+        drivetrain.arcadeDrive(0, 0);
     }
 }

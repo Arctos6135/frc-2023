@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -18,22 +16,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.autonomous.AutoAlign;
-import frc.robot.commands.claw.CloseClaw;
-import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.claw.TeleopClaw;
-import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.driving.TimedTurn;
-import frc.robot.commands.driving.TurnEncoded;
-import frc.robot.commands.elevator.PidRotate;
-import frc.robot.commands.elevator.Extend;
-import frc.robot.commands.elevator.HoldRotate;
-import frc.robot.commands.elevator.TelopRotate;
-import frc.robot.commands.elevator.TimedRotate;
-import frc.robot.commands.scoring.ScoreMiddleRow;
-import frc.robot.commands.scoring.SubstationExit;
-import frc.robot.commands.scoring.SubstationIntake;
+import frc.robot.commands.elevator.TeleopExtend;
+import frc.robot.commands.elevator.TeleopRotate;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -61,49 +47,26 @@ public class RobotContainer {
   // Controller Rumbling
 
   // Shuffleboard Tabs
-  public ShuffleboardTab prematchTab; 
-  public ShuffleboardTab driveTab;
+  public ShuffleboardTab prematchTab = Shuffleboard.getTab("Prematch");
+  public ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
+  public ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
+  public ShuffleboardTab visionTab = Shuffleboard.getTab("Vision Tab");
 
-  public ShuffleboardTab drivetrainTab;
-  public ShuffleboardTab armTab;
-  public ShuffleboardTab pidControlTab;
-
-  public ShuffleboardTab visionTab;
-
-  public SimpleWidget transWidget;
-  public SimpleWidget rotWidget;
-
-  public GenericEntry kPWidgetArm;
-  public GenericEntry kIWidgetArm;
-  public GenericEntry kDWidgetArm;
-
-  // Network Tables
-  public GenericEntry hexEncoderEntry;
-
-  private Autonomous autonomous;
+  // Autonomous mode selection
+  private Autonomous autonomous = new Autonomous();
 
   public RobotContainer() {
-    prematchTab = Shuffleboard.getTab("Prematch");
-    driveTab = Shuffleboard.getTab("Drive");
-    drivetrainTab = Shuffleboard.getTab("Drivetrain");
-    armTab = Shuffleboard.getTab("Arm");
-    pidControlTab = Shuffleboard.getTab("PID Control Tab");
-    visionTab = Shuffleboard.getTab("Vision Tab");
-
-    autonomous = new Autonomous();
-
-    this.drivetrain = new Drivetrain(CANBus.RIGHT_MASTER, CANBus.LEFT_MASTER,
-        CANBus.RIGHT_FOLLOWER, CANBus.LEFT_FOLLOWER, driveTab);
+    this.drivetrain = new Drivetrain(drivetrainTab);
 
     this.drivetrain.setDefaultCommand(new TeleopDrive(
-        drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab));
+        drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, drivetrainTab));
 
     this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
-        new TelopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
+        new TeleopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
 
-    this.elevator = new Elevator(CANBus.ELEVATOR_EXTENSION, armTab);
-    this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
+    this.elevator = new Elevator(armTab);
+    this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
 /*
     this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
     this.claw.setDefaultCommand(
@@ -114,102 +77,35 @@ public class RobotContainer {
     this.visionSystem = new VisionSystem();
 
     configureDashboard();
-
+    
     configureBindings();
   }
 
   private void configureDashboard() {
     prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
 
-    drivetrainTab.add("PID Translation", drivetrain.getTranslationalController())
+    drivetrainTab.add("PID Translation", drivetrain.translationalController)
         .withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(4, 4);
+        .withPosition(0, 0).withSize(1, 4);
 
-    drivetrainTab.add("PID Rotation", drivetrain.getRotationController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(4, 0).withSize(4, 4);
+    drivetrainTab.add("PID Rotation", drivetrain.rotationController).withWidget(BuiltInWidgets.kPIDController)
+        .withPosition(1, 0).withSize(1, 4);
 
     armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 3);
-
-    kPWidgetArm = pidControlTab.add("Arm kP", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(0, 0).withSize(2, 2).getEntry();
-
-    kIWidgetArm = pidControlTab.add("Arm kI", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(2, 0).withSize(2, 2).getEntry();
-
-    kDWidgetArm = pidControlTab.add("Arm kD", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        .withPosition(4, 0).withSize(2, 2).getEntry();
+        .withPosition(0, 0).withSize(1, 4);
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
-
-    hexEncoderEntry = armTab.add("Hex Encoder Distance", arm.getEncoder().getDistance())
-        .withWidget(BuiltInWidgets.kTextView)
-        .withPosition(4, 0).withSize(1, 1).getEntry();
-  }
-
-  public void updateDashboard() {
-    arm.getPIDController().setP(kPWidgetArm.getDouble(0));
-    arm.getPIDController().setI(kIWidgetArm.getDouble(0));
-    arm.getPIDController().setD(kDWidgetArm.getDouble(0));
-
-    hexEncoderEntry.setDouble(arm.getEncoder().getDistance());
   }
 
   private void configureBindings() {
-    Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
-    Trigger precisionDriveTrigger = new JoystickButton(driverController, DriveConstants.BOOST_DRIVE_HOLD);
-/* 
-    // Trigger tapeAutoAlign = new JoystickButton(driverController,
-    // DriveConstants.TAPE_AUTO_ALIGN);
-    Trigger aprilTagAutoAlign = new JoystickButton(driverController, DriveConstants.APRIL_TAG_AUTO_ALIGN);
+   Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
-    Trigger scoreMiddleCone = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CONE);
-    Trigger scoreMiddleCube = new JoystickButton(operatorController, ElevatorConstants.SCORE_MIDDLE_CUBE);
-
-    Trigger substationIntakeTrigger = new JoystickButton(operatorController, ElevatorConstants.SUBSTATION_INTAKE);
-*/
-
-    precisionDriveButton.onTrue(new FunctionalCommand(() -> {
-      TeleopDrive.togglePrecisionDrive();
-    }, () -> {
-    }, (interrupted) -> {
-    }, () -> false));
-
-    precisionDriveTrigger.whileTrue(new FunctionalCommand(() -> {
-      TeleopDrive.togglePrecisionDrive();
-      drivetrain.setIdleMode(IdleMode.kBrake);
-      System.out.printf("Toggling precisio drive\n");
-    }, () -> {
-    }, (interrupted) -> {
-      drivetrain.setIdleMode(IdleMode.kCoast);
-
-      TeleopDrive.togglePrecisionDrive();
-    }, () -> false));
-/* 
-    // tapeAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem,
-    // true));
-
-    aprilTagAutoAlign.whileTrue(new AutoAlign(this.drivetrain, this.visionSystem, false));
-
-    scoreMiddleCone.whileTrue(new ScoreMiddleRow(elevator, arm, claw, false));
-
-    scoreMiddleCube.whileTrue(new ScoreMiddleRow(elevator, arm, claw, true));
-
-    substationIntakeTrigger.whileTrue(
-        new SubstationIntake(elevator, arm, claw)).onFalse(
-            new SubstationExit(elevator, arm, claw));
-*/
-    /*
-     * autoRotateMiddleCube.whileTrue(new AutoRotate(this.arm,
-     * -ElevatorConstants.ROTATION_MIDDLE_LEVEL_CUBE))
-     * .onFalse(new HoldRotate(this.arm, ElevatorConstants.ARM_HOLD_TIME, false));
-     */
-
-    /*
-     * autoRotateMiddleCube.whileTrue(new TimedRotate(arm, 1.0, true))
-     * .onFalse(new HoldRotate(arm, 2.0, false));
-     */
+   precisionDrive.whileTrue(new FunctionalCommand(() -> {
+    TeleopDrive.setPrecisionDrive(true);
+   }, () -> {}, (interrupted) -> {
+    TeleopDrive.setPrecisionDrive(false);
+   }, () -> false));
   }
 
   public Command getAutonomousCommand() {

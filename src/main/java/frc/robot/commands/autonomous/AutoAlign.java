@@ -37,9 +37,9 @@ public class AutoAlign extends CommandBase {
         if (result.hasTargets()) {
             double range = Units.metersToInches(visionSystem.calculateLimelightRange(this.tape));   
 
-            translationalSpeed = -this.drivetrain.getTranslationalController().calculate(range, VisionConstants.GOAL_RANGE_INCHES);
+            translationalSpeed = -this.drivetrain.translationalController.calculate(range, VisionConstants.GOAL_RANGE_INCHES);
 
-            rotationSpeed = -this.drivetrain.getRotationController().calculate(result.getBestTarget().getYaw(), 0); 
+            rotationSpeed = -this.drivetrain.rotationController.calculate(result.getBestTarget().getYaw(), 0); 
         } else {
             translationalSpeed = 0; 
             rotationSpeed = 0; 

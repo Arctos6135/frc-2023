@@ -5,7 +5,7 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 
 /*
- * Encoder based command to rotate the robot 90 degrees to the left
+ * Encoder based command to rotate the robot
  */
 public class TurnEncoded extends CommandBase {
     private final Drivetrain drivetrain;
@@ -33,7 +33,7 @@ public class TurnEncoded extends CommandBase {
     @Override
     public void execute() {
         System.out.printf("Turning at %f with encoder distance %f and current rotation %f\n", speed, encoderDistance, this.drivetrain.getRotation());
-        drivetrain.arcadeDrive(0, speed, 1);
+        drivetrain.arcadeDrive(0, speed);
     }
 
     @Override
@@ -44,6 +44,6 @@ public class TurnEncoded extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         System.out.printf("Terminating turn\n");
-        drivetrain.arcadeDrive(0, 0, 0);
+        drivetrain.arcadeDrive(0, 0);
     }
 }
