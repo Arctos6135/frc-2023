@@ -10,8 +10,6 @@ public class TeleopClaw extends CommandBase {
     private final Claw claw; 
     private int buttonOpen; 
     private int buttonClose; 
-
-    private SlewRateLimiter limiter;
     
     private XboxController operatorController; 
 
@@ -20,7 +18,6 @@ public class TeleopClaw extends CommandBase {
         this.buttonOpen = buttonOpen; 
         this.buttonClose = buttonClose; 
         this.operatorController = operatorController;
-        limiter = new SlewRateLimiter(30);
 
         addRequirements(claw);
     }
@@ -37,7 +34,7 @@ public class TeleopClaw extends CommandBase {
         } else {
             speed = 0;
         }
-        claw.setSpeed(limiter.calculate(speed));
+        claw.setSpeed(speed);
     }
 
     @Override 

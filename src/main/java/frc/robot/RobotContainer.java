@@ -37,18 +37,21 @@ import frc.robot.commands.scoring.SubstationIntake;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.constants.CANBus;
 import frc.robot.constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.VisionSystem;
+import frc.robot.subsystems.WheelClaw;
 
 public class RobotContainer {
   // Robot Subsystems
   public final Drivetrain drivetrain;
-  private final Claw claw;
+  //private final Claw claw;
   private final Arm arm;
   private final Elevator elevator;
+  //private final WheelClaw wheelClaw; 
   private final VisionSystem visionSystem;
 
   // Controllers
@@ -58,7 +61,7 @@ public class RobotContainer {
   // Controller Rumbling
 
   // Shuffleboard Tabs
-  public ShuffleboardTab prematchTab;
+  public ShuffleboardTab prematchTab; 
   public ShuffleboardTab driveTab;
 
   public ShuffleboardTab drivetrainTab;
@@ -89,23 +92,25 @@ public class RobotContainer {
 
     autonomous = new Autonomous();
 
-    this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
-        DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
+    this.drivetrain = new Drivetrain(CANBus.RIGHT_MASTER, CANBus.LEFT_MASTER,
+        CANBus.RIGHT_FOLLOWER, CANBus.LEFT_FOLLOWER, driveTab);
 
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab));
 
-    this.arm = new Arm(ElevatorConstants.HEX_ENCODER_PORT, armTab);
+    this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
         new TelopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
 
-    this.claw = new Claw(ClawConstants.CLAW_MOTOR, armTab);
-    this.claw.setDefaultCommand(
-        new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
-
-    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, armTab);
+    this.elevator = new Elevator(CANBus.ELEVATOR_EXTENSION, armTab);
     this.elevator.setDefaultCommand(new Extend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
+/*
+    this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
+    this.claw.setDefaultCommand(
+        new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON)); 
 
+    this.wheelClaw = new WheelClaw(CANBus.CLAW_MOTOR, CANBus.CLAW_MOTOR);
+ */
     this.visionSystem = new VisionSystem();
 
     configureDashboard();
@@ -212,6 +217,6 @@ public class RobotContainer {
     // return new TurnEncoded(drivetrain, Math.PI, 0.25);
     // return new AutoRotate(arm, 0);
     // return new Engage(drivetrain);
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, claw);
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, null);
   }
 }

@@ -21,8 +21,8 @@ import frc.robot.constants.ElevatorConstants;
 
 public class Arm extends SubsystemBase {
     //This is our motor
-    private final TalonSRX leftMotor = new TalonSRX(8);
-    private final TalonSRX rightMotor = new TalonSRX(5);
+    private final TalonSRX topMotor;
+    private final TalonSRX bottomMotor;
     private final DutyCycleEncoder hexEncoder;
 
     public static double kP = 0.00001;
@@ -42,9 +42,12 @@ public class Arm extends SubsystemBase {
      * This is our constructor
      * @param armMotor can ID of the motor for flipping the arm
      */
-    public Arm(int hexEncoderPort, ShuffleboardTab armTab) {
-        this.leftMotor.setNeutralMode(NeutralMode.Brake);
-        this.rightMotor.setNeutralMode(NeutralMode.Brake);
+    public Arm(int topMotor, int bottomMotor, int hexEncoderPort, ShuffleboardTab armTab) {
+        this.topMotor = new TalonSRX(topMotor); 
+        this.bottomMotor = new TalonSRX(bottomMotor); 
+
+        this.topMotor.setNeutralMode(NeutralMode.Brake);
+        this.bottomMotor.setNeutralMode(NeutralMode.Brake);
 
         this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
         
@@ -63,20 +66,20 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         //double pid = getPIDController().calculate(getAngle(), targetAngle);
         //setMotor(pid);
-
+/*
         if (getAngle() > 1 || getAngle() < 0) {
             System.out.printf("soft limit reached on arm, reversing\n");
             setMotor(-0.5 * speed);
         }
-
+         */
         encoderOutputWidget.setDouble(getAngle());
     }
 
     // Sets speed of motor
     public void setMotor(double armSpeed) {
         this.speed = armSpeed;
-        this.leftMotor.set(ControlMode.PercentOutput, armSpeed);
-        this.rightMotor.set(ControlMode.PercentOutput, armSpeed);
+        this.topMotor.set(ControlMode.PercentOutput, armSpeed);
+        this.bottomMotor.set(ControlMode.PercentOutput, armSpeed);
         this.motorSpeedWidget.setDouble(armSpeed);
     }
 

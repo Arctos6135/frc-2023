@@ -59,7 +59,6 @@ public class TeleopDrive extends CommandBase {
     @Override
     public void execute() {
         double y = controller.getRawAxis(Y_AXIS);
-        System.out.printf("Precision drive %b\n", precisionDrive);
         double y1 = -yDampener.smoothDampen(y) * (precisionDrive ? precisionFactor : 1.0);
         double x = controller.getRawAxis(X_AXIS);
         double x1 = xDampener.smoothDampen(x) * (precisionDrive ? precisionFactor : 1.0);

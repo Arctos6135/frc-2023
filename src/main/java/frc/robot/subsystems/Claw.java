@@ -13,8 +13,8 @@ import frc.robot.constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
     private final WPI_VictorSPX clawMotor;
-    private final DigitalInput limitSwitchOpen = new DigitalInput(ClawConstants.LIMIT_SWITCH_OPEN);
-    private final DigitalInput limitSwitchClose = new DigitalInput(ClawConstants.LIMIT_SWITCH_CLOSE);
+    // private final DigitalInput limitSwitchOpen = new DigitalInput(ClawConstants.LIMIT_SWITCH_OPEN);
+    // private final DigitalInput limitSwitchClose = new DigitalInput(ClawConstants.LIMIT_SWITCH_CLOSE);
     private ClawState state = ClawState.Open; // if the claw is not open at the start of the match BAD THINGS HAPPEN
     private GenericEntry clawMotorOutput;
 
@@ -48,14 +48,14 @@ public class Claw extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (limitSwitchOpen.get()) {
-            this.state = ClawState.Open;
-            this.clawMotor.set(ControlMode.PercentOutput, 0);
-        }
-        if (limitSwitchClose.get()) {
-            this.state = ClawState.Closed;
-            this.clawMotor.set(ControlMode.PercentOutput, 0);
-        }
+        // if (limitSwitchOpen.get()) {
+        //     this.state = ClawState.Open;
+        //     this.clawMotor.set(ControlMode.PercentOutput, 0);
+        // }
+        // if (limitSwitchClose.get()) {
+        //     this.state = ClawState.Closed;
+        //     this.clawMotor.set(ControlMode.PercentOutput, 0);
+        // }
     }
 
     public ClawState getState() {
