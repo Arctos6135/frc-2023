@@ -17,8 +17,9 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.CloseClaw;
-import frc.robot.commands.OpenClaw;
+import frc.robot.commands.TeleopClaw;
+// import frc.robot.commands.CloseClaw;
+// import frc.robot.commands.OpenClaw;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ClawConstants;
@@ -49,7 +50,10 @@ public class RobotContainer {
       drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT)
     );
 
-    this.claw = new Claw(ClawConstants.CLAW_MOTOR);
+    this.claw = new Claw();
+    this.claw.setDefaultCommand(new TeleopClaw(
+      claw, operatorController, ClawConstants.GATHER_CLAW_BUTTON,ClawConstants.RELEASE_CLAW_BUTTON)
+    );
 
     prematchTab = Shuffleboard.getTab("Prematch");
 
@@ -68,8 +72,8 @@ public class RobotContainer {
     Trigger precisionDriveButton = new JoystickButton(driverController, DriveConstants.PRECISION_DRIVE_TOGGLE);
     AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, DriveConstants.BOOST_DRIVE_HOLD, 0.5);
 
-    Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.OPEN_CLAW_BUTTON);
-    Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.CLOSE_CLAW_BUTTON); 
+    // Trigger openClawButton = new JoystickButton(operatorController, ClawConstants.GATHER_CLAW_BUTTON);
+    // Trigger closeClawButton = new JoystickButton(operatorController, ClawConstants.RELEASE_CLAW_BUTTON); 
 
     precisionDriveButton.onTrue(TeleopDrive.togglePrecisionDrive());
 
@@ -81,8 +85,8 @@ public class RobotContainer {
       TeleopDrive.togglePrecisionDrive();
     }, () -> false));
 
-    openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
-    closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
+    // openClawButton.onTrue(new OpenClaw(this.claw, 1.0)); 
+    // closeClawButton.onTrue(new CloseClaw(this.claw, 1.0)); 
   }
 
   public Command getAutonomousCommand() {
