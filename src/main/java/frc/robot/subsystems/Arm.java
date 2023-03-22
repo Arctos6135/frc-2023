@@ -5,7 +5,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -14,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ElevatorConstants;
 
 //code for rotating arm controlled by redline motor, chain, and sprockets
 
@@ -27,13 +28,18 @@ public class Arm extends SubsystemBase {
     public static double kP = 0.00001;
     public static double kI = 0;
     public static double kD = 0;
+    public static Constraints kConstraints = new Constraints(0, 0);
+    
+    public static double kS = 0;
+    public static double kG = 0;
+    public static double kV = 0;
+    public static double kA = 0;
 
-    private PIDController rotationController;
+    private ProfiledPIDController rotationController;
+    private ArmFeedforward rotationFeedforward;
 
     private final GenericEntry encoderOutputWidget;
     private final GenericEntry motorSpeedWidget;
-
-    private final double initialAngle;
 
     private double speed;
 
@@ -48,22 +54,23 @@ public class Arm extends SubsystemBase {
 
         this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
 
-        this.rotationController = new PIDController(kP, kI, kD);
+        this.rotationController = new ProfiledPIDController(kP, kI, kD, kConstraints);
+        this.rotationFeedforward = new ArmFeedforward(kS, kG, kV, kA);
 
-        this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
+        this.hexEncoder.setDistancePerRotation(ArmConstants.DISTANCE_PER_ROTATION_RADIANS);
 
         encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
                 .withPosition(3, 1).withSize(1, 1).getEntry();
         motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kNumberBar)
                 .withPosition(3, 2).withSize(1, 1).getEntry();
-        initialAngle = 0;
-        rotationController.setSetpoint(initialAngle);
+        rotationController.setGoal(ArmConstants.STOW_ANGLE);
     }
 
     @Override
     public void periodic() {
         double pid = rotationController.calculate(getAngle());
-        setMotor(pid);
+        double feedforward = rotationFeedforward.calculate(rotationController.getSetpoint().position, rotationController.getSetpoint().velocity);
+        setMotor(feedforward + pid);
 
         if (getAngle() > 1 || getAngle() < 0) {
             System.out.printf("soft limit reached on arm, reversing\n");
@@ -82,11 +89,12 @@ public class Arm extends SubsystemBase {
     }
 
     public void setAngle(double angle) {
-        rotationController.setSetpoint(angle);
+        rotationController.reset(getAngle());
+        rotationController.setGoal(angle);
     }
 
     public double getAngle() {
-        return initialAngle + hexEncoder.getDistance();
+        return hexEncoder.getDistance() + ArmConstants.STOW_ANGLE;
     }
 
     public void resetEncoder() {
@@ -101,7 +109,7 @@ public class Arm extends SubsystemBase {
         return rotationController.atSetpoint();
     }
 
-    public PIDController getPIDController() {
+    public ProfiledPIDController getPIDController() {
         return rotationController;
     }
 }
