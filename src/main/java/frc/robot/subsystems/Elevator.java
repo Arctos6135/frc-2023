@@ -9,38 +9,50 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ResourceBundle.Control;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class Elevator extends SubsystemBase {
-    private final TalonSRX elevatorMotor;
-    private final DutyCycleEncoder elevatorEncoder;
-    private final double initialAngle;
+    private final TalonSRX elevatorMotor = new TalonSRX(ElevatorConstants.ELEVATOR_MOTOR);
+    private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
+    private final GenericEntry encoderWidget;
+    private double speed;
     // Nick told me to do this
     // private final DigitalInput limitSwitch = new
     // DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT);
     // private final GenericEntry limitSwitchOutput;
 
-    public Elevator(int elevatorMotorId, int elevatorEncoderPort) { // removed argument: ShuffleboardTab armTab
-        this.elevatorMotor = new TalonSRX(elevatorMotorId);
+    public Elevator(ShuffleboardTab armTab) {
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
-
-        this.elevatorEncoder = new DutyCycleEncoder(elevatorEncoderPort);
         this.elevatorEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS_ELEVATOR);
-
-        initialAngle = 0;
+        this.encoderWidget = armTab.add("Elevator encoder (radians)", 0)
+            .withWidget(BuiltInWidgets.kNumberBar)
+            .withSize(1, 1)
+            .withPosition(2, 3)
+            .getEntry();
 
         // limitSwitchOutput = armTab.add("Limit switch on elevator", false)
         // .withWidget(BuiltInWidgets.kBooleanBox).withSize(1, 1).withPosition(3,
         // 3).getEntry();
     }
+    
+    @Override
+    public void periodic() {
+        // limitSwitchOutput.setBoolean(limitSwitch.get());
+        this.encoderWidget.setDouble(this.getAngle());
 
-    // @Override
-    // public void periodic() {
-    // limitSwitchOutput.setBoolean(limitSwitch.get());
-    // }
+        if (this.getAngle() >= ElevatorConstants.ENCODER_ANGLE_HIGHEST
+                || this.getAngle() <= ElevatorConstants.ENCODER_ANGLE_LOWEST) {
+            this.elevatorMotor.set(ControlMode.PercentOutput, -speed);
+        } else {
+            this.elevatorMotor.set(ControlMode.PercentOutput, speed);
+        }
+    }
 
     /**
      * @param armSpeed the power of the motor, in the range [-1, 1]
@@ -53,26 +65,13 @@ public class Elevator extends SubsystemBase {
         // this.elevatorMotor.set(ControlMode.PercentOutput, -0.5 * elevatorSpeed);
         // }
 
-        elevatorSpeed *= ElevatorConstants.SPEED_FACTOR;
-
-        if (this.getAngle() >= ElevatorConstants.ENCODER_ANGLE_HIGHEST
-                || this.getAngle() <= ElevatorConstants.ENCODER_ANGLE_LOWEST) {
-            elevatorSpeed = -elevatorSpeed;
-        }
+        speed = elevatorSpeed;
 
         this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed);
     }
 
     public double getAngle() {
-        return this.initialAngle + this.elevatorEncoder.getDistance();
-    }
-
-    public void resetEncoder() {
-        this.elevatorEncoder.reset();
-    }
-
-    public DutyCycleEncoder getEncoder() {
-        return this.elevatorEncoder;
+        return this.elevatorEncoder.getDistance();
     }
 
     public void stopMotor() {

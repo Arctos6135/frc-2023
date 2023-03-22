@@ -44,42 +44,19 @@ public class RobotContainer {
   // Controller Rumbling
 
   // Shuffleboard Tabs
-  public ShuffleboardTab prematchTab;
-  public ShuffleboardTab driveTab;
+  public ShuffleboardTab prematchTab = Shuffleboard.getTab("Prematch");
+  public ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
+  public ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
+  public ShuffleboardTab visionTab = Shuffleboard.getTab("Vision Tab");
 
-  public ShuffleboardTab drivetrainTab;
-  public ShuffleboardTab armTab;
-  public ShuffleboardTab pidControlTab;
-
-  public ShuffleboardTab visionTab;
-
-  public SimpleWidget transWidget;
-  public SimpleWidget rotWidget;
-
-  public GenericEntry kPWidgetArm;
-  public GenericEntry kIWidgetArm;
-  public GenericEntry kDWidgetArm;
-
-  // Network Tables
-  public GenericEntry hexEncoderEntry;
-
-  private Autonomous autonomous;
+  // Autonomous mode selection
+  private Autonomous autonomous = new Autonomous();
 
   public RobotContainer() {
-    prematchTab = Shuffleboard.getTab("Prematch");
-    driveTab = Shuffleboard.getTab("Drive");
-    drivetrainTab = Shuffleboard.getTab("Drivetrain");
-    armTab = Shuffleboard.getTab("Arm");
-    pidControlTab = Shuffleboard.getTab("PID Control Tab");
-    visionTab = Shuffleboard.getTab("Vision Tab");
-
-    autonomous = new Autonomous();
-
-    this.drivetrain = new Drivetrain(DriveConstants.RIGHT_MASTER, DriveConstants.LEFT_MASTER,
-        DriveConstants.RIGHT_FOLLOWER, DriveConstants.LEFT_FOLLOWER, driveTab);
+    this.drivetrain = new Drivetrain(drivetrainTab);
 
     this.drivetrain.setDefaultCommand(new TeleopDrive(
-        drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, driveTab));
+        drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, drivetrainTab));
 
     this.arm = new Arm(ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
@@ -89,43 +66,31 @@ public class RobotContainer {
     this.claw.setDefaultCommand(
         new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON));
 
-    this.elevator = new Elevator(ElevatorConstants.ELEVATOR_MOTOR, ElevatorConstants.ELEVATOR_ENCODER);
+    this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
 
     this.visionSystem = new VisionSystem();
 
     configureDashboard();
-
+    
     configureBindings();
   }
 
   private void configureDashboard() {
     prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
 
-    drivetrainTab.add("PID Translation", drivetrain.getTranslationalController())
+    drivetrainTab.add("PID Translation", drivetrain.translationalController)
         .withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(4, 4);
+        .withPosition(0, 0).withSize(1, 4);
 
-    drivetrainTab.add("PID Rotation", drivetrain.getRotationController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(4, 0).withSize(4, 4);
+    drivetrainTab.add("PID Rotation", drivetrain.rotationController).withWidget(BuiltInWidgets.kPIDController)
+        .withPosition(1, 0).withSize(1, 4);
 
     armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(2, 4);
+        .withPosition(0, 0).withSize(1, 4);
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
-
-    hexEncoderEntry = armTab.add("Hex Encoder Distance", arm.getEncoder().getDistance())
-        .withWidget(BuiltInWidgets.kTextView)
-        .withPosition(4, 0).withSize(1, 1).getEntry();
-  }
-
-  public void updateDashboard() {
-    arm.getPIDController().setP(kPWidgetArm.getDouble(0));
-    arm.getPIDController().setI(kIWidgetArm.getDouble(0));
-    arm.getPIDController().setD(kDWidgetArm.getDouble(0));
-
-    hexEncoderEntry.setDouble(arm.getEncoder().getDistance());
   }
 
   private void configureBindings() {
