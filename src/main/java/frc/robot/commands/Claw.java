@@ -18,6 +18,13 @@ public class Claw extends CommandBase {
     }
 
     public void execute() {
-        double openClawPressed 
+        // I dont know if .getRawButton() does what I think it does...
+        if (controller.getRawButton(ClawConstants.GATHER_CLAW_BUTTON) == true) {
+            this.claw.gather();
+        } else if (controller.getRawButton(ClawConstants.RELEASE_CLAW_BUTTON) == true) {
+            this.claw.release();
+        } else {
+            this.claw.stop();
+        }
     };
 }
