@@ -15,13 +15,6 @@ public class ElevatorConstants {
 
     public static final int HEX_ENCODER_PORT = 8;
 
-    public static final int ROTATE_CONTROL = XboxController.Axis.kRightY.value;
-    public static final int HOLD_ROTATION = XboxController.Button.kB.value;
-    public static final int ELEVATOR_CONTROL = XboxController.Axis.kLeftY.value;
-    public static final int SCORE_MIDDLE_CUBE = XboxController.Button.kX.value;
-    public static final int SCORE_MIDDLE_CONE = XboxController.Button.kY.value;
-    public static final int SUBSTATION_INTAKE = XboxController.Button.kA.value;
-
     public static final double VERSAPLANETARY_GEARBOX_RATIO = 1.0 / 50.0;
     public static final int CHAIN_LINKS = 132; // CHECK VALUE
     public static final int HEX_ROTATION = 12;

@@ -12,4 +12,6 @@ public class CANBus {
     public static final int ELEVATOR_MOTOR = 6; 
 
     public static final int CLAW_MOTOR = 9; 
+
+    public static final int INTAKE_MOTOR = 10;
 }

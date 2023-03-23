@@ -25,6 +25,7 @@ import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.constants.CANBus;
 import frc.robot.constants.ClawConstants;
+import frc.robot.constants.Controllers;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -59,14 +60,14 @@ public class RobotContainer {
     this.drivetrain = new Drivetrain(drivetrainTab);
 
     this.drivetrain.setDefaultCommand(new TeleopDrive(
-        drivetrain, driverController, DriveConstants.DRIVE_FWD_REV, DriveConstants.DRIVE_LEFT_RIGHT, drivetrainTab));
+        drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
 
     this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
     this.arm.setDefaultCommand(
-        new TeleopRotate(arm, operatorController, ElevatorConstants.ROTATE_CONTROL, ElevatorConstants.HOLD_ROTATION));
+        new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, Controllers.HOLD_ROTATION));
 
     this.elevator = new Elevator(armTab);
-    this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, ElevatorConstants.ELEVATOR_CONTROL));
+    this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
 /*
     this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
     this.claw.setDefaultCommand(

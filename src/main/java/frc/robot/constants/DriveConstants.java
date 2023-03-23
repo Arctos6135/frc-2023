@@ -14,13 +14,6 @@ public class DriveConstants {
     public static double FWD_REV_DAMPENING = 0.75;
     public static double LEFT_RIGHT_DAMPENING = 0.75;
 
-    public static int DRIVE_FWD_REV = XboxController.Axis.kLeftY.value; 
-    public static int DRIVE_LEFT_RIGHT = XboxController.Axis.kRightX.value; 
-    public static int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
-    public static int BOOST_DRIVE_HOLD = XboxController.Button.kX.value;
-    // public static int TAPE_AUTO_ALIGN = XboxController.Button.kA.value; 
-    public static int APRIL_TAG_AUTO_ALIGN = XboxController.Button.kB.value; 
-
     // Drivetrain Constants (Inches)
     public static double WHEEL_DIAMETER = 6.0; 
     public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
