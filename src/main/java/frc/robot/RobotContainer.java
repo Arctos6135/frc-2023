@@ -20,6 +20,8 @@ import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
+import frc.robot.commands.intake.DefaultIntake;
+import frc.robot.commands.wheelclaw.TeleopClawIntake;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -29,6 +31,7 @@ import frc.robot.constants.Controllers;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.VisionSystem;
 import frc.robot.subsystems.WheelClaw;
 
@@ -38,7 +41,8 @@ public class RobotContainer {
   //private final Claw claw;
   private final Arm arm;
   private final Elevator elevator;
-  //private final WheelClaw wheelClaw; 
+  private final WheelClaw wheelClaw; 
+  private final Intake intake; 
   private final VisionSystem visionSystem;
 
   // Controllers
@@ -68,13 +72,17 @@ public class RobotContainer {
 
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
-/*
-    this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
-    this.claw.setDefaultCommand(
-        new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON)); 
 
-    this.wheelClaw = new WheelClaw(CANBus.CLAW_MOTOR, CANBus.CLAW_MOTOR);
- */
+    /* this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
+    this.claw.setDefaultCommand(
+        new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON)); */
+
+    this.wheelClaw = new WheelClaw(CANBus.CLAW_MOTOR);
+    this.wheelClaw.setDefaultCommand(new TeleopClawIntake(wheelClaw, operatorController, Controllers.CLAW_INTAKE, Controllers.CLAW_OUTTAKE));
+
+    this.intake = new Intake(CANBus.INTAKE_MOTOR); 
+    this.intake.setDefaultCommand(new DefaultIntake(intake, driverController, Controllers.BUMPER_INTAKE, Controllers.BUMPER_OUTTAKE));
+    
     this.visionSystem = new VisionSystem();
 
     configureDashboard();

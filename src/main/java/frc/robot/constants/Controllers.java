@@ -21,4 +21,6 @@ public class Controllers {
 
     public static final int OPEN_CLAW_BUTTON = XboxController.Button.kRightBumper.value;
     public static final int CLOSE_CLAW_BUTTON = XboxController.Button.kLeftBumper.value; 
+    public static final int CLAW_INTAKE = XboxController.Button.kRightBumper.value; 
+    public static final int CLAW_OUTTAKE = XboxController.Button.kLeftBumper.value; 
 }
