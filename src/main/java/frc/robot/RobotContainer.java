@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.elevator.PidRotate;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
 import frc.robot.constants.DriveConstants;
@@ -53,6 +55,8 @@ public class RobotContainer {
   public ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
   public ShuffleboardTab visionTab = Shuffleboard.getTab("Vision Tab");
 
+  public GenericEntry armSetpointWidget;
+
   // Autonomous mode selection
   private Autonomous autonomous = new Autonomous();
 
@@ -62,7 +66,7 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
 
-    this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
+    this.arm = new Arm(armTab);
     this.arm.setDefaultCommand(
         new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, Controllers.HOLD_ROTATION));
 
@@ -87,13 +91,16 @@ public class RobotContainer {
 
     drivetrainTab.add("PID Translation", drivetrain.translationalController)
         .withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 4);
+        .withPosition(0, 0).withSize(1, 2);
 
     drivetrainTab.add("PID Rotation", drivetrain.rotationController).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(1, 0).withSize(1, 4);
+        .withPosition(1, 0).withSize(1, 2);
 
     armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 4);
+        .withPosition(0, 0).withSize(1, 2);
+
+    armSetpointWidget = armTab.add("Setpoint", 0).withWidget(BuiltInWidgets.kTextView)
+        .withPosition(3, 3).withSize(1, 1).getEntry();
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
@@ -101,12 +108,14 @@ public class RobotContainer {
 
   private void configureBindings() {
    Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+   Trigger moveArm = new JoystickButton(operatorController, XboxController.Button.kA.value);
 
    precisionDrive.whileTrue(new FunctionalCommand(() -> {
     TeleopDrive.setPrecisionDrive(true);
    }, () -> {}, (interrupted) -> {
     TeleopDrive.setPrecisionDrive(false);
    }, () -> false));
+   moveArm.onTrue(new PidRotate(arm, armSetpointWidget));
   }
 
   public Command getAutonomousCommand() {

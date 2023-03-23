@@ -31,7 +31,6 @@ public class TeleopRotate extends CommandBase {
     
     @Override 
     public void initialize() {
-        this.arm.getEncoder().reset();
     }
 
     @Override 
@@ -46,8 +45,7 @@ public class TeleopRotate extends CommandBase {
             this.arm.setMotor(rotation * 0.8);
         }
 
-        DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
-        DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);
+        DriverStation.reportWarning(Double.toString(this.arm.getAngle()), false);
     }
 
     @Override 
