@@ -1,99 +1,34 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
-    private final WPI_VictorSPX clawMotor;
-    // private final DigitalInput limitSwitchOpen = new DigitalInput(ClawConstants.LIMIT_SWITCH_OPEN);
-    // private final DigitalInput limitSwitchClose = new DigitalInput(ClawConstants.LIMIT_SWITCH_CLOSE);
-    private ClawState state = ClawState.Open; // if the claw is not open at the start of the match BAD THINGS HAPPEN
-    private GenericEntry clawMotorOutput;
+    private CANSparkMax clawMotor = new CANSparkMax(ClawConstants.CLAW_MOTOR, MotorType.kBrushless);
 
-    public enum ClawState {
-        Open("open"),
-        Opening("opening"),
-        Closed("closed"),
-        Closing("closing");
+    // Let's stop gettomg the motor ID from an argument...
+    public Claw() { 
 
-        String name;
-
-        ClawState(String name) {
-            this.name = name; 
-        }
+    }
+    
+    // It is important we call this 
+    public void stop() {
+        setMotors(0);
     }
 
-    /**
-     * The claw MUST be open at the start of the match. If it isn't, things will break and I will be mad at you.
-     */
-    public Claw(int clawMotorId, ShuffleboardTab armTab) {
-        this.clawMotor = new WPI_VictorSPX(clawMotorId);
-        this.clawMotor.setNeutralMode(NeutralMode.Brake);
-        clawMotorOutput = armTab.add("Claw speed", 0).withWidget(BuiltInWidgets.kNumberBar)
-        .withPosition(4, 2).withSize(1, 1).getEntry();
+    // Starts moving the motor to gather anything ahead of it
+    public void gather() {
+        setMotors(0.8);
     }
 
-    public void setSpeed(double speed) {
-        clawMotorOutput.setDouble(speed);
-        this.clawMotor.set(ControlMode.PercentOutput, speed);
+    // Moves the motor in inverse to release anything that it may have gathered
+    public void release() {
+        setMotors(-0.8);
     }
 
-    @Override
-    public void periodic() {
-        // if (limitSwitchOpen.get()) {
-        //     this.state = ClawState.Open;
-        //     this.clawMotor.set(ControlMode.PercentOutput, 0);
-        // }
-        // if (limitSwitchClose.get()) {
-        //     this.state = ClawState.Closed;
-        //     this.clawMotor.set(ControlMode.PercentOutput, 0);
-        // }
-    }
-
-    public ClawState getState() {
-        return state;
-    }
-
-    public void startClosing() {
-        if (state == ClawState.Open) {
-            clawMotor.set(ControlMode.PercentOutput, ClawConstants.CLOSE_PERCENT_OUTPUT);
-            state = ClawState.Closing;
-        } else if (state == ClawState.Opening || state == ClawState.Closed) {
-            DriverStation.reportWarning("Claw trying to close while " + state, false);
-        }
-    }
-
-    public void stopClosing() {
-        if (state == ClawState.Closing) {
-            state = ClawState.Closed;
-            clawMotor.set(ControlMode.PercentOutput, 0);
-        } else {
-            DriverStation.reportWarning("Claw cannot stop closing because it is " + state, false);
-        }
-    }
-
-    public void startOpening() {
-        if (state == ClawState.Closed) {
-            clawMotor.set(ControlMode.PercentOutput, ClawConstants.OPEN_PERCENT_OUTPUT);
-        } else if (state == ClawState.Closing || state == ClawState.Open) {
-            DriverStation.reportWarning("Claw trying to open while " + state, false);
-        }
-    }
-
-    public void stopOpening() {
-        if (state == ClawState.Opening) {
-            state = ClawState.Open;
-            clawMotor.set(ControlMode.PercentOutput, 0);
-        } else {
-            DriverStation.reportWarning("Claw cannot stop opening because it is " + state, false);
-        }
+    public void setMotors(double speed) {
+        this.clawMotor.set(speed);
     }
 }

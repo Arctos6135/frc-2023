@@ -1,49 +1,30 @@
-package frc.robot.commands.claw;
+package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 public class TeleopClaw extends CommandBase {
-    private final Claw claw; 
-    private int buttonOpen; 
-    private int buttonClose; 
-    
-    private XboxController operatorController; 
+    private final Claw claw;
+    private final XboxController controller;
 
-    public TeleopClaw(Claw claw, XboxController operatorController, int buttonOpen, int buttonClose) {
-        this.claw = claw; 
-        this.buttonOpen = buttonOpen; 
-        this.buttonClose = buttonClose; 
-        this.operatorController = operatorController;
+    public TeleopClaw(Claw claw, XboxController operatorController) {
+        this.claw = claw;
+        this.controller = operatorController;
 
         addRequirements(claw);
     }
 
-    @Override
     public void execute() {
-        double speed;
-        if (operatorController.getRawButton(buttonOpen) && operatorController.getRawButton(buttonClose)) {
-            speed = 0;
-        } else if (operatorController.getRawButton(buttonOpen)) {
-            speed = ClawConstants.CLAW_SPEED;
-        } else if (operatorController.getRawButton(buttonClose)) {
-            speed = -ClawConstants.CLAW_SPEED; 
+        // I dont know if .getRawButton() does what I think it does...
+        if (controller.getRawButton(ClawConstants.GATHER_CLAW_BUTTON) == true) {
+            this.claw.gather();
+        } else if (controller.getRawButton(ClawConstants.RELEASE_CLAW_BUTTON) == true) {
+            this.claw.release();
         } else {
-            speed = 0;
+            this.claw.stop();
         }
-        claw.setSpeed(speed);
-    }
-
-    @Override 
-    public boolean isFinished() {
-        return false; 
-    }
-
-    @Override 
-    public void end(boolean interrupted) {
-        claw.setSpeed(0);
-    }
+    };
 }
