@@ -1,0 +1,30 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [4]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm/PID Controller": "PIDController",
+      "/Shuffleboard/Drivetrain/PID Rotation": "PIDController",
+      "/Shuffleboard/Drivetrain/PID Translation": "PIDController",
+      "/Shuffleboard/Prematch/Autonomous Mode": "String Chooser"
+    }
+  }
+}
