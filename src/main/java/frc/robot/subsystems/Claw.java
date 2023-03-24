@@ -3,10 +3,11 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CANBus;
 import frc.robot.constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
-    private CANSparkMax clawMotor = new CANSparkMax(ClawConstants.CLAW_MOTOR, MotorType.kBrushless);
+    private CANSparkMax clawMotor = new CANSparkMax(CANBus.CLAW_MOTOR, MotorType.kBrushless);
 
     // Let's stop gettomg the motor ID from an argument...
     public Claw() { 
