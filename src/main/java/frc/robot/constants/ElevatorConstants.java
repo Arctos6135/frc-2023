@@ -13,7 +13,7 @@ public class ElevatorConstants {
     public static final double HOLD_FACTOR = -0.15;
     public static final double SCORE_SPEED = -0.4;
 
-    public static final int HEX_ENCODER_PORT = 8;
+    public static final int HEX_ENCODER_PORT = 0;
 
     public static final double VERSAPLANETARY_GEARBOX_RATIO = 1.0 / 50.0;
     public static final int CHAIN_LINKS = 132; // CHECK VALUE
@@ -40,5 +40,5 @@ public class ElevatorConstants {
     public static final double ENCODER_ANGLE_LOWEST = 0; // Needs to be tested **USING
     public static final double DISTANCE_PER_ROTATION_RADIANS_ELEVATOR = 0; // Needs to be tested **USING
 
-    public static final int ELEVATOR_ENCODER = 10;
+    public static final int ELEVATOR_ENCODER = 5;
 }

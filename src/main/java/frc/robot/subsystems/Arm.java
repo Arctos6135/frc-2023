@@ -46,11 +46,11 @@ public class Arm extends SubsystemBase {
         this.topMotor.setNeutralMode(NeutralMode.Brake);
         this.bottomMotor.setNeutralMode(NeutralMode.Brake);
 
-        this.hexEncoder = new DutyCycleEncoder(hexEncoderPort);
+        this.hexEncoder = null;//new DutyCycleEncoder(hexEncoderPort);
 
         this.rotationController = new PIDController(kP, kI, kD);
 
-        this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
+        //this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
 
         encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
                 .withPosition(3, 1).withSize(1, 1).getEntry();
@@ -81,7 +81,7 @@ public class Arm extends SubsystemBase {
     }
 
     public double getAngle() {
-        return initialAngle + hexEncoder.getDistance();
+        return initialAngle + 0;//hexEncoder.getDistance();
     }
 
     public void resetEncoder() {

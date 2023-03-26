@@ -35,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
     private final GenericEntry rotationEstimate;
     private final GenericEntry translationEstimate;
     private final GenericEntry gyroAngle;
-    private final ComplexWidget gyroscopeWidget;
+    private final ComplexWidget gyroscopeWidget = null;
 
     // Rate limiting on drivetrain
     private SlewRateLimiter translationLimiter;
@@ -63,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
     private final RelativeEncoder leftEncoder;
 
     // Gyro
-    private final ADXRS450_Gyro gyroscope = new ADXRS450_Gyro();
+    private final ADXRS450_Gyro gyroscope = null;// new ADXRS450_Gyro();
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);
@@ -97,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
         rotationEstimate = drivetrainTab.add("estimate of rotation (inches)", 0).getEntry();
         translationEstimate = drivetrainTab.add("estimate of translation (inches)", 0).getEntry();
 
-        gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
+       // gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
         gyroAngle = drivetrainTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
     }
 
@@ -109,7 +109,7 @@ public class Drivetrain extends SubsystemBase {
         rotationEstimate.setDouble(getRotation());
         translationEstimate.setDouble(getPosition());
 
-        this.gyroAngle.setDouble(gyroscope.getAngle());
+        //this.gyroAngle.setDouble(gyroscope.getAngle());
 
         double timeToFullSpeed = timeToFullSpeedWidget.getDouble(0.01);
         translationLimiter = new SlewRateLimiter(1 / timeToFullSpeed);
@@ -153,5 +153,14 @@ public class Drivetrain extends SubsystemBase {
     public void resetEncoders() {
         this.rightEncoder.setPosition(0);
         this.leftEncoder.setPosition(0);
+    }
+
+    public double getPitch() {
+        return gyroscope.getAngle();
+    }
+
+    
+    public double getPitchRate() {
+        return gyroscope.getRate();
     }
 }

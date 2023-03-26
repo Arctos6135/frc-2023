@@ -17,50 +17,63 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator extends SubsystemBase {
     private final TalonSRX elevatorMotor = new TalonSRX(CANBus.ELEVATOR_MOTOR);
     private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
     private final GenericEntry encoderWidget;
-    private double speed;
-    // Nick told me to do this
-    // private final DigitalInput limitSwitch = new
-    // DigitalInput(ElevatorConstants.ELEVATOR_LIMIT_SWITCH_PORT);
-    // private final GenericEntry limitSwitchOutput;
+    private double speed = 0;
+    private Double initialAngle = null;
 
     public Elevator(ShuffleboardTab armTab) {
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
-        this.elevatorEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS_ELEVATOR);
+        // this.elevatorEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS_ELEVATOR);
         this.encoderWidget = armTab.add("Elevator encoder (radians)", 0)
-            .withWidget(BuiltInWidgets.kNumberBar)
-            .withSize(1, 1)
-            .withPosition(2, 3)
-            .getEntry();
-
-        // limitSwitchOutput = armTab.add("Limit switch on elevator", false)
-        // .withWidget(BuiltInWidgets.kBooleanBox).withSize(1, 1).withPosition(3,
-        // 3).getEntry();
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withSize(1, 1)
+                .withPosition(2, 3)
+                .getEntry();
+        elevatorEncoder.reset();
     }
-    
+
     @Override
     public void periodic() {
-        // limitSwitchOutput.setBoolean(limitSwitch.get());
+        if (elevatorEncoder.isConnected() && initialAngle == null && Timer.getFPGATimestamp() > 5) {
+            initialAngle = elevatorEncoder.getAbsolutePosition();
+        }
+        if (initialAngle == null) return;
+        double lowerValue = -10;
+        double upperValue = 10;
+        if (getAngle() > upperValue && speed > 0) {
+            System.out.printf("Stopped in software\n");
+        } else if (getAngle() < lowerValue && speed < 0) {
+            System.out.printf("Stopped in software\n");
+        } else {
+            System.out.printf("Setting speed to %f\n", speed);
+            this.elevatorMotor.set(ControlMode.PercentOutput, speed);
+            System.out.printf("Getting %f raw is %f initial is %f\n", getAngle(), elevatorEncoder.getAbsolutePosition(), initialAngle);
+            System.out.println(elevatorEncoder.isConnected());
+            encoderWidget.setDouble(elevatorEncoder.get());
+        }
     }
 
     /**
      * @param armSpeed the power of the motor, in the range [-1, 1]
      */
     public void setMotor(double elevatorSpeed) {
-        System.out.printf("Elevator running at speed %f\n", elevatorSpeed);
-        // if (!limitSwitch.get()) {
-            this.elevatorMotor.set(ControlMode.PercentOutput, elevatorSpeed);
-        // } else {
-        //     System.out.printf("hard stop on elevator reached\n");
-        //     this.elevatorMotor.set(ControlMode.PercentOutput, -0.5 * elevatorSpeed);
-        // }
+        speed = elevatorSpeed;
     }
 
     public void stopMotor() {
         this.elevatorMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    public DutyCycleEncoder getEncoder() {
+        return elevatorEncoder;
+    }
+
+    public double getAngle() {
+        return elevatorEncoder.getAbsolutePosition() - initialAngle;
     }
 }

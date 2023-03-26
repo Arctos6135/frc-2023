@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.claw.TeleopClaw;
@@ -58,14 +59,15 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(drivetrainTab);
-
+/*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
-
+ */
     this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
+    /*
     this.arm.setDefaultCommand(
         new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, Controllers.HOLD_ROTATION));
-
+ */
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
 /*
@@ -101,7 +103,8 @@ public class RobotContainer {
 
   private void configureBindings() {
    Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-
+   Trigger resetEncoder = new JoystickButton(driverController, XboxController.Button.kX.value);
+    resetEncoder.onTrue(new InstantCommand(() -> elevator.getEncoder().reset(), elevator));
    precisionDrive.whileTrue(new FunctionalCommand(() -> {
     TeleopDrive.setPrecisionDrive(true);
    }, () -> {}, (interrupted) -> {

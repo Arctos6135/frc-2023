@@ -31,7 +31,7 @@ public class TeleopExtend extends CommandBase {
     
     @Override 
     public void execute() {
-        double extension = dampener.dampen(controller.getRawAxis(EXTENSION_AXIS));
+        double extension = dampener.dampen(controller.getRawAxis(EXTENSION_AXIS)) * 0.5;
 
         this.elevator.setMotor(extension);
     }
