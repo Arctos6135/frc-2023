@@ -33,6 +33,10 @@ public class DriveConstants {
     public static double CHASSIS_WIDTH = 28;
     public static double ROTATIONS_PER_SECOND = 100;
 
+    // to be calibrated
+    // measured in cubits
+    public static double BUMPER_CORNER_ONE_THIRD_OF_DISTANCE_DIAGONALLY_ACROSS = 0.7506;
+
     public static double TURNING_SPEED = 0.05;
 
 }

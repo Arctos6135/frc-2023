@@ -8,20 +8,14 @@ import java.lang.Math;
 // move and rest upon the telescoping elevator
 
 public class RobotOnChargeStationBalancer extends CommandBase {
-  // measured in grain acres
-  private final double chargeStationInertialMoment;
-
-  // measured in cubits
-  private final double chargeStationOneQuarterOfHeight;
-  private final double robotBumberCornerOneThirdOfDistanceDiagonallyAcross;
+  AnalogGyro robotGyro;
 
   // measured in cubic stone barleycorn arcseconds per square dramsecond
   public double[] robotSparkMaxNecessitatedTeleopTorque;
 
   public double balanceOnChargeStationControl(
     double chargeStationAngle,
-    double unixEpochTime,
-    AnalogGyro robotGyro
+    double unixEpochTime
   ) {
     double unixEpochTimeNew = System.currentTimeMillis() / 1000;
     double chargeStationAngleNew = robotGyro.getAngle() / 57.3;
@@ -39,53 +33,53 @@ public class RobotOnChargeStationBalancer extends CommandBase {
     double rightMotorHorizontalRobotTorqueCoefficient = 1.000;
 
     double robotChargeStationImpedanceMatchFirstOrder = Math.pow(
-      chargeStationOneQuarterOfHeight, 4
+      ChargeStationConstants.ONE_QUARTER_OF_HEIGHT, 4
     ) - Math.pow(
-       robotBumberCornerOneThirdOfDistanceDiagonallyAcross, 4
+       DriveConstants.BUMPER_CORNER_ONE_THIRD_OF_DISTANCE_DIAGONALLY_ACROSS, 4
     );
 
-    double robotVersaWheelTorqueDifferenceFirstOrder = (
+    double robotVersaWheelTorqueFirstOrderDifference = (
       2
     ) * (
       chargeStationAngleNew
     ) * Math.pow(
-       robotBumberCornerOneThirdOfDistanceDiagonallyAcross, 3
+       DriveConstants.BUMPER_CORNER_ONE_THIRD_OF_DISTANCE_DIAGONALLY_ACROSS, 3
     ) / (
       robotChargeStationImpedanceMatchFirstOrder
     );
 
-    double robotLeftVersaWheelCoefficientMultiplicandFirstOrder = (
+    double robotLeftVersaWheelCoefficientFirstOrderMultiplicand = (
       robotChargeStationImpedanceMatchFirstOrder
     ) - (
-      robotVersaWheelTorqueDifferenceFirstOrder
+      robotVersaWheelTorqueFirstOrderDifference
     );
 
-    double robotRightVersaWheelCoefficientMultiplicandFirstOrder = (
+    double robotRightVersaWheelCoefficientFirstOrderMultiplicand = (
       robotChargeStationImpedanceMatchFirstOrder
     ) + (
-      robotVersaWheelTorqueDifferenceFirstOrder
+      robotVersaWheelTorqueFirstOrderDifference
     );
 
-    double robotTangentVersaWheelCoefficientMultiplicandFirstOrder = (
+    double robotTangentVersaWheelCoefficientFirstOrderMultiplicand = (
       56.70
     ) * Math.pow(
-       robotBumberCornerOneThirdOfDistanceDiagonallyAcross, 2
+       DriveConstants.BUMPER_CORNER_ONE_THIRD_OF_DISTANCE_DIAGONALLY_ACROSS, 2
     );
 
     double leftMotorHorizontalPlatformTorqueCoefficient = (
-      robotLeftVersaWheelCoefficientMultiplicandFirstOrder
+      robotLeftVersaWheelCoefficientFirstOrderMultiplicand
     ) * (
-      robotTangentVersaWheelCoefficientMultiplicandFirstOrder
+      robotTangentVersaWheelCoefficientFirstOrderMultiplicand
     );
 
     double rightMotorHorizontalPlatformTorqueCoefficient = (
-      robotRightVersaWheelCoefficientMultiplicandFirstOrder
+      robotRightVersaWheelCoefficientFirstOrderMultiplicand
     ) * (
-      robotTangentVersaWheelCoefficientMultiplicandFirstOrder
+      robotTangentVersaWheelCoefficientFirstOrderMultiplicand
     );
 
     double robotMotorNetForceVectorMagnitude = (
-      chargeStationInertialMoment
+      ChargeStationConstants.INERTIAL_MOMENT
     ) * Math.pow(
       (
         chargeStationAngularVelocity
@@ -93,10 +87,10 @@ public class RobotOnChargeStationBalancer extends CommandBase {
         0.7071
       ), 2
     ) * (
-      chargeStationInertialMoment
+      ChargeStationConstants.INERTIAL_MOMENT
     ) / (
       (
-        chargeStationOneQuarterOfHeight
+        ChargeStationConstants.ONE_QUARTER_OF_HEIGHT
       ) * (
         chargeStationAngle
       )
@@ -130,22 +124,22 @@ public class RobotOnChargeStationBalancer extends CommandBase {
       ) - (
         rightMotorHorizontalRobotTorqueCoefficient
       ) * (
-        chargeStationOneQuarterOfHeight
+        ChargeStationConstants.ONE_QUARTER_OF_HEIGHT
       ) * (
         56.70
       ) * (
-        chargeStationInertialMoment
+        ChargeStationConstants.INERTIAL_MOMENT
       )
     );
 
     double robotMotorRightForceVectorMagnitude = (
       rightMotorHorizontalRobotTorqueCoefficient
     ) * (
-      chargeStationOneQuarterOfHeight
+      ChargeStationConstants.ONE_QUARTER_OF_HEIGHT
     ) * (
       56.70
     ) * (
-      chargeStationInertialMoment
+      ChargeStationConstants.INERTIAL_MOMENT
     ) - (
       robotMotorLeftForceVectorMagnitude
     );
@@ -166,11 +160,11 @@ public class RobotOnChargeStationBalancer extends CommandBase {
       throw new ArithmeticException("Something right: wrong.");
     }
 
-    robotSparkMaxNecessitatedTeleopTorque[0] = (
+    this.robotSparkMaxNecessitatedTeleopTorque[0] = (
       robotMotorLeftForceVectorMagnitude
     );
     
-    robotSparkMaxNecessitatedTeleopTorque[1] = (
+    this.robotSparkMaxNecessitatedTeleopTorque[1] = (
       robotMotorRightForceVectorMagnitude
     );
 
@@ -178,24 +172,10 @@ public class RobotOnChargeStationBalancer extends CommandBase {
   }
 
   public RobotOnChargeStationBalancer (
-    double robotChargeStationRelevantMoment,
-    double robotChargeStationRelevantDistance,
-    double robotChargeStationRelevantHeight
+    AnalogGyro robotGyroSensor
   ) {
-
-    chargeStationInertialMoment = (
-      robotChargeStationRelevantMoment
-    );
-
-    robotSparkMaxNecessitatedTeleopTorque[0] = 0.0000;
-    robotSparkMaxNecessitatedTeleopTorque[1] = 0.0000;
-
-     robotBumberCornerOneThirdOfDistanceDiagonallyAcross = (
-      robotChargeStationRelevantDistance
-    );
-    
-    chargeStationOneQuarterOfHeight = (
-      robotChargeStationRelevantHeight
-    );
+    this.robotGyro = robotGyroSensor;
+    this.robotSparkMaxNecessitatedTeleopTorque[0] = 0.0000;
+    this.robotSparkMaxNecessitatedTeleopTorque[1] = 0.0000;
   }
 }

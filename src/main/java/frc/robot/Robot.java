@@ -18,9 +18,11 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private AnalogGyro robotGyroscopicSensorMain = new AnalogGyro(null);
+  private AnalogGyro robotGyroscopicSensorMain = new AnalogGyro(
+    ChargeStationConstants.ROBOT_GYRO_SENSOR_MAIN_PORT
+  );
 
-  private RobotOnChargeStationBalancer RobotBalancingOnChargeStation = new RobotOnChargeStationBalancer(167.3, 2.614, 0.7506);
+  private RobotOnChargeStationBalancer robotBalancingOnChargeStation = new RobotOnChargeStationBalancer(robotGyroscopicSensorMain);
 
   @Override
   public void robotInit() {
@@ -91,19 +93,6 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void advanceChargeStationBalancing() {
-    double chargeStationAngle = robotGyroscopicSensorMain.getAngle();
-
-    double unixEpochTime = System.currentTimeMillis() / 1000;
-
-    RobotBalancingOnChargeStation.balanceOnChargeStationControl(
-      chargeStationAngle,
-      unixEpochTime,
-      this.robotGyroscopicSensorMain
-    );
-  }
-  
   public void testExit() {
-    
   }
 }
