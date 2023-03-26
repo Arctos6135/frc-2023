@@ -31,7 +31,6 @@ public class TeleopRotate extends CommandBase {
     
     @Override 
     public void initialize() {
-        this.arm.getEncoder().reset();
     }
 
     @Override 
@@ -41,13 +40,13 @@ public class TeleopRotate extends CommandBase {
         } else {
             double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
             if (arm.getAngle() < 0.15) {
-                rotation *= 0.5; 
+                rotation *= 0.5;
             }
             this.arm.setMotor(rotation * 0.8);
         }
 
-        DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
-        DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);
+        // DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
+        // DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);
     }
 
     @Override 

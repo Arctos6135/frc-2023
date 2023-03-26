@@ -38,8 +38,8 @@ public class Drivetrain extends SubsystemBase {
     private final ComplexWidget gyroscopeWidget = null;
 
     // Rate limiting on drivetrain
-    private SlewRateLimiter translationLimiter;
-    private SlewRateLimiter rotationLimiter;
+    private SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(2);
 
     private double targetTranslation = 0;
     private double targetRotation = 0;
@@ -108,12 +108,6 @@ public class Drivetrain extends SubsystemBase {
 
         rotationEstimate.setDouble(getRotation());
         translationEstimate.setDouble(getPosition());
-
-        //this.gyroAngle.setDouble(gyroscope.getAngle());
-
-        double timeToFullSpeed = timeToFullSpeedWidget.getDouble(0.01);
-        translationLimiter = new SlewRateLimiter(1 / timeToFullSpeed);
-        rotationLimiter = new SlewRateLimiter(1 / timeToFullSpeed);
 
         double translation = translationLimiter.calculate(targetTranslation);
         double rotation = rotationLimiter.calculate(targetRotation);

@@ -29,7 +29,7 @@ public class TeleopDrive extends CommandBase {
     private Dampener yDampener;
 
     private static boolean precisionDrive = false;
-    private static double precisionFactor = 0.5;
+    private static double precisionFactor = 0.4;
 
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis,
             ShuffleboardTab driveTab) {
@@ -45,8 +45,8 @@ public class TeleopDrive extends CommandBase {
         this.rot = driveTab.add("rotation speed modifier", 0.75).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 1));
 
-        this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
-        this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
+        this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 6);
+        this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 4);
 
         addRequirements(drivetrain);
     }
@@ -59,11 +59,13 @@ public class TeleopDrive extends CommandBase {
     @Override
     public void execute() {
         double y = controller.getRawAxis(Y_AXIS);
-        double y1 = -yDampener.smoothDampen(y) * (precisionDrive ? precisionFactor : 1.0);
+        double y1 = -yDampener.dampen(y) * (precisionDrive ? precisionFactor : 1.0);
         double x = controller.getRawAxis(X_AXIS);
-        double x1 = xDampener.smoothDampen(x) * (precisionDrive ? precisionFactor : 1.0);
+        double x1 = xDampener.dampen(x) * (precisionDrive ? precisionFactor : 1.0);
 
-        drivetrain.arcadeDrive(y1, x1 * 0.6);
+        System.out.printf("Running with %f\n", y1);
+
+        drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
     }
 
     public static boolean isPrecisionDrive() {

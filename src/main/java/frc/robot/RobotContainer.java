@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.arctos6135.robotlib.oi.buttons.AnalogButton;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.elevator.PidRotate;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
 import frc.robot.commands.intake.Intake;
@@ -62,17 +64,19 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(drivetrainTab);
+    /*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
- 
-    this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
+  */
+    this.arm = new Arm(armTab);
+    
     this.arm.setDefaultCommand(
-        new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, Controllers.HOLD_ROTATION));
- 
+       new PidRotate(arm, -0.7));
+  
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
 
-    this.wheelClaw = new WheelClaw();
+    this.wheelClaw = new WheelClaw(); // we commented out claw code :)
  
     this.visionSystem = new VisionSystem();
 
@@ -99,29 +103,24 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-    Trigger outtake = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-    Trigger intake = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    Trigger outtake = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    Trigger intake = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    /*
     Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value);
     Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kB.value);
     Trigger scoreMidCone = new JoystickButton(operatorController, XboxController.Button.kX.value);
-
-    precisionDrive.whileTrue(new FunctionalCommand(() -> {
-        TeleopDrive.setPrecisionDrive(true);
-    }, () -> {}, (interrupted) -> {
-        TeleopDrive.setPrecisionDrive(false);
-    }, () -> false));
-
-    outtake.whileTrue(new RawOuttake(wheelClaw));
-    intake.whileTrue(new RawIntake(wheelClaw));
-
+ */
+    //outtake.whileTrue(new RawOuttake(wheelClaw));
+    //intake.whileTrue(new RawIntake(wheelClaw));
+/*
     intakeGround.whileTrue(Intake.intakeGround(arm, elevator, wheelClaw));
     intakeSubstation.whileTrue(Intake.intakeSubstation(arm, elevator, wheelClaw));
     scoreLow.whileTrue(Score.scoreLow(arm, elevator));
     scoreMidCube.whileTrue(Score.scoreMidCube(arm, elevator));
     scoreMidCone.whileTrue(Score.scoreMidCone(arm, elevator));
+    */
   }
 
   public Command getAutonomousCommand() {
@@ -130,5 +129,15 @@ public class RobotContainer {
     // return new AutoRotate(arm, 0);
     // return new Engage(drivetrain);
     return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, null);
+  }
+
+  public void updateButtons() {
+    if (driverController.getRightBumper()) {
+      TeleopDrive.setPrecisionDrive(true);
+      drivetrain.setIdleMode(IdleMode.kBrake);
+    } else {
+      TeleopDrive.setPrecisionDrive(false);
+      drivetrain.setIdleMode(IdleMode.kBrake);
+    }
   }
 }

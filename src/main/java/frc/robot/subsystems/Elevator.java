@@ -24,7 +24,7 @@ public class Elevator extends SubsystemBase {
     private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
     private final GenericEntry encoderWidget;
     private double speed = 0;
-    private Double initialAngle = null;
+    private double initialAngle = 0;//null;
 
     public Elevator(ShuffleboardTab armTab) {
         this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -39,6 +39,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+        /*
         if (elevatorEncoder.isConnected() && initialAngle == null && Timer.getFPGATimestamp() > 5) {
             initialAngle = elevatorEncoder.getAbsolutePosition();
         }
@@ -50,12 +51,12 @@ public class Elevator extends SubsystemBase {
         } else if (getAngle() < lowerValue && speed < 0) {
             System.out.printf("Stopped in software\n");
         } else {
-            System.out.printf("Setting speed to %f\n", speed);
+             */
             this.elevatorMotor.set(ControlMode.PercentOutput, speed);
             System.out.printf("Getting %f raw is %f initial is %f\n", getAngle(), elevatorEncoder.getAbsolutePosition(), initialAngle);
             System.out.println(elevatorEncoder.isConnected());
             encoderWidget.setDouble(elevatorEncoder.get());
-        }
+        //}
     }
 
     /**
@@ -66,6 +67,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stopMotor() {
+        System.out.printf("Setting elevator speed to 0\n");
         this.elevatorMotor.set(ControlMode.PercentOutput, 0);
     }
 

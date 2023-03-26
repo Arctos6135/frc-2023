@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousExit() {
-    m_robotContainer.drivetrain.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.drivetrain.setIdleMode(IdleMode.kBrake);
   }
 
   @Override
@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    m_robotContainer.updateButtons();
   }
 
   @Override

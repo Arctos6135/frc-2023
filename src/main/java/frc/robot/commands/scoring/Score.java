@@ -13,14 +13,14 @@ import frc.robot.subsystems.Elevator;
 
 public class Score {
     public static Command scoreLow(Arm arm, Elevator elevator) {
-        return new PidRotate(arm, 0).andThen(new PidExtend(elevator, 10));
+        return new PidRotate(arm, 0);//.andThen(new PidExtend(elevator, 10));
     }
 
     public static Command scoreMidCube(Arm arm, Elevator elevator) {
-        return new PidRotate(arm, 1.5).andThen(new PidExtend(elevator, 5));
+        return new PidRotate(arm, 1.5);//.andThen(new PidExtend(elevator, 5));
     }
 
     public static Command scoreMidCone(Arm arm, Elevator elevator) {
-        return new PidRotate(arm, 1.7).andThen(new PidExtend(elevator, 10));
+        return new PidRotate(arm, 1.7);//.andThen(new PidExtend(elevator, 10));
     }
 }

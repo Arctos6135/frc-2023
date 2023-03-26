@@ -23,17 +23,19 @@ public class PidRotate extends CommandBase {
         addRequirements(arm); 
     }
 
-
     @Override 
     public void execute() {
         double pid = arm.getPIDController().calculate(
             this.arm.getAngle(), setpointAngle);
+
+        pid = Math.min(0.5, Math.max(pid, -0.5));
+
+        System.out.printf("Measured angle %f and calculated output %f\n", arm.getAngle(), pid);
         this.arm.setMotor(pid);
-        DriverStation.reportWarning(Double.toString(pid), false);
     }
 
     @Override 
     public boolean isFinished() {
-        return Math.abs(this.arm.getEncoder().getDistance() - setpointAngle) < ArmConstants.ARM_TOLERANCE;
+        return Math.abs(this.arm.getAngle() - setpointAngle) < ArmConstants.ARM_TOLERANCE;
     }
 }

@@ -29,10 +29,8 @@ public class PidExtend extends CommandBase {
     @Override 
     public void execute() {
         if (elevator.getAngle() < setpointAngle) {
-            System.out.printf("Elevator at angle %f, moving forward\n", elevator.getAngle());
             elevator.setMotor(SPEED);
         } else if (elevator.getAngle() > setpointAngle) {
-            System.out.printf("Elevator at angle %f, moving backwrd\n", elevator.getAngle());
             elevator.setMotor(-SPEED);
         }
     }

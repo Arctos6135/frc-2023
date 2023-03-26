@@ -9,17 +9,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANBus;
 
 public class WheelClaw extends SubsystemBase {
-    private final CANSparkMax motor = new CANSparkMax(CANBus.CLAW_MOTOR, MotorType.kBrushless);
+    private final VictorSPX motor = new VictorSPX(CANBus.CLAW_MOTOR);
 
     public void setMotorSpeed(double speed) {
-        this.motor.set(speed);
+        System.out.printf("Setting claw speed to %f\n", speed);
+        this.motor.set(ControlMode.PercentOutput, speed);
     }
 
     public void outtake() {
-        setMotorSpeed(0.5);
+        setMotorSpeed(0.4);
     }
     
     public void intake() {
-        setMotorSpeed(-0.5);
+        setMotorSpeed(-0.4);
     }
 }
