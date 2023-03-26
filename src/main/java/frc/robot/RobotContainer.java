@@ -21,6 +21,10 @@ import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
+import frc.robot.commands.intake.Intake;
+import frc.robot.commands.intake.RawIntake;
+import frc.robot.commands.intake.RawOuttake;
+import frc.robot.commands.scoring.Score;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -36,10 +40,9 @@ import frc.robot.subsystems.WheelClaw;
 public class RobotContainer {
   // Robot Subsystems
   public final Drivetrain drivetrain;
-  //private final Claw claw;
   private final Arm arm;
   private final Elevator elevator;
-  //private final WheelClaw wheelClaw; 
+  private final WheelClaw wheelClaw; 
   private final VisionSystem visionSystem;
 
   // Controllers
@@ -59,24 +62,18 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(drivetrainTab);
-/*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
- */
+ 
     this.arm = new Arm(CANBus.ROTATE_MOTOR_TOP, CANBus.ROTATE_MOTOR_BOTTOM, ElevatorConstants.HEX_ENCODER_PORT, armTab);
-    /*
     this.arm.setDefaultCommand(
         new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, Controllers.HOLD_ROTATION));
- */
+ 
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
-/*
-    this.claw = new Claw(CANBus.CLAW_MOTOR, armTab);
-    this.claw.setDefaultCommand(
-        new TeleopClaw(claw, operatorController, ClawConstants.OPEN_CLAW_BUTTON, ClawConstants.CLOSE_CLAW_BUTTON)); 
 
-    this.wheelClaw = new WheelClaw(CANBus.CLAW_MOTOR, CANBus.CLAW_MOTOR);
- */
+    this.wheelClaw = new WheelClaw();
+ 
     this.visionSystem = new VisionSystem();
 
     configureDashboard();
@@ -102,14 +99,29 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-   Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-   Trigger resetEncoder = new JoystickButton(driverController, XboxController.Button.kX.value);
-    resetEncoder.onTrue(new InstantCommand(() -> elevator.getEncoder().reset(), elevator));
-   precisionDrive.whileTrue(new FunctionalCommand(() -> {
-    TeleopDrive.setPrecisionDrive(true);
-   }, () -> {}, (interrupted) -> {
-    TeleopDrive.setPrecisionDrive(false);
-   }, () -> false));
+    Trigger precisionDrive = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    Trigger outtake = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+    Trigger intake = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+    Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    Trigger scoreMidCone = new JoystickButton(operatorController, XboxController.Button.kX.value);
+
+    precisionDrive.whileTrue(new FunctionalCommand(() -> {
+        TeleopDrive.setPrecisionDrive(true);
+    }, () -> {}, (interrupted) -> {
+        TeleopDrive.setPrecisionDrive(false);
+    }, () -> false));
+
+    outtake.whileTrue(new RawOuttake(wheelClaw));
+    intake.whileTrue(new RawIntake(wheelClaw));
+
+    intakeGround.whileTrue(Intake.intakeGround(arm, elevator, wheelClaw));
+    intakeSubstation.whileTrue(Intake.intakeSubstation(arm, elevator, wheelClaw));
+    scoreLow.whileTrue(Score.scoreLow(arm, elevator));
+    scoreMidCube.whileTrue(Score.scoreMidCube(arm, elevator));
+    scoreMidCone.whileTrue(Score.scoreMidCone(arm, elevator));
   }
 
   public Command getAutonomousCommand() {
