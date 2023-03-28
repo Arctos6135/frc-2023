@@ -31,7 +31,7 @@ public class PidRotate extends CommandBase {
         pid = Math.min(0.5, Math.max(pid, -0.5));
 
         System.out.printf("Measured angle %f and calculated output %f\n", arm.getAngle(), pid);
-        this.arm.setMotor(pid);
+        this.arm.setMotor(-pid);
     }
 
     @Override 

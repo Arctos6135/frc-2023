@@ -63,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
     private final RelativeEncoder leftEncoder;
 
     // Gyro
-    private final ADXRS450_Gyro gyroscope = null;// new ADXRS450_Gyro();
+    private final ADXRS450_Gyro gyroscope = new ADXRS450_Gyro();
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);

@@ -21,7 +21,7 @@ public class Intake {
 
     public static Command intakeSubstation(Arm arm, Elevator elevator, WheelClaw claw) {
         //return new PidExtend(elevator, 0).andThen(new PidRotate(arm, 1.5)).andThen(new RawIntake(claw));
-        return new PidRotate(arm, 1.5).andThen(new RawIntake(claw));
+        return new PidRotate(arm, 1).andThen(new RawIntake(claw));
 
     }
 }

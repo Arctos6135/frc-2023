@@ -69,8 +69,9 @@ public class RobotContainer {
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
     
     this.arm = new Arm(armTab);
-    this.arm.setDefaultCommand(new PidRotate(arm, -0.7));
-  
+    this.arm.setDefaultCommand(//new PidRotate(arm, 0.5));
+    new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, 0));
+      
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
 

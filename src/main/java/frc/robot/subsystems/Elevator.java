@@ -20,43 +20,63 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator extends SubsystemBase {
-    private final TalonSRX elevatorMotor = new TalonSRX(CANBus.ELEVATOR_MOTOR);
-    private final DutyCycleEncoder elevatorEncoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
+    private final TalonSRX motor = new TalonSRX(CANBus.ELEVATOR_MOTOR);
+    private final DutyCycleEncoder encoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
     private final GenericEntry encoderWidget;
+    private final GenericEntry softstopEnabled;
+
+    private double initialAngle = 0;
+    private boolean isInitialized = false;
+
+    private final double lowAngle = 0;
+    private final double highAngle = 5;
+
     private double speed = 0;
-    private double initialAngle = 0;//null;
 
     public Elevator(ShuffleboardTab armTab) {
-        this.elevatorMotor.setNeutralMode(NeutralMode.Brake);
+        this.motor.setNeutralMode(NeutralMode.Brake);
         // this.elevatorEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS_ELEVATOR);
         this.encoderWidget = armTab.add("Elevator encoder (radians)", 0)
-                .withWidget(BuiltInWidgets.kNumberBar)
+                .withWidget(BuiltInWidgets.kTextView)
                 .withSize(1, 1)
                 .withPosition(2, 3)
                 .getEntry();
-        elevatorEncoder.reset();
+        softstopEnabled = armTab.add("Elevator soft stop enabled", true)
+            .withWidget(BuiltInWidgets.kToggleButton)
+            .withSize(1, 1)
+            .withPosition(2, 2)
+            .getEntry();
+        encoder.reset();
     }
 
     @Override
     public void periodic() {
-        /*
-        if (elevatorEncoder.isConnected() && initialAngle == null && Timer.getFPGATimestamp() > 5) {
-            initialAngle = elevatorEncoder.getAbsolutePosition();
+        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
+            initialAngle = encoder.get();
+            isInitialized = true;
         }
-        if (initialAngle == null) return;
-        double lowerValue = -10;
-        double upperValue = 10;
-        if (getAngle() > upperValue && speed > 0) {
+
+        if (!isInitialized)
+            return;
+
+        if (!softstopEnabled.getBoolean(true)) {
+            System.out.println("Elevator soft stop disabled\n");
+            this.motor.set(ControlMode.PercentOutput, speed);
+            initialAngle = encoder.get();
+        }
+
+        if (getAngle() > highAngle && speed < 0) {
             System.out.printf("Stopped in software\n");
-        } else if (getAngle() < lowerValue && speed < 0) {
-            System.out.printf("Stopped in software\n");
+            this.motor.set(ControlMode.PercentOutput, 0);
+        } else if (getAngle() < lowAngle && speed > 0) {
+            System.out.printf("Stopped in software at angle %f\n", getAngle());
+            this.motor.set(ControlMode.PercentOutput, 0);
         } else {
-             */
-            this.elevatorMotor.set(ControlMode.PercentOutput, speed);
-            System.out.printf("Getting %f raw is %f initial is %f\n", getAngle(), elevatorEncoder.getAbsolutePosition(), initialAngle);
-            System.out.println(elevatorEncoder.isConnected());
-            encoderWidget.setDouble(elevatorEncoder.get());
-        //}
+            this.motor.set(ControlMode.PercentOutput, speed);
+            System.out.printf("angle is %f, moving at speed %f\n", getAngle(), speed);
+        }
+
+        encoderWidget.setDouble(getAngle());
     }
 
     /**
@@ -68,14 +88,14 @@ public class Elevator extends SubsystemBase {
 
     public void stopMotor() {
         System.out.printf("Setting elevator speed to 0\n");
-        this.elevatorMotor.set(ControlMode.PercentOutput, 0);
+        this.motor.set(ControlMode.PercentOutput, 0);
     }
 
     public DutyCycleEncoder getEncoder() {
-        return elevatorEncoder;
+        return encoder;
     }
 
     public double getAngle() {
-        return elevatorEncoder.getAbsolutePosition() - initialAngle;
+        return encoder.get() - initialAngle;
     }
 }

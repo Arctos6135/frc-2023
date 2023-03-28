@@ -63,8 +63,6 @@ public class TeleopDrive extends CommandBase {
         double x = controller.getRawAxis(X_AXIS);
         double x1 = xDampener.dampen(x) * (precisionDrive ? precisionFactor : 1.0);
 
-        System.out.printf("Running with %f\n", y1);
-
         drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
     }
 

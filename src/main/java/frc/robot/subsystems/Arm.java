@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -40,10 +41,19 @@ public class Arm extends SubsystemBase {
 
     private final GenericEntry encoderOutputWidget;
     private final GenericEntry motorSpeedWidget;
+    private final GenericEntry angleWidget;
+    private final GenericEntry softstopEnabled;
 
-    private Double initialAngle = null;
+    private double initialAngle = 0;
+    private boolean isInitialized = false;
 
-    private double speed;
+    private final double lowAngle = 0;
+    private final double highAngle = 1.5;
+
+    private double speed = 0;
+    
+
+    private double lastTime = 0;
 
     /**
      * This is our constructor
@@ -53,6 +63,7 @@ public class Arm extends SubsystemBase {
     public Arm(ShuffleboardTab armTab) {
         motor.restoreFactoryDefaults();
         encoder = motor.getEncoder();
+
         motor.setIdleMode(IdleMode.kBrake);
         this.rotationController = new PIDController(kP, kI, kD);
         rotationController.setIntegratorRange(-0.5, 0.5);
@@ -63,24 +74,53 @@ public class Arm extends SubsystemBase {
                 .withPosition(3, 1).withSize(1, 1).getEntry();
         motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kNumberBar)
                 .withPosition(3, 2).withSize(1, 1).getEntry();
+        angleWidget = armTab.add("Arm angle", 0).withWidget(BuiltInWidgets.kTextView)
+                .withPosition(3, 3).withSize(1, 1).getEntry();
+
+        softstopEnabled = armTab.add("Arm soft stop enabled", true)
+            .withWidget(BuiltInWidgets.kToggleButton)
+            .withPosition(3, 2)
+            .withSize(1, 1)
+            .getEntry();
     }
 
     @Override
     public void periodic() {
-        if (initialAngle == null && Timer.getFPGATimestamp() > 1) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
+            initialAngle = encoder.getPosition();
+            isInitialized = true;
+        }
+        
+        if (!isInitialized) return;
+
+        if (!softstopEnabled.getBoolean(true)) {
+            System.out.println("Elevator soft stop disabled\n");
+            this.motor.set(speed);
             initialAngle = encoder.getPosition();
         }
-        encoderOutputWidget.setDouble(getAngle());
+        
+        if (getAngle() > highAngle && speed < 0) {
+            System.out.printf("Stopped in software\n");
+            this.motor.set(0);
+        } else if (getAngle() < lowAngle && speed > 0) {
+            System.out.printf("Stopped in software at angle %f\n", getAngle());
+            this.motor.set(0);
+        } else {
+            this.motor.set(speed);
+        }
+
+        encoderOutputWidget.setDouble(encoder.getPosition());
+        angleWidget.setDouble(getAngle());
     }
 
     // Sets speed of motor
     public void setMotor(double armSpeed) {
-        motor.set(armSpeed);
+        speed = armSpeed;
         this.motorSpeedWidget.setDouble(armSpeed);
     }
 
     public double getAngle() {
-        return initialAngle + encoder.getPosition();
+        return -encoder.getPosition() + initialAngle;
     }
 
     public boolean atSetpoint() {

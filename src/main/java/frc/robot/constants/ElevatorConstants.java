@@ -40,5 +40,5 @@ public class ElevatorConstants {
     public static final double ENCODER_ANGLE_LOWEST = 0; // Needs to be tested **USING
     public static final double DISTANCE_PER_ROTATION_RADIANS_ELEVATOR = 0; // Needs to be tested **USING
 
-    public static final int ELEVATOR_ENCODER = 5;
+    public static final int ELEVATOR_ENCODER = 8;
 }
