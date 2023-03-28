@@ -10,6 +10,7 @@ import frc.robot.commands.elevator.PidRotate;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.WheelClaw;
 
 public class Score {
     public static Command scoreLow(Arm arm, Elevator elevator) {
@@ -22,5 +23,9 @@ public class Score {
 
     public static Command scoreMidCone(Arm arm, Elevator elevator) {
         return new PidRotate(arm, 1.7);//.andThen(new PidExtend(elevator, 10));
+    }
+
+    public static Command intakeDoubleSubstation(Arm arm, WheelClaw claw) {
+        return new PidRotate(arm, 2);// .andThen(new )
     }
 }
