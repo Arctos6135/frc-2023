@@ -35,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
     private final GenericEntry rotationEstimate;
     private final GenericEntry translationEstimate;
     private final GenericEntry gyroAngle;
-    private final ComplexWidget gyroscopeWidget = null;
+    private final ComplexWidget gyroscopeWidget;
 
     // Rate limiting on drivetrain
     private SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
@@ -97,7 +97,9 @@ public class Drivetrain extends SubsystemBase {
         rotationEstimate = drivetrainTab.add("estimate of rotation (inches)", 0).getEntry();
         translationEstimate = drivetrainTab.add("estimate of translation (inches)", 0).getEntry();
 
-       // gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
+        gyroscope.calibrate();
+
+        gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
         gyroAngle = drivetrainTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
     }
 
@@ -108,6 +110,7 @@ public class Drivetrain extends SubsystemBase {
 
         rotationEstimate.setDouble(getRotation());
         translationEstimate.setDouble(getPosition());
+        gyroAngle.setDouble(gyroscope.getAngle());
 
         double translation = translationLimiter.calculate(targetTranslation);
         double rotation = rotationLimiter.calculate(targetRotation);
@@ -153,7 +156,6 @@ public class Drivetrain extends SubsystemBase {
         return gyroscope.getAngle();
     }
 
-    
     public double getPitchRate() {
         return gyroscope.getRate();
     }
