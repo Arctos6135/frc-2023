@@ -19,6 +19,6 @@ public class Controllers {
     public static final int SCORE_MIDDLE_CONE = XboxController.Button.kY.value;
     public static final int SUBSTATION_INTAKE = XboxController.Button.kA.value;
 
-    public static final int OPEN_CLAW_BUTTON = XboxController.Button.kRightBumper.value;
-    public static final int CLOSE_CLAW_BUTTON = XboxController.Button.kLeftBumper.value; 
+    public static final int INTAKE_CLAW_BUTTON = XboxController.Button.kRightBumper.value;
+    public static final int OUTTAKE_CLAW_BUTTON = XboxController.Button.kLeftBumper.value; 
 }

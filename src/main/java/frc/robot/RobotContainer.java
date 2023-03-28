@@ -27,6 +27,7 @@ import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RawIntake;
 import frc.robot.commands.intake.RawOuttake;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.wheelclaw.TeleopIntake;
 import frc.robot.constants.DriveConstants; 
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -64,20 +65,18 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(drivetrainTab);
-    /*
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
-  */
-    this.arm = new Arm(armTab);
     
-    this.arm.setDefaultCommand(
-       new PidRotate(arm, -0.7));
+    this.arm = new Arm(armTab);
+    this.arm.setDefaultCommand(new PidRotate(arm, -0.7));
   
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
 
     this.wheelClaw = new WheelClaw(); // we commented out claw code :)
- 
+    this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 
+
     this.visionSystem = new VisionSystem();
 
     configureDashboard();
