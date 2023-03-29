@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.elevator.PidExtend;
 import frc.robot.commands.elevator.PidRotate;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
@@ -60,6 +61,7 @@ public class RobotContainer {
   public ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
   public ShuffleboardTab visionTab = Shuffleboard.getTab("Vision Tab");
 
+
   // Autonomous mode selection
   private Autonomous autonomous = new Autonomous();
 
@@ -74,6 +76,7 @@ public class RobotContainer {
       
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
+      //new PidExtend(elevator, 0));
 
     this.wheelClaw = new WheelClaw(); // we commented out claw code :)
     this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 

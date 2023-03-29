@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -36,6 +37,8 @@ public class Drivetrain extends SubsystemBase {
     private final GenericEntry translationEstimate;
     private final GenericEntry gyroAngle;
     private final ComplexWidget gyroscopeWidget;
+    
+    private final GenericEntry resetGyroOffsetButton;
 
     // Rate limiting on drivetrain
     private SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
@@ -64,6 +67,8 @@ public class Drivetrain extends SubsystemBase {
 
     // Gyro
     private final ADXRS450_Gyro gyroscope = new ADXRS450_Gyro();
+    private double gyroOffset = 0;
+    private boolean gyroOffsetInit = false;
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);
@@ -101,10 +106,17 @@ public class Drivetrain extends SubsystemBase {
 
         gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
         gyroAngle = drivetrainTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+
+        resetGyroOffsetButton = drivetrainTab.add("Reset gyro", false).withWidget(BuiltInWidgets.kToggleButton)
+            .withPosition(6, 4).withSize(1, 1).getEntry();
     }
 
     @Override
     public void periodic() {
+        if ((Timer.getFPGATimestamp() > 0.1 && !gyroOffsetInit) || resetGyroOffsetButton.getBoolean(false)) {
+            gyroOffsetInit = true;
+            gyroOffset = getPitch();
+        }
         leftEncoderReading.setDouble(leftEncoder.getPosition() / 36);
         rightEncoderReading.setDouble(rightEncoder.getPosition() / 36);
 
@@ -154,7 +166,7 @@ public class Drivetrain extends SubsystemBase {
 
     // get the pitch of the robot in radians, 0 is perfectly balanced
     public double getPitch() {
-        return gyroscope.getAngle() * Math.PI / 180;
+        return gyroscope.getAngle() * Math.PI / 180 - gyroOffset;
     }
 
     // get the rate of change of the pitch of the robot in radians per second (this might be wrong), 0 is not moving

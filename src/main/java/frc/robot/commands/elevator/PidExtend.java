@@ -10,7 +10,7 @@ public class PidExtend extends CommandBase {
     private final Elevator elevator;
 
     private double setpointAngle;
-    private final double SPEED = 0.5;
+    private final double SPEED = 0.01;
     private final double TOLERANCE = 0.1;
 
     /**
@@ -29,8 +29,10 @@ public class PidExtend extends CommandBase {
     @Override 
     public void execute() {
         if (elevator.getAngle() < setpointAngle) {
+            System.out.printf("Angle %f too small, applying positive speed\n", elevator.getAngle());
             elevator.setMotor(SPEED);
         } else if (elevator.getAngle() > setpointAngle) {
+            System.out.printf("Angle %f too large, applying negative speed\n", elevator.getAngle());
             elevator.setMotor(-SPEED);
         }
     }
@@ -38,5 +40,11 @@ public class PidExtend extends CommandBase {
     @Override 
     public boolean isFinished() {
         return Math.abs(elevator.getAngle() - setpointAngle) < TOLERANCE;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.printf("Finished extending\n");
+        elevator.setMotor(0);
     }
 }

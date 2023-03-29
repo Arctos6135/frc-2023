@@ -33,7 +33,7 @@ public class PidRotate extends CommandBase {
         this.arm.setMotor(-pid);
     }
 
-    @Override 
+0    @Override 
     public boolean isFinished() {
         return Math.abs(this.arm.getAngle() - setpointAngle) < ArmConstants.ARM_TOLERANCE;
     }
