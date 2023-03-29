@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.MidCubeAuto;
+import frc.robot.commands.autonomous.MidCubeBalanceAuto;
 import frc.robot.commands.autonomous.MobilityAuto;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.subsystems.Arm;
@@ -18,7 +19,8 @@ public class Autonomous {
     public enum AutoMode {
         NONE("None"),
         MOBILITY("Mobility"),
-        MidCube("MidCube");
+        MidCube("MidCube"),
+        MidCubeBalance("MidCubeBalance");
 
         String autoName; 
 
@@ -39,6 +41,8 @@ public class Autonomous {
                 return MobilityAuto.mobility(drivetrain);
             case MidCube:
                 return MidCubeAuto.midCubeAuto(drivetrain, arm, elevator, claw);
+            case MidCubeBalance:
+                return MidCubeBalanceAuto.midCubeBalanceAuto(drivetrain, arm, elevator, claw);
             default: 
                 return null; 
         }

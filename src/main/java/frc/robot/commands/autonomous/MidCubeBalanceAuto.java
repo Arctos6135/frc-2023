@@ -18,7 +18,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.WheelClaw;
 
 public class MidCubeBalanceAuto {
-    public static Command midCubeAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw) {
+    public static Command midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw) {
         return Score.scoreMidCube(arm, elevator)
             .andThen(new RawOuttake(claw).withTimeout(2))
             .andThen(new DriveForwardTillAngle(drivetrain, -0.25, 0.35)); // tag a gyro balancing routine onto the end of this
