@@ -12,7 +12,6 @@ public class WheelClaw extends SubsystemBase {
     private final VictorSPX motor = new VictorSPX(CANBus.CLAW_MOTOR);
 
     public void setMotorSpeed(double speed) {
-        System.out.printf("Setting claw speed to %f\n", speed);
         this.motor.set(ControlMode.PercentOutput, speed);
     }
 

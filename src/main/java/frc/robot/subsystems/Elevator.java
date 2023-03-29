@@ -73,7 +73,6 @@ public class Elevator extends SubsystemBase {
             this.motor.set(ControlMode.PercentOutput, 0);
         } else {
             this.motor.set(ControlMode.PercentOutput, speed);
-            System.out.printf("angle is %f, moving at speed %f\n", getAngle(), speed);
         }
 
         encoderWidget.setDouble(getAngle());

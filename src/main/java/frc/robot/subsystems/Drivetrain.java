@@ -152,11 +152,13 @@ public class Drivetrain extends SubsystemBase {
         this.leftEncoder.setPosition(0);
     }
 
+    // get the pitch of the robot in radians, 0 is perfectly balanced
     public double getPitch() {
-        return gyroscope.getAngle();
+        return gyroscope.getAngle() * Math.PI / 180;
     }
 
+    // get the rate of change of the pitch of the robot in radians per second (this might be wrong), 0 is not moving
     public double getPitchRate() {
-        return gyroscope.getRate();
+        return gyroscope.getRate() * Math.PI / 180;
     }
 }
