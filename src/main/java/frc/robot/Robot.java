@@ -11,18 +11,24 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
+  private AnalogGyro robotGyroscopicSensorMain = new AnalogGyro(
+    ChargeStationConstants.ROBOT_GYRO_SENSOR_MAIN_PORT
+  );
+
+  private RobotOnChargeStationBalancer robotBalancingOnChargeStation = new RobotOnChargeStationBalancer(robotGyroscopicSensorMain);
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+    robotGyroscopicSensorMain.initGyro();
     PortForwarder.add(5800, "photonvision.local", 5800);
-
     CameraServer.startAutomaticCapture("Claw Camera", 0);
   }
 
@@ -88,6 +94,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {
-    
   }
 }
