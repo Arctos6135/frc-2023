@@ -14,15 +14,13 @@ public class TeleopRotate extends CommandBase {
     public final XboxController controller;
     
     private final int ROTATION_AXIS;
-    private final int HOLD_BUTTON;
 
     private final Dampener dampener;
     
-    public TeleopRotate(Arm arm, XboxController operatorController, int rotateAxis, int holdButton) {
+    public TeleopRotate(Arm arm, XboxController operatorController, int rotateAxis) {
         this.arm = arm;
         this.controller = operatorController;
         this.ROTATION_AXIS = rotateAxis;
-        this.HOLD_BUTTON = holdButton;
 
         this.dampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 3);
 
@@ -35,15 +33,8 @@ public class TeleopRotate extends CommandBase {
 
     @Override 
     public void execute() {
-        if (controller.getRawButton(HOLD_BUTTON)) {
-            this.arm.setMotor(ElevatorConstants.HOLD_FACTOR);
-        } else {
-            double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
-            if (arm.getAngle() < 0.15) {
-                rotation *= 0.5;
-            }
-            this.arm.setMotor(rotation * 0.8);
-        }
+        double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
+        this.arm.setMotor(rotation * 0.6);
 
         // DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
         // DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);

@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
 
 
-public class EncodedElevator extends CommandBase { // 1.5in/rotation
+public class EncodedElevator extends CommandBase {
     private final Elevator elevator;
-    private double rotations;
-    private double intialRotation;
+    private final double rotations;
+    private final double SPEED = -0.5;
 
     public EncodedElevator(Elevator elevator, double rotations) {
         this.elevator = elevator;
@@ -18,13 +18,14 @@ public class EncodedElevator extends CommandBase { // 1.5in/rotation
     }
 
     @Override
-    public void initialize() {
-        intialRotation = this.elevator.getAngle();
-    }
-
-    @Override
     public void execute() {
-        this.elevator.setMotor(.8);
+        if (elevator.getAngle() > rotations) {
+            System.out.printf("Running encoded extend with angle %f, too big\n", elevator.getAngle());
+            elevator.setMotor(-SPEED);
+        } else {
+            System.out.printf("Running encoded extend with angle %f, too small\n", elevator.getAngle());
+            elevator.setMotor(SPEED);
+        }
     }
 
     @Override
@@ -34,6 +35,6 @@ public class EncodedElevator extends CommandBase { // 1.5in/rotation
 
     @Override
     public boolean isFinished() {
-        return this.elevator.getAngle() - this.intialRotation >= this.rotations;
+        return this.elevator.getAngle() >= this.rotations;
     }
 }

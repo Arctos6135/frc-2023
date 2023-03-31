@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.MidCubeAuto;
@@ -33,7 +34,7 @@ public class Autonomous {
         return this.chooser; 
     }
 
-    public Command getAuto(AutoMode mode, Drivetrain drivetrain, Elevator elevator, Arm arm, WheelClaw claw) {
+    public Command getAuto(AutoMode mode, Drivetrain drivetrain, Elevator elevator, Arm arm, WheelClaw claw, ShuffleboardTab drivetrainTab) {
         switch(mode) {
             case NONE:
                 return new DriveForwardEncoded(drivetrain, 0, 0);
@@ -42,7 +43,7 @@ public class Autonomous {
             case MidCube:
                 return MidCubeAuto.midCubeAuto(drivetrain, arm, elevator, claw);
             case MidCubeBalance:
-                return MidCubeBalanceAuto.midCubeBalanceAuto(drivetrain, arm, elevator, claw);
+                return MidCubeBalanceAuto.midCubeBalanceAuto(drivetrain, arm, elevator, claw, drivetrainTab);
             default: 
                 return null; 
         }
@@ -55,6 +56,6 @@ public class Autonomous {
             chooser.addOption(mode.autoName, mode); 
         }
 
-        chooser.setDefaultOption(AutoMode.NONE.autoName, AutoMode.NONE); 
+        chooser.setDefaultOption(AutoMode.MidCube.autoName, AutoMode.MidCube); 
     }
 }

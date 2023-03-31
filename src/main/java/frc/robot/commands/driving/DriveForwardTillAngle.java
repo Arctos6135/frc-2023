@@ -40,6 +40,7 @@ public class DriveForwardTillAngle extends CommandBase {
             System.out.printf("finished driving till rotated %f radians\n", this.targetAngle);
             return true;
         } else {
+            System.out.printf("Read angle %f, not stopping\n", drivetrain.getPitch());
             return false;
         }
     }

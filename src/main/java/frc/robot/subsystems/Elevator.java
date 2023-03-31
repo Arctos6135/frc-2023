@@ -51,7 +51,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 30) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 5) {
             initialAngle = encoder.get();
             isInitialized = true;
         }

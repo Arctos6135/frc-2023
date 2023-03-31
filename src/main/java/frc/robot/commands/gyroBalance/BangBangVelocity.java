@@ -10,7 +10,7 @@ public class BangBangVelocity extends CommandBase {
 
     private final double HIGH_LIMIT = 3 * Math.PI / 180;
     private final double LOW_LIMIT = 3 * Math.PI / 180;
-    private final double RATE_LIMIT = 0;
+    private final double RATE_LIMIT = 0.2;
     private final double SPEED = 0.1;
 
     /** Balance the robot by driving only if both the angle is wrong and the charge station isn't moving in the right direction
@@ -32,10 +32,10 @@ public class BangBangVelocity extends CommandBase {
         double angle = drivetrain.getPitch();
         double angleRate = drivetrain.getPitchRate();
 
-        if (angle > HIGH_LIMIT && !(angleRate < RATE_LIMIT)) {
+        if (angle > HIGH_LIMIT && !(angleRate < -RATE_LIMIT)) {
             System.out.printf("Angle %f too high and angle rate %f too high, forwarding\n", angle, angleRate);
             drivetrain.arcadeDrive(SPEED, 0);
-        } else if (angle < LOW_LIMIT && !(angleRate > RATE_LIMIT)) {
+        } else if (angle < LOW_LIMIT && !(angleRate > -RATE_LIMIT)) {
             System.out.printf("Angle %f too low and angle rate %f too low, reversing\n", angle, angleRate);
             drivetrain.arcadeDrive(-SPEED, 0);
         } else {

@@ -52,7 +52,6 @@ public class Arm extends SubsystemBase {
 
     private double speed = 0;
     
-
     private double lastTime = 0;
 
     /**
@@ -61,10 +60,11 @@ public class Arm extends SubsystemBase {
      * @param armMotor can ID of the motor for flipping the arm
      */
     public Arm(ShuffleboardTab armTab) {
-        motor.restoreFactoryDefaults();
-        encoder = motor.getEncoder();
 
+        motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
+        encoder = motor.getEncoder();
+        
         this.rotationController = new PIDController(kP, kI, kD);
         rotationController.setIntegratorRange(-0.5, 0.5);
         encoder.setPositionConversionFactor(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
@@ -81,12 +81,12 @@ public class Arm extends SubsystemBase {
             .withWidget(BuiltInWidgets.kToggleButton)
             .withPosition(3, 2)
             .withSize(1, 1)
-            .getEntry();
+            .getEntry(); 
     }
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 5) {
             initialAngle = encoder.getPosition();
             isInitialized = true;
         }
@@ -94,7 +94,7 @@ public class Arm extends SubsystemBase {
         if (!isInitialized) return;
 
         if (!softstopEnabled.getBoolean(true)) {
-            System.out.println("Elevator soft stop disabled\n");
+            System.out.println("Arm soft stop disabled\n");
             this.motor.set(speed);
             initialAngle = encoder.getPosition();
         }
@@ -110,7 +110,7 @@ public class Arm extends SubsystemBase {
         }
 
         encoderOutputWidget.setDouble(encoder.getPosition());
-        angleWidget.setDouble(getAngle());
+        angleWidget.setDouble(getAngle()); 
     }
 
     // Sets speed of motor

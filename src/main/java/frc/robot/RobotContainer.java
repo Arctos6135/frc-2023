@@ -18,12 +18,16 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.autonomous.MidCubeBalanceAuto;
 import frc.robot.commands.claw.TeleopClaw;
+import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.elevator.EncodedElevator;
 import frc.robot.commands.elevator.PidExtend;
 import frc.robot.commands.elevator.PidRotate;
 import frc.robot.commands.elevator.TeleopExtend;
 import frc.robot.commands.elevator.TeleopRotate;
+import frc.robot.commands.elevator.TimedElevator;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RawIntake;
 import frc.robot.commands.intake.RawOuttake;
@@ -72,13 +76,13 @@ public class RobotContainer {
     
     this.arm = new Arm(armTab);
     this.arm.setDefaultCommand(//new PidRotate(arm, 0.5));
-    new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL, 0));
+    new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
       
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
       //new PidExtend(elevator, 0));
 
-    this.wheelClaw = new WheelClaw(); // we commented out claw code :)
+    this.wheelClaw = new WheelClaw();
     this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 
 
     this.visionSystem = new VisionSystem();
@@ -98,8 +102,8 @@ public class RobotContainer {
     drivetrainTab.add("PID Rotation", drivetrain.rotationController).withWidget(BuiltInWidgets.kPIDController)
         .withPosition(1, 0).withSize(1, 4);
 
-    armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 4);
+    //armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
+    //    .withPosition(0, 0).withSize(1, 4);
 
     visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 0).withSize(6, 8);
@@ -111,19 +115,20 @@ public class RobotContainer {
     /*
     Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value); */ 
+    Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kA.value);
     Trigger scoreMidCone = new JoystickButton(operatorController, XboxController.Button.kX.value);
- */
+    scoreMidCube.whileTrue(Score.scoreMidCube(arm, elevator));
+
     //outtake.whileTrue(new RawOuttake(wheelClaw));
     //intake.whileTrue(new RawIntake(wheelClaw));
 /*
     intakeGround.whileTrue(Intake.intakeGround(arm, elevator, wheelClaw));
     intakeSubstation.whileTrue(Intake.intakeSubstation(arm, elevator, wheelClaw));
     scoreLow.whileTrue(Score.scoreLow(arm, elevator));
-    scoreMidCube.whileTrue(Score.scoreMidCube(arm, elevator));
     scoreMidCone.whileTrue(Score.scoreMidCone(arm, elevator));
     */
+
   }
 
   public Command getAutonomousCommand() {
@@ -131,15 +136,16 @@ public class RobotContainer {
     // return new TurnEncoded(drivetrain, Math.PI, 0.25);
     // return new AutoRotate(arm, 0);
     // return new Engage(drivetrain);
-    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, null);
+    return MidCubeBalanceAuto.midCubeBalanceAuto(drivetrain, arm, elevator, wheelClaw, drivetrainTab);
+    //autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, null);
   }
 
   public void updateButtons() {
-    if (driverController.getRightBumper()) {
+    if (driverController.getRightTriggerAxis() > 0.2) {
       TeleopDrive.setPrecisionDrive(true);
       drivetrain.setIdleMode(IdleMode.kBrake);
     } else {
-      TeleopDrive.setPrecisionDrive(false);
+      TeleopDrive.setPrecisionDrive(false); 
       drivetrain.setIdleMode(IdleMode.kBrake);
     }
   }

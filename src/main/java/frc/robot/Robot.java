@@ -22,8 +22,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     PortForwarder.add(5800, "photonvision.local", 5800);
-
-    CameraServer.startAutomaticCapture("Claw Camera", 0);
   }
 
   @Override

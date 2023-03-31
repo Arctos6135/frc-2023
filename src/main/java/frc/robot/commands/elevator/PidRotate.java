@@ -28,13 +28,16 @@ public class PidRotate extends CommandBase {
         double pid = arm.getPIDController().calculate(
             this.arm.getAngle(), setpointAngle);
 
+        System.out.printf("Pid control with angle %f, pid %f\n", arm.getAngle(), pid);
+
         pid = Math.min(0.5, Math.max(pid, -0.5));
 
         this.arm.setMotor(-pid);
     }
 
-0    @Override 
+    @Override 
     public boolean isFinished() {
         return Math.abs(this.arm.getAngle() - setpointAngle) < ArmConstants.ARM_TOLERANCE;
     }
+
 }
