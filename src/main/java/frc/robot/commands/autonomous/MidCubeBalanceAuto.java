@@ -22,10 +22,12 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.WheelClaw;
 
 public class MidCubeBalanceAuto {
-    public static Command midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw, ShuffleboardTab drivetrainTab) {
-        return Score.scoreMidCube(arm, elevator)
-            //.andThen(new RawOuttake(claw).withTimeout(2))
-            .andThen(new DriveForwardTillAngle(drivetrain, -0.2, 0.3))
-            .andThen(new PIDBalance(drivetrain, drivetrainTab)); // tag a gyro balancing routine onto the end of this
+    public static SequentialCommandGroup midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw, ShuffleboardTab drivetrainTab) {
+        return new SequentialCommandGroup(
+            Score.scoreMidCube(arm, elevator), 
+            new RawOuttake(claw).withTimeout(2)/*,
+            new DriveForwardTillAngle(drivetrain, -0.2, 0.3),
+            new PIDBalance(drivetrain, drivetrainTab) */
+        );
     }
 }

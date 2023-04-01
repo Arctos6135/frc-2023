@@ -16,10 +16,10 @@ public class WheelClaw extends SubsystemBase {
     }
 
     public void outtake() {
-        setMotorSpeed(0.6);
+        setMotorSpeed(0.8);
     }
     
     public void intake() {
-        setMotorSpeed(-0.6);
+        setMotorSpeed(-0.8);
     }
 }

@@ -86,7 +86,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 5) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 30) {
             initialAngle = encoder.getPosition();
             isInitialized = true;
         }

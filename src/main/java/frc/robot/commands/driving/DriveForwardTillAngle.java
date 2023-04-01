@@ -31,6 +31,7 @@ public class DriveForwardTillAngle extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.printf("Arcade drive with speed %f\n", speed);
         drivetrain.arcadeDrive(speed, 0);
     }
 
