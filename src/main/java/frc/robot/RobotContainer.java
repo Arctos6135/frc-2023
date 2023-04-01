@@ -68,6 +68,7 @@ public class RobotContainer {
 
   // Autonomous mode selection
   private Autonomous autonomous = new Autonomous();
+  private Claw backupClaw;
 
   public RobotContainer() {
     this.drivetrain = new Drivetrain(drivetrainTab);
@@ -82,8 +83,12 @@ public class RobotContainer {
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
       //new PidExtend(elevator, 0));
 
-    this.wheelClaw = new WheelClaw();
-    this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 
+    //this.wheelClaw = new WheelClaw();
+    //this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 
+
+    this.wheelClaw = null;
+    this.backupClaw = new Claw();
+    backupClaw.setDefaultCommand(new TeleopClaw(backupClaw, operatorController));
 
     this.visionSystem = new VisionSystem();
 

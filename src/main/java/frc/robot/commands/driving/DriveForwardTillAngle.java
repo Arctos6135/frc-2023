@@ -10,6 +10,7 @@ public class DriveForwardTillAngle extends CommandBase {
 
     private final double speed;
     private final double targetAngle;
+    private final double maxSafeDistance = 14 * 12;
 
     /** 
      * @param speed the speed of the robot in percent [-1, 1]
@@ -31,17 +32,21 @@ public class DriveForwardTillAngle extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.printf("Arcade drive with speed %f\n", speed);
-        drivetrain.arcadeDrive(speed, 0);
+        if (Math.abs(drivetrain.getPosition()) > maxSafeDistance) {
+            System.out.printf("Was driving forward till angle %f, stopped robot because it drove more than the max safe distance (encoders reading %f)\n", targetAngle, drivetrain.getPosition());
+            drivetrain.arcadeDrive(0, 0);
+        } else {
+            System.out.printf("Driving forward till angle %f at speed %f, reading angle %f\n", targetAngle, speed, drivetrain.getPitch());
+            drivetrain.arcadeDrive(speed, 0);
+        }
     }
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(drivetrain.getPitch()) > targetAngle) {
-            System.out.printf("finished driving till rotated %f radians\n", this.targetAngle);
+        if (Math.abs(drivetrain.getPitch()) > Math.abs(targetAngle)) {
+            System.out.printf("Finished driving till rotated %f radians\n", this.targetAngle);
             return true;
         } else {
-            System.out.printf("Read angle %f, not stopping\n", drivetrain.getPitch());
             return false;
         }
     }

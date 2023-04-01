@@ -108,21 +108,21 @@ public class Drivetrain extends SubsystemBase {
         gyroAngle = drivetrainTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
 
         resetGyroOffsetButton = drivetrainTab.add("Reset gyro", false).withWidget(BuiltInWidgets.kToggleButton)
-            .withPosition(6, 4).withSize(1, 1).getEntry();
+            .withPosition(5, 3).withSize(1, 1).getEntry();
     }
 
     @Override
     public void periodic() {
         if ((Timer.getFPGATimestamp() > 0.1 && !gyroOffsetInit) || resetGyroOffsetButton.getBoolean(false)) {
             gyroOffsetInit = true;
-            gyroOffset = getPitch();
+            gyroOffset = gyroscope.getAngle() * Math.PI / 180;
         }
         leftEncoderReading.setDouble(leftEncoder.getPosition() / 36);
         rightEncoderReading.setDouble(rightEncoder.getPosition() / 36);
 
         rotationEstimate.setDouble(getRotation());
         translationEstimate.setDouble(getPosition());
-        gyroAngle.setDouble(gyroscope.getAngle());
+        gyroAngle.setDouble(getPitch());
 
         double translation = translationLimiter.calculate(targetTranslation);
         double rotation = rotationLimiter.calculate(targetRotation);

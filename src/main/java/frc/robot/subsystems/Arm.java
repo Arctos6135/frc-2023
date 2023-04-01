@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(CANBus.ARM_MOTOR, MotorType.kBrushless);
     private final RelativeEncoder encoder;
 
-    public static double kP = 1;
+    public static double kP = 1.3;
     public static double kI = 0.1;
     public static double kD = 0;
 

@@ -22,7 +22,7 @@ public class Score {
 
     public static Command scoreMidCube(Arm arm, Elevator elevator) {
         return new SequentialCommandGroup(
-            new PidRotate(arm, 0.7),
+            new PidRotate(arm, 1.1),
             new Wait(1),
             new EncodedElevator(elevator, 2)
         );
