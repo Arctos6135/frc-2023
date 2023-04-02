@@ -56,6 +56,6 @@ public class Autonomous {
             chooser.addOption(mode.autoName, mode); 
         }
 
-        chooser.setDefaultOption(AutoMode.MidCube.autoName, AutoMode.MidCube); 
+        chooser.setDefaultOption(AutoMode.MidCubeBalance.autoName, AutoMode.MidCubeBalance); 
     }
 }

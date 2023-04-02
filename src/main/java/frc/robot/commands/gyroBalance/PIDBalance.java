@@ -9,6 +9,28 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
+/*
+auto is fine
+
+teleop:
+- repeatedly breaking things
+- add more sensors: limit switches
+- put the D in stuPID
+- operator routines
+- switchable autos
+- communication (finger triangle gestures)
+- calibrate sensors during auto
+
+training
+- focus on robots in general
+    - alternate between coding & general robotics
+- assume python knowledge
+- diversify skillsets
+- tell them what FRC is
+- personal connections
+- getting people debugging code on robot
+ */
+
 public class PIDBalance extends CommandBase {
     private final Drivetrain drivetrain;
     private final PIDController controller = new PIDController(0.35, 0, 0);//0.0005);

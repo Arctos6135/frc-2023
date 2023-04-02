@@ -173,4 +173,8 @@ public class Drivetrain extends SubsystemBase {
     public double getPitchRate() {
         return gyroscope.getRate() * Math.PI / 180;
     }
+
+    public void calibrateGyro() {
+        gyroOffset = gyroscope.getAngle() * Math.PI / 180;
+    }
 }
