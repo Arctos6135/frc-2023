@@ -29,3 +29,6 @@ We are using Java! It's a great language (in some ways)! One of the things it's 
 
 ### if it ain't broke, don't fix it
 We will be using a fairly similar directory layout to last year: a constants folder holds the constants, a commands folder holds commands, a subsystems folder holds subsystems. If you are writing one of these three things **put that file into the corresponding folder**. If you are writing something that isn't one of these three things, either use your best judgement, or ask me! 
+
+![IMG_0063 Medium](https://user-images.githubusercontent.com/74578068/230806886-b03467e8-56dd-4a3f-8fa7-0d98d03dbfd2.jpeg)
+
