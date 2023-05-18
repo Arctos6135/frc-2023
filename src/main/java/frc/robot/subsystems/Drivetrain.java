@@ -23,6 +23,19 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
+    public enum State {
+        HumanDriven("HumanDriven"),
+        PathFollowing("PathFollowing");
+
+        public String name;
+
+        private State(String name) {
+            this.name = name;
+        }
+    }
+
+    private State state = State.HumanDriven;
+
     private final CANSparkMax rightMaster = new CANSparkMax(CANBus.RIGHT_MASTER, MotorType.kBrushless);
     private final CANSparkMax leftMaster = new CANSparkMax(CANBus.LEFT_MASTER, MotorType.kBrushless);
     private final CANSparkMax rightFollower = new CANSparkMax(CANBus.RIGHT_FOLLOWER, MotorType.kBrushless);
@@ -105,6 +118,14 @@ public class Drivetrain extends SubsystemBase {
         rotationEstimateWidget.setDouble(getRotation());
         translationEstimateWidget.setDouble(getPosition());
 
+        if (state == State.HumanDriven) {
+            humanDrivenPeriodic();
+        } else if (state == State.PathFollowing) {
+            pathFollowingPeriodic();
+        }
+    }
+
+    private void humanDrivenPeriodic() {
         double translation = translationLimiter.calculate(targetTranslation);
         double rotation = rotationLimiter.calculate(targetRotation);
 
@@ -114,9 +135,34 @@ public class Drivetrain extends SubsystemBase {
         setMotors(left, right);
     }
 
+    private void pathFollowingPeriodic() {
+        double translation = translationalController.calculate(getPosition());
+        double rotation = rotationController.calculate(getRotation());
+
+        double left = (translation + rotation);
+        double right = (translation - rotation);
+
+        setMotors(left, right);
+    }
+
     public void arcadeDrive(double translation, double rotation) {
+        if (state != State.HumanDriven) {
+            System.out.printf("Changing state from %s to HumanDriven\n", state.name);
+            state = State.HumanDriven;
+        }
+
         targetTranslation = translation;
         targetRotation = rotation;
+    }
+
+    public void navigateTo(double translation, double rotation) {
+        if (state != State.PathFollowing) {
+            System.out.printf("Changing state from %s to PathFollowing\n", state.name);
+            state = State.PathFollowing;
+        }
+
+        translationalController.setSetpoint(translation);
+        rotationController.setSetpoint(rotation);
     }
 
     private void setMotors(double left, double right) {
