@@ -149,4 +149,8 @@ public class RobotContainer {
       drivetrain.setIdleMode(IdleMode.kBrake);
     }
   }
+
+  public void resetSensors() {
+    drivetrain.resetGyro();
+  }
 }

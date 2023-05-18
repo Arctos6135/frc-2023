@@ -28,38 +28,19 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax rightFollower = new CANSparkMax(CANBus.RIGHT_FOLLOWER, MotorType.kBrushless);
     private final CANSparkMax leftFollower = new CANSparkMax(CANBus.LEFT_FOLLOWER, MotorType.kBrushless);
 
-    private final GenericEntry rawLeft;
-    private final GenericEntry rawRight;
-    private final GenericEntry timeToFullSpeedWidget;
-    private final GenericEntry rightEncoderReading;
-    private final GenericEntry leftEncoderReading;
-    private final GenericEntry rotationEstimate;
-    private final GenericEntry translationEstimate;
-    private final GenericEntry gyroAngle;
-    private final ComplexWidget gyroscopeWidget;
+    private final GenericEntry rotationEstimateWidget;
+    private final GenericEntry translationEstimateWidget;
     
-    private final GenericEntry resetGyroOffsetButton;
-
-    // Rate limiting on drivetrain
+    // Rate limiting on drivetrain while in HumanDriven mode
     private SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
     private SlewRateLimiter rotationLimiter = new SlewRateLimiter(2);
 
     private double targetTranslation = 0;
     private double targetRotation = 0;
 
-    // using these for autonomous routines, for them to actually do anything, you need to repeatedly call calculate in the `execute` of the command you are making.
-    public final PIDController translationalController;
-    public final PIDController rotationController;
-
-    // Translational
-    private static double kP = 0.00025;
-    private static double kI = 0.000001;
-    private static double kD = 0.0150;
-
-    // Rotational
-    private static double rotP = 0.00001;
-    private static double rotI = 0.0;
-    private static double rotD = 0.0;
+    // PID control on drivetrain while path following
+    public final PIDController translationalController = new PIDController(0.00001, 0, 0);
+    public final PIDController rotationController = new PIDController(0.00001, 0, 0);
 
     // Encoders
     private final RelativeEncoder rightEncoder;
@@ -67,8 +48,6 @@ public class Drivetrain extends SubsystemBase {
 
     // Gyro
     private final ADXRS450_Gyro gyroscope = new ADXRS450_Gyro();
-    private double gyroOffset = 0;
-    private boolean gyroOffsetInit = false;
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);
@@ -79,50 +58,52 @@ public class Drivetrain extends SubsystemBase {
         this.leftMaster.setIdleMode(IdleMode.kBrake);
         this.rightMaster.setIdleMode(IdleMode.kBrake);
 
-        this.translationalController = new PIDController(kP, kI, kD);
-        this.rotationController = new PIDController(rotP, rotI, rotD);
-
         this.rightEncoder = this.rightMaster.getEncoder();
         this.leftEncoder = this.leftMaster.getEncoder();
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
 
-        rawLeft = drivetrainTab.add("raw left motor speed", 0).getEntry();
-        rawRight = drivetrainTab.add("raw right motor speed", 0).getEntry();
-
-        timeToFullSpeedWidget = drivetrainTab.add("acceleration gain", DriveConstants.DEFAULT_ACCELERATION_GAIN)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", 0, "max", 0.1))
-                .getEntry();
-
-        leftEncoderReading = drivetrainTab.add("left encoder (yards)", 0.0).getEntry();
-        rightEncoderReading = drivetrainTab.add("right encoder (yards)", 0.0).getEntry();
-
-        rotationEstimate = drivetrainTab.add("estimate of rotation (inches)", 0).getEntry();
-        translationEstimate = drivetrainTab.add("estimate of translation (inches)", 0).getEntry();
-
         gyroscope.calibrate();
 
-        gyroscopeWidget = drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro);
-        gyroAngle = drivetrainTab.add("gyro angle", 0).withWidget(BuiltInWidgets.kNumberBar).getEntry();
+        drivetrainTab.add("Left Master", this.leftMaster).withWidget(BuiltInWidgets.kMotorController)
+            .withPosition(0, 0).withSize(1, 2);
 
-        resetGyroOffsetButton = drivetrainTab.add("Reset gyro", false).withWidget(BuiltInWidgets.kToggleButton)
-            .withPosition(6, 4).withSize(1, 1).getEntry();
+        drivetrainTab.add("Left Follower", this.leftFollower).withWidget(BuiltInWidgets.kMotorController)
+            .withPosition(1, 0).withSize(1, 2);
+
+        drivetrainTab.add("Right Master", this.rightMaster).withWidget(BuiltInWidgets.kMotorController)
+            .withPosition(2, 0).withSize(1, 2);
+
+        drivetrainTab.add("Right Follower", this.rightFollower).withWidget(BuiltInWidgets.kMotorController)
+            .withPosition(3, 0).withSize(1, 2);
+
+        drivetrainTab.add("Left Master", this.leftMaster.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
+            .withPosition(0, 2).withSize(1, 1);
+
+        drivetrainTab.add("Left Follower", this.leftFollower.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
+            .withPosition(1, 2).withSize(1, 1);
+
+        drivetrainTab.add("Right Master", this.rightMaster.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
+            .withPosition(2, 2).withSize(1, 1);
+
+        drivetrainTab.add("Right Follower", this.rightFollower.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
+            .withPosition(3, 2).withSize(1, 1);
+
+        drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro)
+            .withPosition(0, 3).withSize(2, 2);
+
+        translationEstimateWidget = drivetrainTab.add("Translation Estimate", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(2, 3).withSize(1, 1).getEntry();
+
+        rotationEstimateWidget = drivetrainTab.add("Rotation Estimate", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(2, 4).withSize(1, 1).getEntry();
     }
 
     @Override
     public void periodic() {
-        if ((Timer.getFPGATimestamp() > 0.1 && !gyroOffsetInit) || resetGyroOffsetButton.getBoolean(false)) {
-            gyroOffsetInit = true;
-            gyroOffset = getPitch();
-        }
-        leftEncoderReading.setDouble(leftEncoder.getPosition() / 36);
-        rightEncoderReading.setDouble(rightEncoder.getPosition() / 36);
-
-        rotationEstimate.setDouble(getRotation());
-        translationEstimate.setDouble(getPosition());
-        gyroAngle.setDouble(gyroscope.getAngle());
+        rotationEstimateWidget.setDouble(getRotation());
+        translationEstimateWidget.setDouble(getPosition());
 
         double translation = translationLimiter.calculate(targetTranslation);
         double rotation = rotationLimiter.calculate(targetRotation);
@@ -139,34 +120,37 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private void setMotors(double left, double right) {
-        this.rawLeft.setDouble(left);
-        this.rawRight.setDouble(right);
-
-        this.leftMaster.set(left);
-        this.rightMaster.set(right);
+        leftMaster.set(left);
+        rightMaster.set(right);
     }
 
     public void setIdleMode(IdleMode idleMode) {
-        this.rightMaster.setIdleMode(idleMode);
-        this.leftMaster.setIdleMode(idleMode);
+        rightMaster.setIdleMode(idleMode);
+        leftMaster.setIdleMode(idleMode);
     }
 
     public double getPosition() {
-        return (this.leftEncoder.getPosition() + this.rightEncoder.getPosition()) / 2;
+        return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2;
     }
 
     public double getRotation() {
-        return (this.leftEncoder.getPosition() - this.rightEncoder.getPosition()) / 2;
+        return (leftEncoder.getPosition() - rightEncoder.getPosition()) / 2;
     }
 
     public void resetEncoders() {
-        this.rightEncoder.setPosition(0);
-        this.leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
+        leftEncoder.setPosition(0);
+    }
+
+    public void resetGyro() {
+        if (Math.abs(gyroscope.getAngle()) > 0.5) {
+            gyroscope.reset();
+        }
     }
 
     // get the pitch of the robot in radians, 0 is perfectly balanced
     public double getPitch() {
-        return gyroscope.getAngle() * Math.PI / 180 - gyroOffset;
+        return gyroscope.getAngle() * Math.PI / 180;
     }
 
     // get the rate of change of the pitch of the robot in radians per second (this might be wrong), 0 is not moving
