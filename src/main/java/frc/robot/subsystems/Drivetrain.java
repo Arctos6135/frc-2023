@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -25,7 +26,7 @@ import frc.robot.constants.DriveConstants;
 public class Drivetrain extends SubsystemBase {
     public enum State {
         HumanDriven("HumanDriven"),
-        PathFollowing("PathFollowing");
+        AutoNavigating("AutoNavigating");
 
         public String name;
 
@@ -120,8 +121,6 @@ public class Drivetrain extends SubsystemBase {
 
         if (state == State.HumanDriven) {
             humanDrivenPeriodic();
-        } else if (state == State.PathFollowing) {
-            pathFollowingPeriodic();
         }
     }
 
@@ -135,34 +134,53 @@ public class Drivetrain extends SubsystemBase {
         setMotors(left, right);
     }
 
-    private void pathFollowingPeriodic() {
-        double translation = translationalController.calculate(getPosition());
-        double rotation = rotationController.calculate(getRotation());
-
-        double left = (translation + rotation);
-        double right = (translation - rotation);
-
-        setMotors(left, right);
-    }
-
     public void arcadeDrive(double translation, double rotation) {
         if (state != State.HumanDriven) {
-            System.out.printf("Changing state from %s to HumanDriven\n", state.name);
-            state = State.HumanDriven;
+            if (Math.abs(translation) > 0.1 || Math.abs(rotation) > 0.1) {
+                DriverStation.reportWarning(String.format("Not applying controller input to drivetrain because the robot is in %s mode", state.name), false);
+            }
+        } else {
+            targetTranslation = translation;
+            targetRotation = rotation;
         }
-
-        targetTranslation = translation;
-        targetRotation = rotation;
     }
 
-    public void navigateTo(double translation, double rotation) {
-        if (state != State.PathFollowing) {
-            System.out.printf("Changing state from %s to PathFollowing\n", state.name);
-            state = State.PathFollowing;
+    // reset encoders and gyro and enter autonomous navigation mode
+    public void startNavigation() {
+        if (state == State.AutoNavigating) {
+            DriverStation.reportError("RACE CONDITION: tried to start autonomous navigation when it had already been started", false);
         }
 
-        translationalController.setSetpoint(translation);
-        rotationController.setSetpoint(rotation);
+        System.out.printf("Changing state from %s to AutoNavigating\n", state.name);
+        state = State.AutoNavigating;
+
+        resetEncoders();
+        resetGyro();
+    }
+
+    // reset encoders and gyro and enter human driven mode
+    public void endNavigation() {
+        if (state != State.AutoNavigating) {
+            DriverStation.reportError("RACE CONDITION: tried to end autonomous navigation when it had already been ended", false);
+        }
+
+        System.out.printf("Changing state from AutoNavigating to HumanDriven\n");
+        state = State.HumanDriven;
+
+        resetEncoders();
+        resetGyro();
+    }
+
+    // Only to be called during auto navition mode. Left and right are [-1, 1] percent motor powers.
+    public void tankDrive(double left, double right) {
+        if (state == State.AutoNavigating) {
+            setMotors(left, right);
+        } else {
+            DriverStation.reportError(
+                String.format("Calling Drivetrain.tankDrive while robot in %s mode instead of autonomous navigation", state.name), 
+                true
+            );
+        }
     }
 
     private void setMotors(double left, double right) {
