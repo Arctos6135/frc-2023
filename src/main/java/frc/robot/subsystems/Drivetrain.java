@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -44,6 +45,8 @@ public class Drivetrain extends SubsystemBase {
 
     private final GenericEntry rotationEstimateWidget;
     private final GenericEntry translationEstimateWidget;
+    private final GenericEntry xPositionWidget;
+    private final GenericEntry yPositionWidget;
     
     // Rate limiting on drivetrain while in HumanDriven mode
     private SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
@@ -61,7 +64,14 @@ public class Drivetrain extends SubsystemBase {
     private final RelativeEncoder leftEncoder;
 
     // Gyro
-    private final ADXRS450_Gyro gyroscope = new ADXRS450_Gyro();
+    private final ADIS16470_IMU gyroscope = new ADIS16470_IMU();
+
+    // Odometry
+    private double xPosition = 0.0;
+    private double yPosition = 0.0;
+    private double lastLeft = 0.0;
+    private double lastRight = 0.0;
+    private double lastAngle = 0.0;
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);
@@ -112,16 +122,42 @@ public class Drivetrain extends SubsystemBase {
 
         rotationEstimateWidget = drivetrainTab.add("Rotation Estimate", 0).withWidget(BuiltInWidgets.kTextView)
             .withPosition(2, 4).withSize(1, 1).getEntry();
+
+        xPositionWidget = drivetrainTab.add("X Position", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(3, 3).withSize(1, 1).getEntry();
+        
+        yPositionWidget = drivetrainTab.add("Y Position", 0).withWidget(BuiltInWidgets.kTextView)
+            .withPosition(3, 3).withSize(1, 1).getEntry();
     }
 
     @Override
     public void periodic() {
         rotationEstimateWidget.setDouble(getRotation());
         translationEstimateWidget.setDouble(getPosition());
+        xPositionWidget.setDouble(xPosition);
+        yPositionWidget.setDouble(yPosition);
 
         if (state == State.HumanDriven) {
             humanDrivenPeriodic();
         }
+
+        updateOdometry();
+    }
+
+    private void updateOdometry() {
+        double left = leftEncoder.getPosition();
+        double right = rightEncoder.getPosition();
+        double angle = getYaw();
+
+        double distanceChange = ((left - lastLeft) + (right - lastRight)) / 2;
+        double averageAngle = (angle + lastAngle) / 2;
+
+        lastLeft = left;
+        lastRight = right;
+        lastAngle = angle;
+
+        xPosition += Math.cos(averageAngle) * distanceChange;
+        yPosition += Math.sin(averageAngle) * distanceChange;
     }
 
     private void humanDrivenPeriodic() {
@@ -212,9 +248,14 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
+    // get the yaw of the robot in radians
+    public double getYaw() {
+        return gyroscope.getAngle() * Math.PI / 180;
+    }
+
     // get the pitch of the robot in radians, 0 is perfectly balanced
     public double getPitch() {
-        return gyroscope.getAngle() * Math.PI / 180;
+        return gyroscope.getYComplementaryAngle() * Math.PI / 180;
     }
 
     // get the rate of change of the pitch of the robot in radians per second (this might be wrong), 0 is not moving
