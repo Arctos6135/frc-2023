@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -12,17 +10,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANBus;
 import frc.robot.constants.DriveConstants;
+import frc.robot.util.Odometer;
 
 public class Drivetrain extends SubsystemBase {
     public enum State {
@@ -67,11 +61,7 @@ public class Drivetrain extends SubsystemBase {
     private final ADIS16470_IMU gyroscope = new ADIS16470_IMU();
 
     // Odometry
-    private double xPosition = 0.0;
-    private double yPosition = 0.0;
-    private double lastLeft = 0.0;
-    private double lastRight = 0.0;
-    private double lastAngle = 0.0;
+    private Odometer odometer;
 
     public Drivetrain(ShuffleboardTab drivetrainTab) {
         this.rightFollower.follow(this.rightMaster);
@@ -89,6 +79,8 @@ public class Drivetrain extends SubsystemBase {
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
 
         gyroscope.calibrate();
+
+        odometer = new Odometer(leftEncoder.getPosition(), rightEncoder.getPosition(), getYaw());
 
         drivetrainTab.add("Left Master", this.leftMaster).withWidget(BuiltInWidgets.kMotorController)
             .withPosition(0, 0).withSize(1, 2);
@@ -134,30 +126,14 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         rotationEstimateWidget.setDouble(getRotation());
         translationEstimateWidget.setDouble(getPosition());
-        xPositionWidget.setDouble(xPosition);
-        yPositionWidget.setDouble(yPosition);
+        xPositionWidget.setDouble(odometer.getX());
+        yPositionWidget.setDouble(odometer.getY());
 
         if (state == State.HumanDriven) {
             humanDrivenPeriodic();
         }
 
-        updateOdometry();
-    }
-
-    private void updateOdometry() {
-        double left = leftEncoder.getPosition();
-        double right = rightEncoder.getPosition();
-        double angle = getYaw();
-
-        double distanceChange = ((left - lastLeft) + (right - lastRight)) / 2;
-        double averageAngle = (angle + lastAngle) / 2;
-
-        lastLeft = left;
-        lastRight = right;
-        lastAngle = angle;
-
-        xPosition += Math.cos(averageAngle) * distanceChange;
-        yPosition += Math.sin(averageAngle) * distanceChange;
+        odometer.update(leftEncoder.getPosition(), rightEncoder.getPosition(), getYaw());
     }
 
     private void humanDrivenPeriodic() {
@@ -192,6 +168,7 @@ public class Drivetrain extends SubsystemBase {
 
         resetEncoders();
         resetGyro();
+        odometer = new Odometer(leftEncoder.getPosition(), rightEncoder.getPosition(), getYaw());
     }
 
     // reset encoders and gyro and enter human driven mode
