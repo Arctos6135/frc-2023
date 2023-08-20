@@ -1,5 +1,5 @@
 # frc-2023
-Robot code for the 2023 FRC season Charged Up.
+Robot code for the 2023 FRC season Charged Up presented by Haas.
 
 ## repo layout
 This project is structured using the basic WPILib template, so it is very similar to last year!
