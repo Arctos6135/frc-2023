@@ -81,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
         gyroscope.calibrate();
 
         odometer = new Odometer(leftEncoder.getPosition(), rightEncoder.getPosition(), getYaw());
-
+/*
         drivetrainTab.add("Left Master", this.leftMaster).withWidget(BuiltInWidgets.kMotorController)
             .withPosition(0, 0).withSize(1, 2);
 
@@ -93,7 +93,7 @@ public class Drivetrain extends SubsystemBase {
 
         drivetrainTab.add("Right Follower", this.rightFollower).withWidget(BuiltInWidgets.kMotorController)
             .withPosition(3, 0).withSize(1, 2);
-
+ 
         drivetrainTab.add("Left Master", this.leftMaster.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
             .withPosition(0, 2).withSize(1, 1);
 
@@ -105,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
 
         drivetrainTab.add("Right Follower", this.rightFollower.getEncoder()).withWidget(BuiltInWidgets.kEncoder)
             .withPosition(3, 2).withSize(1, 1);
-
+*/
         drivetrainTab.add("Gyroscope", this.gyroscope).withWidget(BuiltInWidgets.kGyro)
             .withPosition(0, 3).withSize(2, 2);
 
@@ -143,7 +143,7 @@ public class Drivetrain extends SubsystemBase {
         double left = (translation + rotation);
         double right = (translation - rotation);
 
-        setMotors(left, right);
+        setMotors(left * 0.2, right * 0.2);
     }
 
     public void arcadeDrive(double translation, double rotation) {
@@ -241,6 +241,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void calibrateGyro() {
-        gyroOffset = gyroscope.getAngle() * Math.PI / 180;
+        gyroscope.reset();
     }
 }

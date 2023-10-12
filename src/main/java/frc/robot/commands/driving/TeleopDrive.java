@@ -65,7 +65,7 @@ public class TeleopDrive extends CommandBase {
         double x = controller.getRawAxis(X_AXIS);
         double x1 = xDampener.dampen(x) * (precisionDrive ? precisionTurn : 1.0);
 
-        drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
+        drivetrain.arcadeDrive(y1 * 0.2, x1 * 0.5);
     }
 
     public static boolean isPrecisionDrive() {

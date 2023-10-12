@@ -20,7 +20,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.WheelClaw;
 
 public class MidCubeBalanceAuto {
-    public static Command `midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw, ShuffleboardTab drivetrainTab) {
+    public static Command midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw, ShuffleboardTab drivetrainTab) {
         return new SequentialCommandGroup(
             /* mid cube
             Score.scoreMidCube(arm, elevator), 

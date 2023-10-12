@@ -25,8 +25,8 @@ public class PidRotate extends CommandBase {
 
     @Override 
     public void execute() {
-        double pid = arm.getPIDController().calculate(
-            this.arm.getAngle(), setpointAngle);
+        double pid = 0;//arm.getPIDController().calculate(
+          //  this.arm.getAngle(), setpointAngle);
 
         System.out.printf("Pid control with angle %f, pid %f\n", arm.getAngle(), pid);
 

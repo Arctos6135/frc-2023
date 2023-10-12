@@ -36,6 +36,8 @@ public class TeleopRotate extends CommandBase {
         double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
         this.arm.setMotor(rotation * 0.6);
 
+        System.out.printf("Reading %f\n", controller.getRawAxis(XboxController.Axis.kLeftY.value));
+
         // DriverStation.reportWarning(Double.toString(this.arm.getEncoder().getDistance()), false);
         // DriverStation.reportWarning(Boolean.toString(this.arm.getEncoder().isConnected()), false);
     }

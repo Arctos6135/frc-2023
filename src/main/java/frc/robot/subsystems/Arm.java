@@ -29,15 +29,17 @@ import frc.robot.constants.ElevatorConstants;
 //code for rotating arm controlled by redline motor, chain, and sprockets
 
 public class Arm extends SubsystemBase {
+    public enum State {
+        HumanDriven,
+        Automatic
+    }
+
+    private State state = State.HumanDriven;
     //This is our motor
     private final CANSparkMax motor = new CANSparkMax(CANBus.ARM_MOTOR, MotorType.kBrushless);
     private final RelativeEncoder encoder;
 
-    public static double kP = 1.3;
-    public static double kI = 0.1;
-    public static double kD = 0;
-
-    private PIDController rotationController;
+    private PIDController controller = new PIDController(0.0001, 0, 0);
 
     private final GenericEntry encoderOutputWidget;
     private final GenericEntry motorSpeedWidget;
@@ -61,12 +63,11 @@ public class Arm extends SubsystemBase {
      */
     public Arm(ShuffleboardTab armTab) {
 
+        motor.setSmartCurrentLimit(30);
         motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
         encoder = motor.getEncoder();
         
-        this.rotationController = new PIDController(kP, kI, kD);
-        rotationController.setIntegratorRange(-0.5, 0.5);
         encoder.setPositionConversionFactor(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
         //this.hexEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS);
 
@@ -86,12 +87,15 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 30) {
+
+        if (!isInitialized && Timer.getFPGATimestamp() > 10) {
             initialAngle = encoder.getPosition();
             isInitialized = true;
         }
         
         if (!isInitialized) return;
+
+        System.out.printf("Running with power%f\n", speed);
 
         if (!softstopEnabled.getBoolean(true)) {
             System.out.println("Arm soft stop disabled\n");
@@ -106,7 +110,15 @@ public class Arm extends SubsystemBase {
             System.out.printf("Stopped in software at angle %f\n", getAngle());
             this.motor.set(0);
         } else {
-            this.motor.set(speed);
+            if (state.equals(State.Automatic)) {
+                //double feedforward = 
+                //double control = controller.calculate(getAngle()) + feedforward;
+               // motor.set();
+            } else {
+                System.out.printf("Angle is %f\n", getAngle());
+
+                this.motor.set(speed);
+            }
         }
 
         encoderOutputWidget.setDouble(encoder.getPosition());
@@ -121,13 +133,5 @@ public class Arm extends SubsystemBase {
 
     public double getAngle() {
         return -encoder.getPosition() + initialAngle;
-    }
-
-    public boolean atSetpoint() {
-        return rotationController.atSetpoint();
-    }
-
-    public PIDController getPIDController() {
-        return rotationController;
     }
 }
