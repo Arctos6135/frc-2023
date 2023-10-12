@@ -29,7 +29,7 @@ public class Drivetrain extends SubsystemBase {
             this.name = name;
         }
     }
-
+/* hihi :D */
     private State state = State.HumanDriven;
 
     private final CANSparkMax rightMaster = new CANSparkMax(CANBus.RIGHT_MASTER, MotorType.kBrushless);
@@ -143,7 +143,7 @@ public class Drivetrain extends SubsystemBase {
         double left = (translation + rotation);
         double right = (translation - rotation);
 
-        setMotors(left * 0.2, right * 0.2);
+        setMotors(left * 0.4, right * 0.4);
     }
 
     public void arcadeDrive(double translation, double rotation) {

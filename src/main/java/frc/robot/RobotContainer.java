@@ -75,6 +75,7 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new TeleopDrive(
         drivetrain, driverController, Controllers.DRIVE_FWD_REV, Controllers.DRIVE_LEFT_RIGHT, drivetrainTab));
     
+
     this.arm = new Arm(armTab);
     this.arm.setDefaultCommand(//new PidRotate(arm, 0.5));
     new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
