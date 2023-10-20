@@ -23,27 +23,15 @@ public class PidRotate extends CommandBase {
         addRequirements(arm); 
     }
 
-    @Override 
-    public void execute() {
-        double pid = 0;//arm.getPIDController().calculate(
-          //  this.arm.getAngle(), setpointAngle);
-
-        System.out.printf("Pid control with angle %f, pid %f\n", arm.getAngle(), pid);
-
-        pid = Math.min(0.5, Math.max(pid, -0.5));
-
-        this.arm.setMotor(-pid);
+    @Override
+    public void initialize() {
+        arm.setAutomaticPosition(setpointAngle);
     }
 
     @Override 
     public boolean isFinished() {
-        return Math.abs(this.arm.getAngle() - setpointAngle) < ArmConstants.ARM_TOLERANCE;
+        return this.arm.atTarget();
     }
 
-
-    @Override
-    public void end(boolean interrupted) {
-        this.arm.setMotor(0);
-    }
-
+    // doesn't do anything to stop the motor when terminated
 }

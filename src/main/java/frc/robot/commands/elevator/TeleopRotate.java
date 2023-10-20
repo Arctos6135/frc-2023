@@ -33,6 +33,10 @@ public class TeleopRotate extends CommandBase {
 
     @Override 
     public void execute() {
+        double raw = controller.getRawAxis(ROTATION_AXIS);
+        if (Math.abs(raw) < 0.05) {
+            return;
+        }
         double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
         this.arm.setMotor(rotation * 0.6);
 
