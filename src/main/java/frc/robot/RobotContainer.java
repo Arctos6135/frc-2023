@@ -160,4 +160,12 @@ public class RobotContainer {
   public void resetSensors() {
     drivetrain.resetGyro();
   }
+
+  public void whileDisabled() {
+    arm.disableBrake();
+  }
+
+  public void whenEnabled() {
+    arm.enableBrake();
+  }
 }

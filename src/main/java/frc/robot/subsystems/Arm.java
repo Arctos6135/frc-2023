@@ -164,4 +164,12 @@ public class Arm extends SubsystemBase {
     public boolean atTarget() {
         return Math.abs(encoder.getPosition() - controller.getSetpoint()) < 1 * Math.PI / 180;
     }
+
+    public void disableBrake() {
+        motor.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void enableBrake() {
+        motor.setIdleMode(IdleMode.kBrake);
+    }
 }
