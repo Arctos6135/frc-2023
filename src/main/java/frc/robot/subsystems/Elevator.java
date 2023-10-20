@@ -83,8 +83,10 @@ public class Elevator extends SubsystemBase {
             extensionController.setSetpoint(initialAngle);
         }
 
-        double pid = extensionController.calculate(getAngle());
-        setMotor(pid); // Hyper-extension and -contraction will be handled by the code below
+        if (positionMode) {
+            double pid = extensionController.calculate(getAngle());
+            setMotor(pid); // Hyper-extension and -contraction will be handled by the code below
+        }
 
         // TODO test the 0.1 as outputValue to ensure there isnt jittering or any issues
         if (getAngle() > highAngle && speed < 0) {
