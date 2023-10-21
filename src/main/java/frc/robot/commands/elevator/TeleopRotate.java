@@ -3,6 +3,7 @@ package frc.robot.commands.elevator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Controllers;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
@@ -33,11 +34,12 @@ public class TeleopRotate extends CommandBase {
 
     @Override 
     public void execute() {
-        double raw = controller.getRawAxis(ROTATION_AXIS);
+        System.out.println("calling the periodic of teleop rotate");
+        double raw = controller.getRawAxis(Controllers.ELEVATOR_CONTROL);
         if (Math.abs(raw) < 0.05) {
             return;
         }
-        double rotation = dampener.smoothDampen(controller.getRawAxis(ROTATION_AXIS));
+        double rotation = dampener.smoothDampen(controller.getRawAxis(Controllers.ELEVATOR_CONTROL));
         this.arm.setMotor(rotation * 0.6);
 
         System.out.printf("Reading %f\n", controller.getRawAxis(XboxController.Axis.kLeftY.value));

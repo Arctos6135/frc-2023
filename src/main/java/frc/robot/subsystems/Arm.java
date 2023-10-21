@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.CANBus;
@@ -49,9 +50,9 @@ public class Arm extends SubsystemBase {
     private boolean isInitialized = false;
 
     // measured in radians from vertical
-    private final float lowAngle = 0.8f; 
+    private final float lowAngle = 0.7f; 
     private final float highAngle = 1.6f;
-    private final double startAngle = 0.8;
+    private final double startAngle = 0.7;
 
     private double speed = 0;
 
@@ -83,12 +84,11 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        if (!isInitialized && Timer.getFPGATimestamp() > 10) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
             REVLibError okay = encoder.setPosition(startAngle);
             if (okay.equals(REVLibError.kOk)) {
                 motor.setSoftLimit(SoftLimitDirection.kForward, highAngle); // does this work??? no clue!
-                motor.setSoftLimit(SoftLimitDirection.kForward, lowAngle); // same here!
+                motor.setSoftLimit(SoftLimitDirection.kReverse, lowAngle); // same here!
                 isInitialized = true;
             } else {
                 System.out.printf("Error: tried to set the default encoder position for the arm, but found %s\n", okay);
@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase {
         
         if (!isInitialized) return;
 
-        System.out.printf("Running with power%f\n", speed);
+        System.out.printf("Running with power %f\n", speed);
 
         if (!softstopEnabled.getBoolean(true)) {
             System.out.println("Arm soft stop disabled\n");
@@ -134,6 +134,8 @@ public class Arm extends SubsystemBase {
         }
         //}
 
+        SmartDashboard.putNumber("Arm angle", encoder.getPosition());
+
         encoderOutputWidget.setDouble(encoder.getPosition());
         motorSpeedWidget.setDouble(motor.get());
     }
@@ -144,6 +146,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void setHumanDriveSpeed(double speed) {
+        System.out.printf("Calling set arm speed with speed %s%n", speed);
         this.speed = speed;
 
         if (!state.equals(State.HumanDriven)) {
@@ -170,6 +173,6 @@ public class Arm extends SubsystemBase {
     }
 
     public void enableBrake() {
-        motor.setIdleMode(IdleMode.kBrake);
+        motor.setIdleMode(IdleMode.kCoast);
     }
 }

@@ -77,8 +77,8 @@ public class RobotContainer {
     
 
     this.arm = new Arm(armTab);
-    this.arm.setDefaultCommand(//new PidRotate(arm, 0.5));
-    new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
+    this.arm.setDefaultCommand(new PidRotate(arm, 1));
+    //new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
       
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));

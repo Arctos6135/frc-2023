@@ -51,7 +51,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 30) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
             initialAngle = encoder.get();
             isInitialized = true;
         }
@@ -59,10 +59,14 @@ public class Elevator extends SubsystemBase {
         if (!isInitialized)
             return;
 
-        if (!softstopEnabled.getBoolean(true)) {
+        if (0 == 0)
+        return;
+
+        if (true) {//!softstopEnabled.getBoolean(true)) {
             System.out.println("Elevator soft stop disabled\n");
             this.motor.set(ControlMode.PercentOutput, speed);
             initialAngle = encoder.get();
+            return;
         }
 
         if (getAngle() > highAngle && speed < 0) {
