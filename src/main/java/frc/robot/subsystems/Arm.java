@@ -65,10 +65,10 @@ public class Arm extends SubsystemBase {
         motor.restoreFactoryDefaults();
         motor.setSmartCurrentLimit(30);
         motor.setIdleMode(IdleMode.kBrake);
-        motor.setInverted(true); // TODO: maybe?
+        motor.setInverted(true);
         encoder = motor.getEncoder();
         
-        encoder.setPositionConversionFactor(ArmConstants.RADIANS_PER_ROTATION); // TODO: actually measure constant
+        encoder.setPositionConversionFactor(ArmConstants.RADIANS_PER_ROTATION); 
 
         encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
                 .withPosition(3, 1).withSize(1, 1).getEntry();
@@ -87,8 +87,8 @@ public class Arm extends SubsystemBase {
         if (!isInitialized && Timer.getFPGATimestamp() > 1) {
             REVLibError okay = encoder.setPosition(startAngle);
             if (okay.equals(REVLibError.kOk)) {
-                motor.setSoftLimit(SoftLimitDirection.kForward, highAngle); // does this work??? no clue!
-                motor.setSoftLimit(SoftLimitDirection.kReverse, lowAngle); // same here!
+                motor.setSoftLimit(SoftLimitDirection.kForward, highAngle);
+                motor.setSoftLimit(SoftLimitDirection.kReverse, lowAngle);
                 isInitialized = true;
             } else {
                 System.out.printf("Error: tried to set the default encoder position for the arm, but found %s\n", okay);
@@ -112,15 +112,7 @@ public class Arm extends SubsystemBase {
             motor.enableSoftLimit(SoftLimitDirection.kForward, true);
             motor.enableSoftLimit(SoftLimitDirection.kReverse, true);
         }
-        /*
-        if (encoder.getPosition() > highAngle && speed < 0) {
-            System.out.printf("Stopped in software\n");
-            this.motor.set(0);
-        } else if (encoder.getPosition() < lowAngle && speed > 0) {
-            System.out.printf("Stopped in software at angle %f\n", encoder.getPosition());
-            this.motor.set(0);
-        } else {
-         */
+
         if (state.equals(State.Automatic)) {
             // since the encoder measures in radians from vertical
             double feedforward = Math.sin(encoder.getPosition()) * 0.1; // adjust constant so that the arm holds level
@@ -132,7 +124,6 @@ public class Arm extends SubsystemBase {
 
             this.motor.set(speed);
         }
-        //}
 
         SmartDashboard.putNumber("Arm angle", encoder.getPosition());
 
