@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.arctos6135.robotlib.oi.XboxControllerButtons;
 import com.arctos6135.robotlib.oi.buttons.AnalogButton;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -77,8 +78,7 @@ public class RobotContainer {
     
 
     this.arm = new Arm(armTab);
-    this.arm.setDefaultCommand(new PidRotate(arm, 1));
-    //new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
+    this.arm.setDefaultCommand(new TeleopRotate(arm, operatorController, Controllers.ROTATE_CONTROL));
       
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
@@ -123,9 +123,15 @@ public class RobotContainer {
     Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
     Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value); */ 
-    Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kA.value);
-    Trigger scoreMidCone = new JoystickButton(operatorController, XboxController.Button.kX.value);
-    scoreMidCube.whileTrue(Score.scoreMidCube(arm, elevator));
+    Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    Trigger scoreLowCube = new JoystickButton(operatorController, XboxController.Button.kB.value);
+    scoreMidCube.whileTrue(Score.scoreMidCube(arm));
+    scoreLowCube.whileTrue(Score.scoreLowCube(arm));
+
+    Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kX.value);
+    intakeSubstation.whileTrue(Intake.intakeSubstation(arm, wheelClaw));
+    Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    intakeGround.whileTrue(Intake.intakeGround(arm, wheelClaw));
 
     //outtake.whileTrue(new RawOuttake(wheelClaw));
     //intake.whileTrue(new RawIntake(wheelClaw));

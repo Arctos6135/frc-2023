@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(CANBus.ARM_MOTOR, MotorType.kBrushless);
     private final RelativeEncoder encoder;
 
-    private PIDController controller = new PIDController(0.0001, 0, 0);
+    private PIDController controller = new PIDController(2, 0, 0);
 
     private final GenericEntry encoderOutputWidget;
     private final GenericEntry motorSpeedWidget;
@@ -51,7 +51,7 @@ public class Arm extends SubsystemBase {
 
     // measured in radians from vertical
     private final float lowAngle = 0.7f; 
-    private final float highAngle = 1.6f;
+    private final float highAngle = 2f;
     private final double startAngle = 0.7;
 
     private double speed = 0;
@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase {
         
         if (!isInitialized) return;
 
-        System.out.printf("Running with power %f\n", speed);
+        System.out.printf("Running with raw input power %f\n", speed);
 
         if (!softstopEnabled.getBoolean(true)) {
             System.out.println("Arm soft stop disabled\n");
@@ -115,9 +115,11 @@ public class Arm extends SubsystemBase {
 
         if (state.equals(State.Automatic)) {
             // since the encoder measures in radians from vertical
-            double feedforward = Math.sin(encoder.getPosition()) * 0.1; // adjust constant so that the arm holds level
+            double feedforward = Math.sin(encoder.getPosition()) * 0.05; // adjust constant so that the arm holds level
+
             double control = controller.calculate(encoder.getPosition()) + feedforward;
             control = Clamp.clamp(control, -0.2, 0.2); // make these more generous as necessary
+            System.out.printf("setpoint is %s, current angle is %s, control %s%n", controller.getSetpoint(), encoder.getPosition(), control);
             motor.set(control);
         } else {
             System.out.printf("Angle is %f\n", encoder.getPosition());

@@ -36,9 +36,7 @@ public class TeleopRotate extends CommandBase {
     public void execute() {
         System.out.println("calling the periodic of teleop rotate");
         double raw = controller.getRawAxis(Controllers.ELEVATOR_CONTROL);
-        if (Math.abs(raw) < 0.05) {
-            return;
-        }
+
         double rotation = dampener.smoothDampen(controller.getRawAxis(Controllers.ELEVATOR_CONTROL));
         this.arm.setMotor(rotation * 0.6);
 

@@ -14,12 +14,11 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.WheelClaw;
 
 public class Intake {
-    public static Command intakeGround(Arm arm, Elevator elevator, WheelClaw claw) {
-        return new PidRotate(arm, 0).andThen(new RawIntake(claw));
-        //return new PidExtend(elevator, 0).andThen(new PidRotate(arm, 0)).andThen(new RawIntake(claw));
+    public static Command intakeGround(Arm arm, WheelClaw claw) {
+        return new PidRotate(arm, 0.9).andThen(new RawIntake(claw));
     }
 
-    public static Command intakeSubstation(Arm arm, Elevator elevator, WheelClaw claw) {
-        return new PidRotate(arm, 1).andThen(new RawIntake(claw));
+    public static Command intakeSubstation(Arm arm, WheelClaw claw) {
+        return new PidRotate(arm, 1.87f).andThen(new RawIntake(claw));
     }
 }

@@ -18,6 +18,6 @@ import frc.robot.subsystems.WheelClaw;
 
 public class MidCubeAuto {
     public static Command midCubeAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw) {
-        return Score.scoreMidCube(arm, elevator).andThen(new RawOuttake(claw).withTimeout(2)).andThen(MobilityAuto.mobility(drivetrain));
+        return Score.scoreMidCube(arm).andThen(new RawOuttake(claw).withTimeout(2)).andThen(MobilityAuto.mobility(drivetrain));
     }
 }

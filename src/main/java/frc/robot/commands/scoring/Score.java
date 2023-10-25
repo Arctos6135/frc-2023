@@ -16,15 +16,13 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.WheelClaw;
 
 public class Score {
-    public static Command scoreLow(Arm arm, Elevator elevator) {
-        return new PidRotate(arm, 0);//.andThen(new PidExtend(elevator, 10));
+    public static Command scoreLowCube(Arm arm) {
+        return new PidRotate(arm, 0.9);//.andThen(new PidExtend(elevator, 10));
     }
 
-    public static Command scoreMidCube(Arm arm, Elevator elevator) {
+    public static Command scoreMidCube(Arm arm) {
         return new SequentialCommandGroup(
-            new PidRotate(arm, 1.1),
-            new Wait(1),
-            new EncodedElevator(elevator, 2)
+            new PidRotate(arm, 1.5)
         );
     }
 
