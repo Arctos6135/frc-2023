@@ -50,9 +50,9 @@ public class Arm extends SubsystemBase {
     private boolean isInitialized = false;
 
     // measured in radians from vertical
-    private final float lowAngle = 0.7f; 
+    private final float lowAngle = 0.56f; 
     private final float highAngle = 2f;
-    private final double startAngle = 0.7;
+    private final double startAngle = 0.56;
 
     private double speed = 0;
 
@@ -97,8 +97,6 @@ public class Arm extends SubsystemBase {
         
         if (!isInitialized) return;
 
-        System.out.printf("Running with raw input power %f\n", speed);
-
         if (!softstopEnabled.getBoolean(true)) {
             System.out.println("Arm soft stop disabled\n");
             motor.enableSoftLimit(SoftLimitDirection.kForward, false);
@@ -119,11 +117,8 @@ public class Arm extends SubsystemBase {
 
             double control = controller.calculate(encoder.getPosition()) + feedforward;
             control = Clamp.clamp(control, -0.2, 0.2); // make these more generous as necessary
-            System.out.printf("setpoint is %s, current angle is %s, control %s%n", controller.getSetpoint(), encoder.getPosition(), control);
             motor.set(control);
         } else {
-            System.out.printf("Angle is %f\n", encoder.getPosition());
-
             this.motor.set(speed);
         }
 
@@ -139,7 +134,6 @@ public class Arm extends SubsystemBase {
     }
 
     public void setHumanDriveSpeed(double speed) {
-        System.out.printf("Calling set arm speed with speed %s%n", speed);
         this.speed = speed;
 
         if (!state.equals(State.HumanDriven)) {
@@ -166,6 +160,6 @@ public class Arm extends SubsystemBase {
     }
 
     public void enableBrake() {
-        motor.setIdleMode(IdleMode.kCoast);
+        motor.setIdleMode(IdleMode.kBrake);
     }
 }

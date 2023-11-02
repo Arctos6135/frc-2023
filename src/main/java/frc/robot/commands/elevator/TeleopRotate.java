@@ -35,9 +35,9 @@ public class TeleopRotate extends CommandBase {
     @Override 
     public void execute() {
         System.out.println("calling the periodic of teleop rotate");
-        double raw = controller.getRawAxis(Controllers.ELEVATOR_CONTROL);
+        double raw = controller.getRawAxis(Controllers.ROTATE_CONTROL);
 
-        double rotation = dampener.smoothDampen(controller.getRawAxis(Controllers.ELEVATOR_CONTROL));
+        double rotation = dampener.smoothDampen(controller.getRawAxis(Controllers.ROTATE_CONTROL));
         this.arm.setMotor(rotation * 0.6);
 
         System.out.printf("Reading %f\n", controller.getRawAxis(XboxController.Axis.kLeftY.value));

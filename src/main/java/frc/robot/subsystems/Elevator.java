@@ -4,11 +4,13 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.ElevatorConstants;
 import edu.wpi.first.hal.ThreadsJNI;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ResourceBundle.Control;
@@ -22,8 +24,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Elevator extends SubsystemBase {
     private final TalonSRX motor = new TalonSRX(CANBus.ELEVATOR_MOTOR);
     private final DutyCycleEncoder encoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
-    private final GenericEntry encoderWidget;
-    private final GenericEntry softstopEnabled;
+    private final NetworkTableEntry softstopEnabled;
 
     private double initialAngle = 0;
     private boolean isInitialized = false;
@@ -35,23 +36,16 @@ public class Elevator extends SubsystemBase {
 
     public Elevator(ShuffleboardTab armTab) {
         this.motor.setNeutralMode(NeutralMode.Brake);
-        // this.elevatorEncoder.setDistancePerRotation(ElevatorConstants.DISTANCE_PER_ROTATION_RADIANS_ELEVATOR);
-        this.encoderWidget = armTab.add("Elevator encoder (radians)", 0)
-                .withWidget(BuiltInWidgets.kTextView)
-                .withSize(1, 1)
-                .withPosition(2, 3)
-                .getEntry();
-        softstopEnabled = armTab.add("Elevator soft stop enabled", true)
-            .withWidget(BuiltInWidgets.kToggleButton)
-            .withSize(1, 1)
-            .withPosition(2, 2)
-            .getEntry();
+        softstopEnabled = SmartDashboard.getEntry("Elevator stop");
+        
+        softstopEnabled.setInteger(1);
+        
         encoder.reset();
     }
 
     @Override
     public void periodic() {
-        if (!isInitialized && Timer.getFPGATimestamp() > 1) {
+        if (!isInitialized && Timer.getFPGATimestamp() > 1 && encoder.isConnected()) {
             initialAngle = encoder.get();
             isInitialized = true;
         }
@@ -59,14 +53,13 @@ public class Elevator extends SubsystemBase {
         if (!isInitialized)
             return;
 
-        if (0 == 0)
-        return;
-
-        if (true) {//!softstopEnabled.getBoolean(true)) {
+        if (softstopEnabled.getInteger(1) == 0) {
             System.out.println("Elevator soft stop disabled\n");
             this.motor.set(ControlMode.PercentOutput, speed);
             initialAngle = encoder.get();
             return;
+        } else {
+            System.out.printf("Elevator soft stop enabled with value %d%n", softstopEnabled.getInteger(10));
         }
 
         if (getAngle() > highAngle && speed < 0) {
@@ -79,8 +72,9 @@ public class Elevator extends SubsystemBase {
             this.motor.set(ControlMode.PercentOutput, speed);
         }
 
-        encoderWidget.setDouble(getAngle());
+        SmartDashboard.putNumber("Elevator encoder", getAngle());
     }
+
 
     /**
      * @param armSpeed the power of the motor, in the range [-1, 1]

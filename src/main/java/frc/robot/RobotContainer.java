@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -100,7 +101,7 @@ public class RobotContainer {
   }
 
   private void configureDashboard() {
-    prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5);
+    SmartDashboard.putData("Autonomous Mode", autonomous.getChooser());
 
     drivetrainTab.add("PID Translation", drivetrain.translationalController)
         .withWidget(BuiltInWidgets.kPIDController)
@@ -145,12 +146,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return new DriveForwardEncoded(drivetrain, 0.5, -6 * 3 * 12);
-    // return new TurnEncoded(drivetrain, Math.PI, 0.25);
-    // return new AutoRotate(arm, 0);
-    // return new Engage(drivetrain);
-    return MidCubeBalanceAuto.midCubeBalanceAuto(drivetrain, arm, elevator, wheelClaw, drivetrainTab);
-    //autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, null);
+    return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, elevator, arm, wheelClaw, drivetrainTab);
   }
 
   public void updateButtons() {

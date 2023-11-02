@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.DriveConstants;
@@ -29,8 +30,8 @@ public class TeleopDrive extends CommandBase {
     private Dampener yDampener;
 
     private static boolean precisionDrive = false;
-    private static double precisionFwdRev = 0.2;
-    private static double precisionTurn = 0.4;
+    private static double precisionFwdRev = 0.4;
+    private static double precisionTurn = 0.8;
 
 
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis,
@@ -60,12 +61,18 @@ public class TeleopDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double y = controller.getRawAxis(Y_AXIS);
+        double y = controller.getRawAxis(XboxController.Axis.kLeftY.value);
         double y1 = -yDampener.dampen(y) * (precisionDrive ? precisionFwdRev : 1.0);
-        double x = controller.getRawAxis(X_AXIS);
+        double x = controller.getRawAxis(XboxController.Axis.kRightX.value);
         double x1 = xDampener.dampen(x) * (precisionDrive ? precisionTurn : 1.0);
 
-        drivetrain.arcadeDrive(y1 * 0.2, x1 * 0.5);
+        SmartDashboard.putNumber("drive controller x", x1);
+        SmartDashboard.putNumber("drive controller y", y1);
+        
+        double precisionFwdFactor = precisionDrive ? precisionFwdRev : 1;
+        double precisionTurnFactor = precisionDrive ? precisionTurn : 1;
+
+        drivetrain.arcadeDrive(y1 * 0.5 * precisionTurnFactor, x1 * 0.2 * precisionFwdFactor);
     }
 
     public static boolean isPrecisionDrive() {
