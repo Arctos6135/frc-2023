@@ -5,11 +5,14 @@ import frc.robot.constants.ElevatorConstants;
 import edu.wpi.first.hal.ThreadsJNI;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,7 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Elevator extends SubsystemBase {
     private final TalonSRX motor = new TalonSRX(CANBus.ELEVATOR_MOTOR);
     private final DutyCycleEncoder encoder = new DutyCycleEncoder(ElevatorConstants.ELEVATOR_ENCODER);
-    private final NetworkTableEntry softstopEnabled;
+    private final SendableChooser<Boolean> softstopEnabled;
 
     private double initialAngle = 0;
     private boolean isInitialized = false;
@@ -36,9 +39,11 @@ public class Elevator extends SubsystemBase {
 
     public Elevator(ShuffleboardTab armTab) {
         this.motor.setNeutralMode(NeutralMode.Brake);
-        softstopEnabled = SmartDashboard.getEntry("Elevator stop");
+        softstopEnabled = new SendableChooser<>();
         
-        softstopEnabled.setInteger(1);
+        softstopEnabled.addOption("Soft Stop Enabled", true);
+        softstopEnabled.addOption("Soft Stop Disabled", false);
+        softstopEnabled.setDefaultOption("Soft Stop Enabled", true);
         
         encoder.reset();
     }
@@ -53,7 +58,7 @@ public class Elevator extends SubsystemBase {
         if (!isInitialized)
             return;
 
-        if (softstopEnabled.getInteger(1) == 0) {
+        if (!softstopEnabled.getSelected()) {
             System.out.println("Elevator soft stop disabled\n");
             this.motor.set(ControlMode.PercentOutput, speed);
             initialAngle = encoder.get();
@@ -94,5 +99,10 @@ public class Elevator extends SubsystemBase {
 
     public double getAngle() {
         return encoder.get() - initialAngle;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addCloseable(softstopEnabled);
     }
 }

@@ -102,6 +102,7 @@ public class RobotContainer {
 
   private void configureDashboard() {
     SmartDashboard.putData("Autonomous Mode", autonomous.getChooser());
+    SmartDashboard.putData("Elevator", elevator);
 
     drivetrainTab.add("PID Translation", drivetrain.translationalController)
         .withWidget(BuiltInWidgets.kPIDController)
