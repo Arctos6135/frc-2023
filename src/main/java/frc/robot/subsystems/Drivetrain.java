@@ -9,10 +9,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANBus;
 import frc.robot.constants.DriveConstants;
@@ -100,10 +102,13 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        rotationEstimateWidget.setDouble(getRotation());
-        translationEstimateWidget.setDouble(getPosition());
-        xPositionWidget.setDouble(odometer.getX());
-        yPositionWidget.setDouble(odometer.getY());
+        SmartDashboard.putNumber("Left Wheel", leftEncoder.getPosition());
+        SmartDashboard.putNumber("Right Wheel", rightEncoder.getPosition());
+        SmartDashboard.putNumber("Yaw", getYaw());
+        SmartDashboard.putNumber("Pitch", getPitch());
+        SmartDashboard.putNumber("X Pos", odometer.getX());
+        SmartDashboard.putNumber("Y Pos", odometer.getY());
+        SmartDashboard.putString("Drive State", state.name());
 
         if (state == State.HumanDriven) {
             humanDrivenPeriodic();

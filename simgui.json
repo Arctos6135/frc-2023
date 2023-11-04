@@ -25,7 +25,30 @@
       "/Shuffleboard/Drivetrain/Gyroscope": "Gyro",
       "/Shuffleboard/Drivetrain/PID Rotation": "PIDController",
       "/Shuffleboard/Drivetrain/PID Translation": "PIDController",
-      "/Shuffleboard/Prematch/Autonomous Mode": "String Chooser"
+      "/Shuffleboard/Prematch/Autonomous Mode": "String Chooser",
+      "/SmartDashboard/Arm": "Subsystem",
+      "/SmartDashboard/Autonomous Mode": "String Chooser",
+      "/SmartDashboard/Drivetrain": "Subsystem",
+      "/SmartDashboard/Elevator": "Subsystem",
+      "/SmartDashboard/Elevator Soft Stop": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "Autonomous Mode": {
+          "open": true
+        },
+        "Elevator Soft Stop": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
     }
   }
 }

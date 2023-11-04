@@ -44,12 +44,18 @@ public class Elevator extends SubsystemBase {
         softstopEnabled.addOption("Soft Stop Enabled", true);
         softstopEnabled.addOption("Soft Stop Disabled", false);
         softstopEnabled.setDefaultOption("Soft Stop Enabled", true);
+
+        SmartDashboard.putData("Elevator Soft Stop", softstopEnabled);
+
         
         encoder.reset();
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Elevator Angle", getAngle());
+        SmartDashboard.putBoolean("Elevator Initialized", isInitialized);
+
         if (!isInitialized && Timer.getFPGATimestamp() > 1 && encoder.isConnected()) {
             initialAngle = encoder.get();
             isInitialized = true;
@@ -63,8 +69,6 @@ public class Elevator extends SubsystemBase {
             this.motor.set(ControlMode.PercentOutput, speed);
             initialAngle = encoder.get();
             return;
-        } else {
-            System.out.printf("Elevator soft stop enabled with value %d%n", softstopEnabled.getInteger(10));
         }
 
         if (getAngle() > highAngle && speed < 0) {
@@ -76,8 +80,6 @@ public class Elevator extends SubsystemBase {
         } else {
             this.motor.set(ControlMode.PercentOutput, speed);
         }
-
-        SmartDashboard.putNumber("Elevator encoder", getAngle());
     }
 
 
@@ -99,10 +101,5 @@ public class Elevator extends SubsystemBase {
 
     public double getAngle() {
         return encoder.get() - initialAngle;
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addCloseable(softstopEnabled);
     }
 }

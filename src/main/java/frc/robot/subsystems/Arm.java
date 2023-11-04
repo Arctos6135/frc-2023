@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -43,8 +44,6 @@ public class Arm extends SubsystemBase {
 
     private PIDController controller = new PIDController(2, 0, 0);
 
-    private final GenericEntry encoderOutputWidget;
-    private final GenericEntry motorSpeedWidget;
     private final GenericEntry softstopEnabled;
 
     private boolean isInitialized = false;
@@ -70,11 +69,6 @@ public class Arm extends SubsystemBase {
         
         encoder.setPositionConversionFactor(ArmConstants.RADIANS_PER_ROTATION); 
 
-        encoderOutputWidget = armTab.add("Arm encoder angle", 0).withWidget(BuiltInWidgets.kTextView)
-                .withPosition(3, 1).withSize(1, 1).getEntry();
-        motorSpeedWidget = armTab.add("Arm speed", 0).withWidget(BuiltInWidgets.kTextView)
-                .withPosition(3, 2).withSize(1, 1).getEntry();
-
         softstopEnabled = armTab.add("Arm soft stop enabled", true)
             .withWidget(BuiltInWidgets.kToggleButton)
             .withPosition(3, 2)
@@ -84,6 +78,9 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Arm Angle", encoder.getPosition());
+        SmartDashboard.putString("Arm State", state.name());
+
         if (!isInitialized && Timer.getFPGATimestamp() > 1) {
             REVLibError okay = encoder.setPosition(startAngle);
             if (okay.equals(REVLibError.kOk)) {
@@ -121,11 +118,6 @@ public class Arm extends SubsystemBase {
         } else {
             this.motor.set(speed);
         }
-
-        SmartDashboard.putNumber("Arm angle", encoder.getPosition());
-
-        encoderOutputWidget.setDouble(encoder.getPosition());
-        motorSpeedWidget.setDouble(motor.get());
     }
 
     // Sets speed of motor

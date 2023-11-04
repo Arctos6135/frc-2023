@@ -102,20 +102,9 @@ public class RobotContainer {
 
   private void configureDashboard() {
     SmartDashboard.putData("Autonomous Mode", autonomous.getChooser());
+    SmartDashboard.putData("Drivetrain", drivetrain);
     SmartDashboard.putData("Elevator", elevator);
-
-    drivetrainTab.add("PID Translation", drivetrain.translationalController)
-        .withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(0, 0).withSize(1, 4);
-
-    drivetrainTab.add("PID Rotation", drivetrain.rotationController).withWidget(BuiltInWidgets.kPIDController)
-        .withPosition(1, 0).withSize(1, 4);
-
-    //armTab.add("PID Controller", arm.getPIDController()).withWidget(BuiltInWidgets.kPIDController)
-    //    .withPosition(0, 0).withSize(1, 4);
-
-    visionTab.add("Limelight Stream", VisionSystem.LIMELIGHT_URL).withWidget(BuiltInWidgets.kCameraStream)
-        .withPosition(0, 0).withSize(6, 8);
+    SmartDashboard.putData("Arm", arm);
   }
 
   private void configureBindings() {
