@@ -72,7 +72,7 @@ public class TeleopDrive extends CommandBase {
         double precisionFwdFactor = precisionDrive ? precisionFwdRev : 1;
         double precisionTurnFactor = precisionDrive ? precisionTurn : 1;
 
-        drivetrain.arcadeDrive(y1 * 0.5 * precisionTurnFactor, x1 * 0.2 * precisionFwdFactor);
+        drivetrain.arcadeDrive(y1 * 0.85 * precisionTurnFactor, x1 * 0.25 * precisionFwdFactor);
     }
 
     public static boolean isPrecisionDrive() {
