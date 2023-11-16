@@ -2,26 +2,31 @@ package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VisionConstants;
 
-public class VisionSystem {
+public class VisionSystem extends SubsystemBase {
     // Front Vision (Retroreflective Tape)
     private PhotonCamera limelight; 
-    public static final String LIMELIGHT_URL = "http://photonvision.local:5800/"; 
+    public static final String LIMELIGHT_URL = "http://10.61.35.11:5800/";//"http://photonvision.local:5800/"; 
 
     public VisionSystem() {
-        this.limelight = new PhotonCamera("Limelight"); 
+        this.limelight = new PhotonCamera("limelight");
     }
 
     public PhotonPipelineResult getLimelightResult() {
         return this.limelight.getLatestResult(); 
     }
 
-    public boolean limelightTargets() {
+    public boolean hasTargets() {
+        limelight.setLED(VisionLEDMode.kOff);
+        SmartDashboard.putString("Limelight Mode", limelight.getLEDMode().name());
         return getLimelightResult().hasTargets(); 
     }
 
@@ -36,5 +41,17 @@ public class VisionSystem {
             VisionConstants.CAMERA_PITCH_RADIANS, 
             Units.degreesToRadians(getLimelightResult().getBestTarget().getPitch())
         ); 
+    }
+
+    public double getYaw() {
+        return getLimelightTarget().getYaw();
+    }
+
+    public double getArea() {
+        return getLimelightTarget().getArea();
+    }
+
+    public boolean hasConnected() {
+        return limelight.isConnected();
     }
 }

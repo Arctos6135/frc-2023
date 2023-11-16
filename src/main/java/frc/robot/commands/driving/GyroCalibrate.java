@@ -21,6 +21,7 @@ public class GyroCalibrate extends CommandBase {
     @Override
     public void initialize() {
         drivetrain.calibrateGyro();
+        drivetrain.tankDrive(0, 0);
     }
 
     @Override

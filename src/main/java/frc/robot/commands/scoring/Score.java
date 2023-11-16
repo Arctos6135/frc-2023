@@ -17,12 +17,14 @@ import frc.robot.subsystems.WheelClaw;
 
 public class Score {
     public static Command scoreLowCube(Arm arm) {
-        return new PidRotate(arm, 0.9);//.andThen(new PidExtend(elevator, 10));
+        return new PidRotate(arm, 0.95).andThen(new Wait(10));//.andThen(new PidExtend(elevator, 10));
+
     }
 
     public static Command scoreMidCube(Arm arm) {
         return new SequentialCommandGroup(
-            new PidRotate(arm, 1.5)
+            new PidRotate(arm, 1.5),
+            new Wait(10)
         );
     }
 

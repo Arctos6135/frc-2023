@@ -32,7 +32,6 @@ public class Claw extends SubsystemBase {
     }
 
     public void setMotors(double speed) {
-        System.out.printf("Running claw at speed %f\n", speed);
         clawMotor.set(ControlMode.PercentOutput, speed);
     }
 }

@@ -65,7 +65,7 @@ public class Elevator extends SubsystemBase {
             return;
 
         if (!softstopEnabled.getSelected()) {
-            System.out.println("Elevator soft stop disabled\n");
+            System.out.println("Elevator soft stop disabled\n"); 
             this.motor.set(ControlMode.PercentOutput, speed);
             initialAngle = encoder.get();
             return;

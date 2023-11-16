@@ -36,7 +36,7 @@ public class DriveForwardTillAngle extends CommandBase {
             System.out.printf("Was driving forward till angle %f, stopped robot because it drove more than the max safe distance (encoders reading %f)\n", targetAngle, drivetrain.getPosition());
             drivetrain.arcadeDrive(0, 0);
         } else {
-            System.out.printf("Driving forward till angle %f at speed %f, reading angle %f\n", targetAngle, speed, drivetrain.getPitch());
+            //System.out.printf("Driving forward till angle %f at speed %f, reading angle %f\n", targetAngle, speed, drivetrain.getPitch());
             drivetrain.arcadeDrive(speed, 0);
         }
     }

@@ -30,8 +30,8 @@ public class TeleopDrive extends CommandBase {
     private Dampener yDampener;
 
     private static boolean precisionDrive = false;
-    private static double precisionFwdRev = 0.4;
-    private static double precisionTurn = 0.8;
+    private static double precisionFwdRev = 0.6;
+    private static double precisionTurn = 0.7;
 
 
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController, int fwdRevAxis, int leftRightAxis,
@@ -72,7 +72,7 @@ public class TeleopDrive extends CommandBase {
         double precisionFwdFactor = precisionDrive ? precisionFwdRev : 1;
         double precisionTurnFactor = precisionDrive ? precisionTurn : 1;
 
-        drivetrain.arcadeDrive(y1 * 0.85 * precisionTurnFactor, x1 * 0.25 * precisionFwdFactor);
+        drivetrain.arcadeDrive(y1 * 0.85 * precisionFwdFactor, x1 * 0.25 * precisionTurnFactor);
     }
 
     public static boolean isPrecisionDrive() {

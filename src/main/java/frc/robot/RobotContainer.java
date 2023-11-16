@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.MidCubeBalanceAuto;
 import frc.robot.commands.claw.TeleopClaw;
 import frc.robot.commands.driving.DriveForwardEncoded;
+import frc.robot.commands.driving.DriveTowardsCube;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.elevator.EncodedElevator;
 import frc.robot.commands.elevator.PidExtend;
@@ -123,6 +124,9 @@ public class RobotContainer {
     intakeSubstation.whileTrue(Intake.intakeSubstation(arm, wheelClaw));
     Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kA.value);
     intakeGround.whileTrue(Intake.intakeGround(arm, wheelClaw));
+
+    Trigger driveIntakeCube = new JoystickButton(driverController, XboxController.Button.kX.value);
+    driveIntakeCube.whileTrue(Intake.autoIntakeGround(arm, wheelClaw, visionSystem, drivetrain));
 
     //outtake.whileTrue(new RawOuttake(wheelClaw));
     //intake.whileTrue(new RawIntake(wheelClaw));

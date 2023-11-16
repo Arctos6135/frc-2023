@@ -33,7 +33,7 @@ training
 
 public class PIDBalance extends CommandBase {
     private final Drivetrain drivetrain;
-    private final PIDController controller = new PIDController(0.35, 0, 0);//0.0005);
+    private final PIDController controller = new PIDController(0.4, 0, 0);//new PIDController(0.35, 0, 0);//0.0005);
 
     /** Balance the robot by PIDing on the angle
     */

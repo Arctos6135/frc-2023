@@ -7,6 +7,7 @@ import frc.robot.commands.intake.RawOuttake;
 import frc.robot.commands.scoring.Score;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.driving.DriveForwardEncoded;
 import frc.robot.commands.driving.DriveForwardTillAngle;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.WheelClaw;
 
 public class MidCubeBalanceAuto {
     public static Command midCubeBalanceAuto(Drivetrain drivetrain, Arm arm, Elevator elevator, WheelClaw claw, ShuffleboardTab drivetrainTab) {
+
         return new SequentialCommandGroup(
             /* mid cube
             Score.scoreMidCube(arm, elevator), 
@@ -30,19 +32,19 @@ public class MidCubeBalanceAuto {
             /* momentum score + mobility
             new DriveForwardEncoded(drivetrain, 1, -24),
             new DriveForwardEncoded(drivetrain, 0.2, 12 * 10)
-             */
-            /*
+             */ 
+            new InstantCommand(() -> System.out.println("Running the midcube balance auto")),
             new GyroCalibrate(drivetrain),
             new Wait(2),
-            new DriveForwardEncoded(drivetrain, 1, -24),
-            new DriveForwardTillAngle(drivetrain, 0.18, 0.3),
+            new DriveForwardEncoded(drivetrain, 0.8, -24),
+            new DriveForwardTillAngle(drivetrain, 0.25, 0.3),
             new PIDBalance(drivetrain, drivetrainTab)
-            */
+            
             /*
             new DriveForwardEncoded(drivetrain, 1, -24),
             new DriveForwardEncoded(drivetrain, 0.5, 12 * 10)
             */
-            new DriveForwardEncoded(drivetrain, 0.75, -24)
+            //new DriveForwardEncoded(drivetrain, 0.75, -24)
         ).withTimeout(14);
     }
 }

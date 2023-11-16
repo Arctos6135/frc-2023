@@ -61,6 +61,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Gyro
     private final ADIS16470_IMU gyroscope = new ADIS16470_IMU();
+    private double initialPitch = 0;
 
     // Odometry
     private Odometer odometer;
@@ -74,13 +75,18 @@ public class Drivetrain extends SubsystemBase {
         this.leftMaster.setIdleMode(IdleMode.kBrake);
         this.rightMaster.setIdleMode(IdleMode.kBrake);
 
+
+        leftMaster.setSmartCurrentLimit(60);
+        rightMaster.setSmartCurrentLimit(60);
+        leftFollower.setSmartCurrentLimit(60);
+        rightFollower.setSmartCurrentLimit(60);
+
+
         this.rightEncoder = this.rightMaster.getEncoder();
         this.leftEncoder = this.leftMaster.getEncoder();
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
-
-        gyroscope.calibrate();
 
         odometer = new Odometer(leftEncoder.getPosition(), rightEncoder.getPosition(), getYaw());
 
@@ -98,6 +104,9 @@ public class Drivetrain extends SubsystemBase {
         
         yPositionWidget = drivetrainTab.add("Y Position", 0).withWidget(BuiltInWidgets.kTextView)
             .withPosition(3, 3).withSize(1, 1).getEntry();
+
+        initialPitch = getPitch();
+        calibrateGyro();
     }
 
     @Override
@@ -213,7 +222,7 @@ public class Drivetrain extends SubsystemBase {
 
     // get the pitch of the robot in radians, 0 is perfectly balanced
     public double getPitch() {
-        return gyroscope.getYComplementaryAngle() * Math.PI / 180;
+        return gyroscope.getYComplementaryAngle() * Math.PI / 180 - initialPitch;
     }
 
     // get the rate of change of the pitch of the robot in radians per second (this might be wrong), 0 is not moving
