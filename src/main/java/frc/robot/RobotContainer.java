@@ -84,8 +84,6 @@ public class RobotContainer {
       
     this.elevator = new Elevator(armTab);
     this.elevator.setDefaultCommand(new TeleopExtend(elevator, operatorController, Controllers.ELEVATOR_CONTROL));
-      //new PidExtend(elevator, 0));
-
     this.wheelClaw = new WheelClaw();
     this.wheelClaw.setDefaultCommand(new TeleopIntake(wheelClaw, operatorController)); 
     this.backupClaw = null;
@@ -111,10 +109,7 @@ public class RobotContainer {
   private void configureBindings() {
     Trigger outtake = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     Trigger intake = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    /*
-    Trigger intakeGround = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
-    Trigger intakeSubstation = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    Trigger scoreLow = new JoystickButton(operatorController, XboxController.Button.kA.value); */ 
+
     Trigger scoreMidCube = new JoystickButton(operatorController, XboxController.Button.kY.value);
     Trigger scoreLowCube = new JoystickButton(operatorController, XboxController.Button.kB.value);
     scoreMidCube.whileTrue(Score.scoreMidCube(arm));
@@ -127,16 +122,6 @@ public class RobotContainer {
 
     Trigger driveIntakeCube = new JoystickButton(driverController, XboxController.Button.kX.value);
     driveIntakeCube.whileTrue(Intake.autoIntakeGround(arm, wheelClaw, visionSystem, drivetrain));
-
-    //outtake.whileTrue(new RawOuttake(wheelClaw));
-    //intake.whileTrue(new RawIntake(wheelClaw));
-/*
-    intakeGround.whileTrue(Intake.intakeGround(arm, elevator, wheelClaw));
-    intakeSubstation.whileTrue(Intake.intakeSubstation(arm, elevator, wheelClaw));
-    scoreLow.whileTrue(Score.scoreLow(arm, elevator));
-    scoreMidCone.whileTrue(Score.scoreMidCone(arm, elevator));
-    */
-
   }
 
   public Command getAutonomousCommand() {
